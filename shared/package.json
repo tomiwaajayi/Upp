@@ -1,35 +1,35 @@
 {
-  "name": "shared",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
-  "private": true,
-  "license": "UNLICENSED",
-  "devDependencies": {
-    "@types/google-libphonenumber": "^7.4.23",
-    "@types/node": "^14.11.2",
-    "@types/validator": "^13.7.6",
-    "gts": "^3.1.0",
-    "typescript": "^4.0.3"
-  },
-  "scripts": {
-    "lint": "gts lint",
-    "clean": "gts clean",
-    "compile": "tsc",
-    "fix": "gts fix",
-    "prepare": "yarn run compile",
-    "pretest": "yarn run compile",
-    "posttest": "yarn run lint"
-  },
-  "dependencies": {
-    "@nestjs/common": "^9.0.11",
-    "@nestjs/config": "^2.2.0",
-    "@types/express": "^4.17.13",
-    "@types/lodash": "^4.14.184",
-    "class-validator": "^0.13.2",
-    "google-libphonenumber": "^3.2.30",
-    "lodash": "^4.17.21",
-    "nest": "^0.1.6",
-    "rxjs": "^7.5.6"
-  }
+    "name": "shared",
+    "version": "0.0.1",
+    "description": "",
+    "author": "",
+    "private": true,
+    "license": "UNLICENSED",
+    "devDependencies": {
+        "@types/google-libphonenumber": "^7.4.23",
+        "@types/node": "^14.11.2",
+        "@types/validator": "^13.7.6",
+        "gts": "^3.1.0",
+        "typescript": "^4.0.3"
+    },
+    "scripts": {
+        "lint": "gts lint",
+        "clean": "gts clean",
+        "compile": "tsc",
+        "fix": "gts fix",
+        "prepare": "yarn run compile",
+        "pretest": "yarn run compile",
+        "posttest": "yarn run lint"
+    },
+    "dependencies": {
+        "@nestjs/common": "^9.0.11",
+        "@nestjs/config": "^2.2.0",
+        "@types/express": "^4.17.13",
+        "@types/lodash": "^4.14.184",
+        "class-validator": "^0.13.2",
+        "google-libphonenumber": "^3.2.30",
+        "lodash": "^4.17.21",
+        "nest": "^0.1.6",
+        "rxjs": "^7.2.0"
+    }
 }

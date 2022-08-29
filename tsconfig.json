@@ -3,9 +3,10 @@
   "compilerOptions": {
     "experimentalDecorators": true,
     "rootDir": ".",
-    "outDir": "shared"
+    "outDir": "shared",
+    "resolveJsonModule": true
   },
-  "include": ["**/*.ts", "test/**/*.ts"],
+  "include": ["**/*.ts", "test/**/*.ts", "./package.json"],
   "exclude": [
     "./shared/" // This is what fixed it!
   ]
