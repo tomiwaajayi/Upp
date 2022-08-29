@@ -1,0 +1,159 @@
+import {BadRequestException, HttpException, HttpStatus} from '@nestjs/common';
+import {
+  validateOrReject,
+  validateSync,
+  ValidationError,
+  ValidatorOptions,
+} from 'class-validator';
+import {Response} from 'express';
+import {ClientException} from '../exceptions/client_exception';
+import {ResponseService} from './response.service';
+import {PhoneNumberFormat, PhoneNumberUtil} from 'google-libphonenumber';
+import {firstValueFrom, Observable} from 'rxjs';
+const phoneUtil = PhoneNumberUtil.getInstance();
+export class UtilService {
+  static async quickController(
+    res: Response,
+    successMessage: string,
+    service: any,
+    method: string,
+    httpStatusCode?: number,
+    ...opts: any
+  ): Promise<any> {
+    try {
+      let meta: any;
+      let data: any;
+      const result = await service[method](...opts);
+      if (result.error) {
+        throw new ClientException(
+          Error(result.error.message),
+          result.error.status
+        );
+      }
+      if (result && result.metadata) {
+        data = result.data;
+        meta = result.metadata;
+      } else {
+        data = result;
+      }
+      return ResponseService.json(
+        res,
+        httpStatusCode || HttpStatus.OK,
+        successMessage || '',
+        data,
+        meta
+      );
+    } catch (e) {
+      if ('statusCode' in (e as any)) {
+        return res.status((e as any).statusCode).send(e);
+      }
+      return ResponseService.json(
+        res,
+        e as Error,
+        (e as Error).message ||
+          'An Error Occurred, we are already on top of it',
+        undefined,
+        undefined,
+        (e as any).status || HttpStatus.BAD_REQUEST
+      );
+    }
+  }
+
+  static async microServiceController(
+    service: any,
+    method: string,
+    ...opts: any
+  ): Promise<any> {
+    try {
+      return await service[method](...opts);
+    } catch (e) {
+      if (e instanceof ClientException || e instanceof HttpException) {
+        return {
+          error: {
+            message: e.message,
+            status: e.getStatus(),
+          },
+        };
+      }
+      return {
+        error: {
+          message: (e as any).message,
+          status: HttpStatus.BAD_REQUEST,
+        },
+      };
+    }
+  }
+
+  static parseMicroserviceResp<T>(payload: any): T {
+    if (payload.error) {
+      throw new ClientException(
+        Error(payload.error.message),
+        payload.statusCode || payload.error.status
+      );
+    }
+    return payload as T;
+  }
+
+  static async callMicroService<T>(u: Observable<T>): Promise<T> {
+    const x = UtilService.parseMicroserviceResp(await firstValueFrom(u));
+    return x as T;
+  }
+
+  static async validateOrReject(
+    payload: Object,
+    options?: ValidatorOptions
+  ): Promise<boolean> {
+    try {
+      await validateOrReject(payload, options);
+      return true;
+    } catch (e) {
+      const validationErors = e as ValidationError[];
+      let message = '';
+      validationErors.forEach(err => {
+        Object.keys(err.constraints as any).forEach(constraint => {
+          message += `\n${(err.constraints as any)[constraint]}`;
+        });
+      });
+      throw new Error(message);
+    }
+  }
+
+  static validateOrRejectSync(
+    payload: Object,
+    options?: ValidatorOptions
+  ): boolean {
+    try {
+      const errors = validateSync(payload, options);
+      if (errors.length > 0) {
+        throw errors;
+      }
+      return true;
+    } catch (e) {
+      const validationErors = e as ValidationError[];
+      let message = '';
+      validationErors.forEach(err => {
+        Object.keys(err.constraints as any).forEach(constraint => {
+          message += `\n${(err.constraints as any)[constraint]}`;
+        });
+      });
+      throw new Error(message);
+    }
+  }
+
+  static parseEmail(email: string): string {
+    return email.toLowerCase().trim();
+  }
+
+  static formatPhoneNumber(phoneNumber: string, countryCode: string) {
+    try {
+      const number = phoneUtil.parse(phoneNumber, countryCode);
+      const formatted = phoneUtil
+        .format(number, PhoneNumberFormat.E164)
+        .replace('+', '');
+
+      return formatted;
+    } catch (error) {
+      throw new BadRequestException('invalid phonumber');
+    }
+  }
+}

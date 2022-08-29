@@ -1,0 +1,1 @@
+{"version":3,"file":"client_exception.js","sourceRoot":"","sources":["../../exceptions/client_exception.ts"],"names":[],"mappings":";;;AAAA,2CAAyD;AAEzD,MAAa,eAAgB,SAAQ,sBAAa;IAChD,YAAY,KAAc,EAAE,MAAe;QACzC,KAAK,CACH,KAAY,EACZ,MAAM;YACF,KAAiC,CAAC,UAAqB;YACzD,mBAAU,CAAC,WAAW,CACzB,CAAC;IACJ,CAAC;CACF;AATD,0CASC"}

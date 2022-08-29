@@ -1,0 +1,12 @@
+{
+  "extends": "./node_modules/gts/tsconfig-google.json",
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "rootDir": ".",
+    "outDir": "shared"
+  },
+  "include": ["**/*.ts", "test/**/*.ts"],
+  "exclude": [
+    "./shared/" // This is what fixed it!
+  ]
+}
