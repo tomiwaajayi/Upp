@@ -18,4 +18,5 @@ export interface ICheckEmployeeResponse {
   organization: string;
   lastName: string;
   user?: string;
+  employeeExist: boolean;
 }
