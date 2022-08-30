@@ -115,6 +115,20 @@ class UtilService {
             throw new common_1.BadRequestException('invalid phonumber');
         }
     }
+    static generateRandom(length, chars, isOTP) {
+        let dict = chars !== null && chars !== void 0 ? chars : '';
+        if (!chars) {
+            dict = '0123456789';
+            if (!isOTP) {
+                dict += 'ABCDEFGHJKLMNOPQRSTUVWXYZ';
+            }
+        }
+        let result = '';
+        for (let i = length; i > 0; i -= 1) {
+            result += dict[Math.round(Math.random() * (dict.length - 1))];
+        }
+        return result;
+    }
 }
 exports.UtilService = UtilService;
 //# sourceMappingURL=util.service.js.map

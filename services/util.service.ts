@@ -156,4 +156,24 @@ export class UtilService {
       throw new BadRequestException('invalid phonumber');
     }
   }
+
+  static generateRandom(
+    length: number,
+    chars?: string,
+    isOTP?: boolean
+  ): string {
+    let dict = chars ?? '';
+    if (!chars) {
+      dict = '0123456789';
+      if (!isOTP) {
+        dict += 'ABCDEFGHJKLMNOPQRSTUVWXYZ';
+      }
+    }
+
+    let result = '';
+    for (let i = length; i > 0; i -= 1) {
+      result += dict[Math.round(Math.random() * (dict.length - 1))];
+    }
+    return result;
+  }
 }

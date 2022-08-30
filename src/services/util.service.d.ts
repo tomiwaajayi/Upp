@@ -10,4 +10,5 @@ export declare class UtilService {
     static validateOrRejectSync(payload: Object, options?: ValidatorOptions): boolean;
     static parseEmail(email: string): string;
     static formatPhoneNumber(phoneNumber: string, countryCode: string): string;
+    static generateRandom(length: number, chars?: string, isOTP?: boolean): string;
 }
