@@ -1,3 +1,3 @@
-export declare const VERIFICATION_EVENTS: {
+export declare const NOTIFICATION_EVENTS: {
     sendEmail: string;
 };
