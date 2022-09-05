@@ -10,9 +10,15 @@ export class SendEmailDTO<T> {
 
   @IsString()
   @IsNotEmpty()
-  to!: string;
+  to!: Recipient;
 
   @IsString()
   @IsNotEmpty()
   subject!: string;
+}
+
+export interface Recipient {
+  firstName: string;
+  lastName: string;
+  email: string;
 }
