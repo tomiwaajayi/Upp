@@ -9,10 +9,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SendEmailDTO = void 0;
 const class_validator_1 = require("class-validator");
 class SendEmailDTO {
-    constructor(data, template) {
-        this.data = data;
-        this.template = template;
-    }
 }
 __decorate([
     (0, class_validator_1.IsNotEmpty)()
@@ -21,5 +17,13 @@ __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)()
 ], SendEmailDTO.prototype, "template", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)()
+], SendEmailDTO.prototype, "to", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)()
+], SendEmailDTO.prototype, "subject", void 0);
 exports.SendEmailDTO = SendEmailDTO;
 //# sourceMappingURL=notification.interface.js.map
