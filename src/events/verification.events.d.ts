@@ -1,4 +1,4 @@
-export declare const VERIFICATION_EVENNTS: {
+export declare const VERIFICATION_EVENTS: {
     sendOtp: string;
     verifyOtp: string;
 };
