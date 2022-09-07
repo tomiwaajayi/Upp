@@ -7,5 +7,6 @@ exports.ACCOUNT_EVENTS = {
     validateEmployees: `${services_constant_1.SERVICES.ACCOUNT_SERVICE}.employee.validate`,
     checkEmployee: `${services_constant_1.SERVICES.ACCOUNT_SERVICE}.employee.check`,
     updateEmployee: `${services_constant_1.SERVICES.ACCOUNT_SERVICE}.employee.update`,
+    sendInvite: `${services_constant_1.SERVICES.ACCOUNT_SERVICE}.employee.sendInvite`,
 };
 //# sourceMappingURL=account.events.js.map

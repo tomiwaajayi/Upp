@@ -5,4 +5,5 @@ export const ACCOUNT_EVENTS = {
   validateEmployees: `${SERVICES.ACCOUNT_SERVICE}.employee.validate`,
   checkEmployee: `${SERVICES.ACCOUNT_SERVICE}.employee.check`,
   updateEmployee: `${SERVICES.ACCOUNT_SERVICE}.employee.update`,
+  sendInvite: `${SERVICES.ACCOUNT_SERVICE}.employee.sendInvite`,
 };

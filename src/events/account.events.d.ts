@@ -3,4 +3,5 @@ export declare const ACCOUNT_EVENTS: {
     validateEmployees: string;
     checkEmployee: string;
     updateEmployee: string;
+    sendInvite: string;
 };
