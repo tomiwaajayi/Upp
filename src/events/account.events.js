@@ -8,5 +8,7 @@ exports.ACCOUNT_EVENTS = {
     checkEmployee: `${services_constant_1.SERVICES.ACCOUNT_SERVICE}.employee.check`,
     updateEmployee: `${services_constant_1.SERVICES.ACCOUNT_SERVICE}.employee.update`,
     sendInvite: `${services_constant_1.SERVICES.ACCOUNT_SERVICE}.employee.sendInvite`,
+    getEmployees: `${services_constant_1.SERVICES.ACCOUNT_SERVICE}.employee.get`,
+    updateEmployeeWithIntent: `${services_constant_1.SERVICES.ACCOUNT_SERVICE}.employee.updateWithIntent`,
 };
 //# sourceMappingURL=account.events.js.map

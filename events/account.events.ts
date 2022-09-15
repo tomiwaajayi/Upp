@@ -6,5 +6,6 @@ export const ACCOUNT_EVENTS = {
   checkEmployee: `${SERVICES.ACCOUNT_SERVICE}.employee.check`,
   updateEmployee: `${SERVICES.ACCOUNT_SERVICE}.employee.update`,
   sendInvite: `${SERVICES.ACCOUNT_SERVICE}.employee.sendInvite`,
-  getEmployees: `${SERVICES.ACCOUNT_SERVICE}.employee.get`
+  getEmployees: `${SERVICES.ACCOUNT_SERVICE}.employee.get`,
+  updateEmployeeWithIntent: `${SERVICES.ACCOUNT_SERVICE}.employee.updateWithIntent`,
 };
