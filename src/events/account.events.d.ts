@@ -7,4 +7,6 @@ export declare const ACCOUNT_EVENTS: {
     getEmployees: string;
     updateEmployeeWithIntent: string;
     createEmployeeSalaryAddon: string;
+    updateEmployeeSalaryAddon: string;
+    deleteEmployeeSalaryAddon: string;
 };

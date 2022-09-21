@@ -11,5 +11,7 @@ exports.ACCOUNT_EVENTS = {
     getEmployees: `${services_constant_1.SERVICES.ACCOUNT_SERVICE}.employee.get`,
     updateEmployeeWithIntent: `${services_constant_1.SERVICES.ACCOUNT_SERVICE}.employee.updateWithIntent`,
     createEmployeeSalaryAddon: `${services_constant_1.SERVICES.ACCOUNT_SERVICE}.employee.createEmployeeSalaryAddon`,
+    updateEmployeeSalaryAddon: `${services_constant_1.SERVICES.ACCOUNT_SERVICE}.employee.updateEmployeeSalaryAddon`,
+    deleteEmployeeSalaryAddon: `${services_constant_1.SERVICES.ACCOUNT_SERVICE}.employee.deleteEmployeeSalaryAddon`,
 };
 //# sourceMappingURL=account.events.js.map

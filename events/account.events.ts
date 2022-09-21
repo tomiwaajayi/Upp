@@ -9,4 +9,6 @@ export const ACCOUNT_EVENTS = {
   getEmployees: `${SERVICES.ACCOUNT_SERVICE}.employee.get`,
   updateEmployeeWithIntent: `${SERVICES.ACCOUNT_SERVICE}.employee.updateWithIntent`,
   createEmployeeSalaryAddon: `${SERVICES.ACCOUNT_SERVICE}.employee.createEmployeeSalaryAddon`,
+  updateEmployeeSalaryAddon: `${SERVICES.ACCOUNT_SERVICE}.employee.updateEmployeeSalaryAddon`,
+  deleteEmployeeSalaryAddon: `${SERVICES.ACCOUNT_SERVICE}.employee.deleteEmployeeSalaryAddon`,
 };
