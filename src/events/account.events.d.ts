@@ -6,4 +6,5 @@ export declare const ACCOUNT_EVENTS: {
     sendInvite: string;
     getEmployees: string;
     updateEmployeeWithIntent: string;
+    createEmployeeSalaryAddon: string;
 };
