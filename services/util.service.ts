@@ -133,7 +133,9 @@ export class UtilService {
       let message = '';
       validationErors.forEach(err => {
         Object.keys(err.constraints as any).forEach(constraint => {
-          message += `\n${(err.constraints as any)[constraint]}`;
+          message += `\n${err.property} => ${
+            (err.constraints as any)[constraint]
+          }`;
         });
       });
       throw new Error(message);

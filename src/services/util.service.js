@@ -94,7 +94,7 @@ class UtilService {
             let message = '';
             validationErors.forEach(err => {
                 Object.keys(err.constraints).forEach(constraint => {
-                    message += `\n${err.constraints[constraint]}`;
+                    message += `\n${err.property} => ${err.constraints[constraint]}`;
                 });
             });
             throw new Error(message);
