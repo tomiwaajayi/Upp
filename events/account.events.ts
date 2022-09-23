@@ -7,6 +7,7 @@ export const ACCOUNT_EVENTS = {
   updateEmployee: `${SERVICES.ACCOUNT_SERVICE}.employee.update`,
   sendInvite: `${SERVICES.ACCOUNT_SERVICE}.employee.sendInvite`,
   getEmployees: `${SERVICES.ACCOUNT_SERVICE}.employee.get`,
+  getEmployee: `${SERVICES.ACCOUNT_SERVICE}.employee.getOne`,
   updateEmployeeWithIntent: `${SERVICES.ACCOUNT_SERVICE}.employee.updateWithIntent`,
   createEmployeeSalaryAddon: `${SERVICES.ACCOUNT_SERVICE}.employee.createEmployeeSalaryAddon`,
   updateEmployeeSalaryAddon: `${SERVICES.ACCOUNT_SERVICE}.employee.updateEmployeeSalaryAddon`,
