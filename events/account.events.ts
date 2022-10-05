@@ -12,4 +12,9 @@ export const ACCOUNT_EVENTS = {
   createEmployeeSalaryAddon: `${SERVICES.ACCOUNT_SERVICE}.employee.createEmployeeSalaryAddon`,
   updateEmployeeSalaryAddon: `${SERVICES.ACCOUNT_SERVICE}.employee.updateEmployeeSalaryAddon`,
   deleteEmployeeSalaryAddon: `${SERVICES.ACCOUNT_SERVICE}.employee.deleteEmployeeSalaryAddon`,
+  createGroup: `${SERVICES.ACCOUNT_SERVICE}.group.create`,
+  getGroup: `${SERVICES.ACCOUNT_SERVICE}.group.getOne`,
+  getGroups: `${SERVICES.ACCOUNT_SERVICE}.group.getAll`,
+  updateGroup: `${SERVICES.ACCOUNT_SERVICE}.group.update`,
+  deleteGroup: `${SERVICES.ACCOUNT_SERVICE}.group.delete`,
 };
