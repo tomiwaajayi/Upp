@@ -17,4 +17,7 @@ export const ACCOUNT_EVENTS = {
   getGroups: `${SERVICES.ACCOUNT_SERVICE}.group.getAll`,
   updateGroup: `${SERVICES.ACCOUNT_SERVICE}.group.update`,
   deleteGroup: `${SERVICES.ACCOUNT_SERVICE}.group.delete`,
+  getGroupEmployees: `${SERVICES.ACCOUNT_SERVICE}.employeeGroup.get`,
+  addEmployeesToGroup: `${SERVICES.ACCOUNT_SERVICE}.employeeGroup.add`,
+  removeEmployeeFromGroup: `${SERVICES.ACCOUNT_SERVICE}.employeeGroup.remove`,
 };

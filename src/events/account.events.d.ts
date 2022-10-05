@@ -5,8 +5,17 @@ export declare const ACCOUNT_EVENTS: {
     updateEmployee: string;
     sendInvite: string;
     getEmployees: string;
+    getEmployee: string;
     updateEmployeeWithIntent: string;
     createEmployeeSalaryAddon: string;
     updateEmployeeSalaryAddon: string;
     deleteEmployeeSalaryAddon: string;
+    createGroup: string;
+    getGroup: string;
+    getGroups: string;
+    updateGroup: string;
+    deleteGroup: string;
+    getGroupEmployees: string;
+    addEmployeesToGroup: string;
+    removeEmployeeFromGroup: string;
 };

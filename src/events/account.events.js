@@ -9,9 +9,18 @@ exports.ACCOUNT_EVENTS = {
     updateEmployee: `${services_constant_1.SERVICES.ACCOUNT_SERVICE}.employee.update`,
     sendInvite: `${services_constant_1.SERVICES.ACCOUNT_SERVICE}.employee.sendInvite`,
     getEmployees: `${services_constant_1.SERVICES.ACCOUNT_SERVICE}.employee.get`,
+    getEmployee: `${services_constant_1.SERVICES.ACCOUNT_SERVICE}.employee.getOne`,
     updateEmployeeWithIntent: `${services_constant_1.SERVICES.ACCOUNT_SERVICE}.employee.updateWithIntent`,
     createEmployeeSalaryAddon: `${services_constant_1.SERVICES.ACCOUNT_SERVICE}.employee.createEmployeeSalaryAddon`,
     updateEmployeeSalaryAddon: `${services_constant_1.SERVICES.ACCOUNT_SERVICE}.employee.updateEmployeeSalaryAddon`,
     deleteEmployeeSalaryAddon: `${services_constant_1.SERVICES.ACCOUNT_SERVICE}.employee.deleteEmployeeSalaryAddon`,
+    createGroup: `${services_constant_1.SERVICES.ACCOUNT_SERVICE}.group.create`,
+    getGroup: `${services_constant_1.SERVICES.ACCOUNT_SERVICE}.group.getOne`,
+    getGroups: `${services_constant_1.SERVICES.ACCOUNT_SERVICE}.group.getAll`,
+    updateGroup: `${services_constant_1.SERVICES.ACCOUNT_SERVICE}.group.update`,
+    deleteGroup: `${services_constant_1.SERVICES.ACCOUNT_SERVICE}.group.delete`,
+    getGroupEmployees: `${services_constant_1.SERVICES.ACCOUNT_SERVICE}.employeeGroup.get`,
+    addEmployeesToGroup: `${services_constant_1.SERVICES.ACCOUNT_SERVICE}.employeeGroup.add`,
+    removeEmployeeFromGroup: `${services_constant_1.SERVICES.ACCOUNT_SERVICE}.employeeGroup.remove`,
 };
 //# sourceMappingURL=account.events.js.map
