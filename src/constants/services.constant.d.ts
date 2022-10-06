@@ -4,4 +4,5 @@ export declare const SERVICES: {
     AUTHENTICATION_SERVICE: string;
     VERIFICATION_SERVICE: string;
     NOTIFICATION_SERVICE: string;
+    INTEGRATION_SERVICE: string;
 };
