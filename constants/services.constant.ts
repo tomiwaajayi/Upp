@@ -4,4 +4,5 @@ export const SERVICES = {
   AUTHENTICATION_SERVICE: 'authentication.service',
   VERIFICATION_SERVICE: 'verification.service',
   NOTIFICATION_SERVICE: 'notification.service',
+  INTEGRATION_SERVICE: 'integration.service',
 };
