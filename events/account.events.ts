@@ -22,4 +22,5 @@ export const ACCOUNT_EVENTS = {
   removeEmployeeFromGroup: `${SERVICES.ACCOUNT_SERVICE}.employeeGroup.remove`,
   terminateEmployee: `${SERVICES.ACCOUNT_SERVICE}.employee.terminateEmployee`,
   addOrganization: `${SERVICES.ACCOUNT_SERVICE}.organization.add`,
+  getOrganization: `${SERVICES.ACCOUNT_SERVICE}.organization.get`,
 };

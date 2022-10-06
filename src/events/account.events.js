@@ -23,5 +23,7 @@ exports.ACCOUNT_EVENTS = {
     addEmployeesToGroup: `${services_constant_1.SERVICES.ACCOUNT_SERVICE}.employeeGroup.add`,
     removeEmployeeFromGroup: `${services_constant_1.SERVICES.ACCOUNT_SERVICE}.employeeGroup.remove`,
     terminateEmployee: `${services_constant_1.SERVICES.ACCOUNT_SERVICE}.employee.terminateEmployee`,
+    addOrganization: `${services_constant_1.SERVICES.ACCOUNT_SERVICE}.organization.add`,
+    getOrganization: `${services_constant_1.SERVICES.ACCOUNT_SERVICE}.organization.get`,
 };
 //# sourceMappingURL=account.events.js.map

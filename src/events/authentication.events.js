@@ -5,5 +5,6 @@ const services_constant_1 = require("../constants/services.constant");
 exports.AUTHENTICATION_EVENTS = {
     findOrCreateEmployeeUser: `${services_constant_1.SERVICES.AUTHENTICATION_SERVICE}.user.findOrCreateEmployeeUser`,
     switchCurrentUserOrganization: `${services_constant_1.SERVICES.AUTHENTICATION_SERVICE}.user.switchCurrentUserOrganization`,
+    createUserOrganization: `${services_constant_1.SERVICES.AUTHENTICATION_SERVICE}.user.createUserOrganization`,
 };
 //# sourceMappingURL=authentication.events.js.map

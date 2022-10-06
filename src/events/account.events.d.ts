@@ -19,4 +19,6 @@ export declare const ACCOUNT_EVENTS: {
     addEmployeesToGroup: string;
     removeEmployeeFromGroup: string;
     terminateEmployee: string;
+    addOrganization: string;
+    getOrganization: string;
 };
