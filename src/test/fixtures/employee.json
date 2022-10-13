@@ -1,0 +1,54 @@
+{
+    "entities": {
+        "defaultEmps": [
+            {
+                "base": { "amount": 100000, "currency": "NGN" },
+                "workEmail": "zoltofulmo2@vusra.com",
+                "firstName": "Sarah",
+                "middleName": "Rose",
+                "lastName": "Mandem",
+                "phoneNumber": "2349019261257",
+                "department": "Enginerring",
+                "currency": "ngn",
+                "completionStatus": "Payment info pending",
+                "createdAt": "2022-10-13T10:46:44.827Z",
+                "bonuses": [
+                    {
+                        "name": "E dey mezebu",
+                        "employee": "6347ec944f8f252ac3cae1e4",
+                        "organization": "63401825fb3550d8580f8530",
+                        "amount": 2500,
+                        "frequency": "recurring",
+                        "type": "bonus",
+                        "status": "pending",
+                        "createdBy": "634018244ee4e237f9eb7ea1",
+                        "isDeleted": false,
+                        "createdAt": "2022-10-13T10:49:15.536Z",
+                        "updatedAt": "2022-10-13T10:49:15.536Z",
+                        "id": "6347ed2b4f8f252ac3cae1ed"
+                    }
+                ],
+                "deductions": [
+                    {
+                        "name": "E dey meant",
+                        "employee": "6347ec944f8f252ac3cae1e4",
+                        "organization": "63401825fb3550d8580f8530",
+                        "amount": 5000,
+                        "frequency": "once",
+                        "type": "deduction",
+                        "status": "pending",
+                        "createdBy": "634018244ee4e237f9eb7ea1",
+                        "isDeleted": false,
+                        "createdAt": "2022-10-13T10:49:15.535Z",
+                        "updatedAt": "2022-10-13T10:49:15.535Z",
+                        "id": "6347ed2b4f8f252ac3cae1ec"
+                    }
+                ],
+                "country": "60e7c3f3bf19830b5cf4e422",
+                "organization": "63401825fb3550d8580f8530",
+                "createdBy": "634018244ee4e237f9eb7ea1",
+                "id": "6347ec944f8f252ac3cae1e4"
+            }
+        ]
+    }
+}

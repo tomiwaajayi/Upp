@@ -1,0 +1,18 @@
+{
+  "entities": {
+      "defaultMeta": {
+        "payItem": {
+          "tax": "unpaid",
+          "pension": "unpaid",
+          "health": "unpaid",
+          "nhf": "unpaid",
+          "nhif": "unpaid",
+          "itf": "unpaid",
+          "nsitf": "unpaid"
+        },
+        "deselected": [],
+        "proRateMonth": "October",
+        "createdBy": "60e7c3f3bf19830b5cf4e422"
+      }
+  }
+}
