@@ -5,4 +5,5 @@ export declare const SERVICES: {
     VERIFICATION_SERVICE: string;
     NOTIFICATION_SERVICE: string;
     INTEGRATION_SERVICE: string;
+    PAYROLL_SERVICE: string;
 };

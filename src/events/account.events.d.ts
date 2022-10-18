@@ -21,4 +21,5 @@ export declare const ACCOUNT_EVENTS: {
     terminateEmployee: string;
     addOrganization: string;
     getOrganization: string;
+    fetchActiveEmployeesData: string;
 };
