@@ -23,6 +23,7 @@ export interface IPayroll {
   employees?: IPayrollEmployee[];
   remittances?: IPayrollRemittance[];
   hasProrates?: boolean;
+  totalCharge?: IMoney;
 }
 
 export interface IPayrollEmployee

@@ -6,8 +6,15 @@ export interface IMoney {
 }
 
 export class Money {
-  static get({amount, currency}: IMoney) {
-    const d = dinero({
+  /**
+   * @example
+   * import {add} from 'dinero.js'
+   * const moneyInstance = new Money({ amount: 400, currency: 'NGN' })
+   * const anotherMoneyInstance = new Money({ amount: 900, currency: 'NGN' })
+   * add(moneyInstance, anotherMoneyInstance)
+   */
+  constructor({amount, currency}: IMoney) {
+    return dinero({
       amount,
       currency: {
         code: currency,

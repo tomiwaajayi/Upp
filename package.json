@@ -21,7 +21,6 @@
     "compile": "tsc",
     "fix": "gts fix",
     "prepare": "yarn run compile",
-    "pretest": "yarn run compile",
     "posttest": "yarn run lint",
     "test": "jest",
     "test-watch": "jest --watch",
