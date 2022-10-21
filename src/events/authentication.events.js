@@ -6,5 +6,6 @@ exports.AUTHENTICATION_EVENTS = {
     findOrCreateEmployeeUser: `${services_constant_1.SERVICES.AUTHENTICATION_SERVICE}.user.findOrCreateEmployeeUser`,
     switchCurrentUserOrganization: `${services_constant_1.SERVICES.AUTHENTICATION_SERVICE}.user.switchCurrentUserOrganization`,
     createUserOrganization: `${services_constant_1.SERVICES.AUTHENTICATION_SERVICE}.user.createUserOrganization`,
+    sendEmailValidationToken: `${services_constant_1.SERVICES.AUTHENTICATION_SERVICE}.user.sendEmailValidationToken`,
 };
 //# sourceMappingURL=authentication.events.js.map

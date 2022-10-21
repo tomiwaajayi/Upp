@@ -22,4 +22,5 @@ export declare const ACCOUNT_EVENTS: {
     addOrganization: string;
     getOrganization: string;
     fetchActiveEmployeesData: string;
+    fetchEmployeesForWorksheet: string;
 };
