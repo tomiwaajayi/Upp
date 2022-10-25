@@ -1,20 +1,41 @@
 import {PayrollDirector} from '../services/upp/payroll.director';
 
-import fixture = require('./fixtures/organization.json');
-import fixture2 = require('./fixtures/employee.json');
-import fixture3 = require('./fixtures/meta.json');
-import fixture4 = require('./fixtures/init.json');
-import {IPayrollEmployee} from '../interfaces/payroll/payroll.interface';
+import fixture = require('./fixtures/bonus.json');
+import {BuilderPayload} from '../services/upp/builder.interface';
+import {cloneDeep} from 'lodash';
 
-test('Payroll Builder Test', async () => {
-  const data = {
-    organization: fixture.entities.defaultOrg,
-    employees: fixture2.entities.defaultEmps,
-    meta: fixture3.entities.defaultMeta,
-    payrollInit: fixture4.entities.data,
-  };
-  const payroll = PayrollDirector.build(data);
-  expect(
-    (payroll.employees as IPayrollEmployee[])[0].totalProRate?.amount
-  ).toBe(5000);
+describe('Process Bonus (e2e)', () => {
+  let data: BuilderPayload;
+
+  beforeEach(async () => {
+    const {entities} = cloneDeep(fixture);
+    data = {
+      organization: entities.defaultOrg,
+      employees: entities.defaultEmps,
+      meta: entities.defaultMeta,
+      payrollInit: entities.data,
+    };
+  });
+
+  it('Should test payroll bonuses', async () => {
+    const {entities} = fixture;
+    const payroll = PayrollDirector.build(data);
+
+    expect(payroll.employees[0].totalBonus?.value).toBe(
+      entities.defaultEmps[0].bonuses[0].amount.value
+    );
+    expect(payroll.employees[0].totalUntaxedBonus?.value).toBe(
+      entities.defaultEmps[0].bonuses[1].amount.value
+    );
+    expect(payroll.employees[0].totalExtraMonthBonus?.value).toBe(
+      entities.defaultEmps[0].bonuses[3].amount.value
+    );
+  });
+
+  it('Should test empty Payroll Bonuses', async () => {
+    data.employees[0].bonuses = [];
+    const payroll = PayrollDirector.build(data);
+    expect(payroll.employees[0].totalBonus).toBe(undefined);
+    expect(payroll.employees[0].extraMonthBonus).toBe(undefined);
+  });
 });

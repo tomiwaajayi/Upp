@@ -1,8 +1,12 @@
+import {groupBy, isEmpty} from 'lodash';
+import {BonusSalaryModeEnum} from '../../interfaces/account/employee.interface';
 import {Organization} from '../../interfaces/account/organization.interface';
+import {IMoney, Money} from '../../interfaces/payment/money.interface';
 import {
   IPayroll,
   IPayrollEmployee,
   IPayrollMeta,
+  PayrollSalaryAddon,
 } from '../../interfaces/payroll/payroll.interface';
 import {BuilderPayload, IPayrollBuilder} from './builder.interface';
 
@@ -99,14 +103,47 @@ export class PayrollBuilder implements IPayrollBuilder {
    * note that there can only be a single prorate entry for an employee
    */
   processProRates(employee: IPayrollEmployee): void {
-    employee.totalProRate = {amount: 5000, currency: 'NGN'};
+    employee.totalProRate = {value: 5000, currency: 'NGN'};
   }
 
   /**
    * In a single loop processes single employee bonus, untaxed bonus, extra month, leave allowance, and deductions
    */
   processBonuses(employee: IPayrollEmployee): void {
-    // code goes here
+    if (isEmpty(employee.bonuses)) return;
+
+    const groupedBonuses = groupBy(employee.bonuses, 'mode');
+    if (!isEmpty(groupedBonuses[BonusSalaryModeEnum.Quick])) {
+      employee.bonuses = groupedBonuses[BonusSalaryModeEnum.Quick];
+
+      employee.totalBonus = Money.addMany(
+        employee.bonuses as PayrollSalaryAddon[],
+        'amount'
+      );
+    }
+
+    if (!isEmpty(groupedBonuses[BonusSalaryModeEnum.UnTaxed])) {
+      employee.untaxedBonuses = groupedBonuses[BonusSalaryModeEnum.UnTaxed];
+
+      employee.totalUntaxedBonus = Money.addMany(
+        employee.untaxedBonuses as PayrollSalaryAddon[],
+        'amount'
+      );
+    }
+
+    if (!isEmpty(groupedBonuses[BonusSalaryModeEnum.ExtraMonth])) {
+      employee.extraMonthBonus =
+        groupedBonuses[BonusSalaryModeEnum.ExtraMonth][0];
+
+      employee.totalExtraMonthBonus = employee.extraMonthBonus.amount;
+    }
+
+    if (!isEmpty(groupedBonuses[BonusSalaryModeEnum.LeaveAllowance])) {
+      employee.leaveAllowance =
+        groupedBonuses[BonusSalaryModeEnum.LeaveAllowance][0];
+
+      employee.totalLeaveAllowance = employee.leaveAllowance.amount;
+    }
   }
 
   /**

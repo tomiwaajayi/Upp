@@ -1,4 +1,5 @@
 import {IsOptional} from 'class-validator';
+import {IMoney} from '../payment/money.interface';
 import {Organization} from './organization.interface';
 
 export class CheckEmployeeDTO {
@@ -83,7 +84,7 @@ export interface EmployeeSalaryAddon {
   name: string;
   employee: Employee | string;
   organization: Organization | string;
-  amount: number;
+  amount: IMoney;
   frequency: SalaryAddonFrequencyEnum | string;
   type: SalaryAddonTypeEnum | string;
   mode?: BonusSalaryModeEnum | string;

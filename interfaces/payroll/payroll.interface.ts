@@ -26,13 +26,18 @@ export interface IPayroll {
   totalCharge?: IMoney;
 }
 
-export interface IPayrollEmployee
-  extends Omit<Employee, 'bonuses' | 'deductions'> {
+export interface IPayrollEmployee extends Employee {
   remitanceEnabled?: true;
   base: IMoney;
-  bonuses?: EmployeeSalaryAddon[] | PayrollSalaryAddon[];
-  totalBonuses?: IMoney;
-  deductions?: EmployeeSalaryAddon[] | PayrollSalaryAddon[];
+  bonuses?: EmployeeSalaryAddon[];
+  totalBonus?: IMoney;
+  untaxedBonuses?: EmployeeSalaryAddon[];
+  totalUntaxedBonus?: IMoney;
+  extraMonthBonus?: EmployeeSalaryAddon;
+  totalExtraMonthBonus?: IMoney;
+  leaveAllowance?: EmployeeSalaryAddon;
+  totalLeaveAllowance?: IMoney;
+  deductions?: EmployeeSalaryAddon[];
   totalDeductions?: IMoney;
   totalProRate?: IMoney;
   remittances?: [
