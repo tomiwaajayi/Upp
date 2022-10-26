@@ -7,10 +7,13 @@
     "license": "UNLICENSED",
     "devDependencies": {
         "@types/google-libphonenumber": "^7.4.23",
+        "@types/jest": "^29.1.2",
         "@types/node": "^14.11.2",
         "@types/validator": "^13.7.6",
         "gts": "^3.1.0",
-        "typescript": "^4.0.3"
+        "jest": "^29.1.2",
+        "ts-jest": "^29.0.3",
+        "typescript": "^4.8.4"
     },
     "scripts": {
         "lint": "gts lint",
@@ -18,8 +21,10 @@
         "compile": "tsc",
         "fix": "gts fix",
         "prepare": "yarn run compile",
-        "pretest": "yarn run compile",
-        "posttest": "yarn run lint"
+        "posttest": "yarn run lint",
+        "test": "jest",
+        "test-watch": "jest --watch",
+        "test:cov": "jest --coverage --runInBand --forceExit"
     },
     "dependencies": {
         "@nestjs/common": "^9.0.11",
@@ -27,9 +32,12 @@
         "@nestjs/core": "^9.0.11",
         "@nestjs/microservices": "^8.4.4",
         "@nestjs/mongoose": "^9.2.0",
+        "@types/dinero.js": "^1.9.0",
         "@types/express": "^4.17.13",
         "@types/lodash": "^4.14.184",
         "class-validator": "^0.13.2",
+        "currency.js": "^2.0.4",
+        "dinero.js": "^2.0.0-alpha.8",
         "google-libphonenumber": "^3.2.30",
         "lodash": "^4.17.21",
         "mongoose": "^6.4.3",
