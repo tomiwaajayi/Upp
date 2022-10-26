@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PayrollBuilder = void 0;
 const lodash_1 = require("lodash");
+const employee_interface_1 = require("../../interfaces/account/employee.interface");
 const money_interface_1 = require("../../interfaces/payment/money.interface");
 /**
  * To improve the speed, this builder implements the Builder Design Pattern.
@@ -77,18 +78,33 @@ class PayrollBuilder {
      * note that there can only be a single prorate entry for an employee
      */
     processProRates(employee) {
-        employee.totalProRate = { amount: 5000, currency: 'NGN' };
+        employee.totalProRate = { value: 5000, currency: 'NGN' };
     }
     /**
      * In a single loop processes single employee bonus, untaxed bonus, extra month, leave allowance, and deductions
      */
     processBonuses(employee) {
-        const { bonuses } = employee;
-        if ((0, lodash_1.isEmpty)(bonuses))
+        if ((0, lodash_1.isEmpty)(employee.bonuses))
             return;
-        employee.totalBonuses = money_interface_1.Money.addMany(bonuses, 'amount');
-        const addition = money_interface_1.Money.div({ amount: 1000, currency: 'NGN' }, { amount: 1000, currency: 'NGN' });
-        console.log(addition);
+        const groupedBonuses = (0, lodash_1.groupBy)(employee.bonuses, 'mode');
+        if (!(0, lodash_1.isEmpty)(groupedBonuses[employee_interface_1.BonusSalaryModeEnum.Quick])) {
+            employee.bonuses = groupedBonuses[employee_interface_1.BonusSalaryModeEnum.Quick];
+            employee.totalBonus = money_interface_1.Money.addMany(employee.bonuses, 'amount');
+        }
+        if (!(0, lodash_1.isEmpty)(groupedBonuses[employee_interface_1.BonusSalaryModeEnum.UnTaxed])) {
+            employee.untaxedBonuses = groupedBonuses[employee_interface_1.BonusSalaryModeEnum.UnTaxed];
+            employee.totalUntaxedBonus = money_interface_1.Money.addMany(employee.untaxedBonuses, 'amount');
+        }
+        if (!(0, lodash_1.isEmpty)(groupedBonuses[employee_interface_1.BonusSalaryModeEnum.ExtraMonth])) {
+            employee.extraMonthBonus =
+                groupedBonuses[employee_interface_1.BonusSalaryModeEnum.ExtraMonth][0];
+            employee.totalExtraMonthBonus = employee.extraMonthBonus.amount;
+        }
+        if (!(0, lodash_1.isEmpty)(groupedBonuses[employee_interface_1.BonusSalaryModeEnum.LeaveAllowance])) {
+            employee.leaveAllowance =
+                groupedBonuses[employee_interface_1.BonusSalaryModeEnum.LeaveAllowance][0];
+            employee.totalLeaveAllowance = employee.leaveAllowance.amount;
+        }
     }
     /**
      * Nigeria - NHF, ITF, NSITF
