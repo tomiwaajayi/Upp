@@ -40,19 +40,12 @@ export interface IPayrollEmployee extends Employee {
   deductions?: EmployeeSalaryAddon[];
   totalDeductions?: IMoney;
   totalProRate?: IMoney;
-  remittances?: [
-    {
-      // value is null if tax is disabled
-      name: string;
-      remitanceEnabled: boolean;
-      amount: IMoney;
-    },
-    {
-      name: string;
-      remitanceEnabled: boolean;
-      amount: IMoney;
-    }
-  ];
+  remittances?: (Record<string, unknown> & {
+    // value is null if tax is disabled
+    name: string;
+    remittanceEnabled: boolean;
+    amount: IMoney;
+  })[];
 }
 
 export interface IPayrollRemittance {
@@ -70,6 +63,13 @@ export enum PayItemStatus {
   Paid = 'paid',
   Processing = 'processing',
   Pending = 'pending',
+}
+
+export enum CountryStatutories {
+  ITF = 'itf',
+  NHF = 'nhf',
+  NHIF = 'nhif',
+  NSITF = 'nsitf',
 }
 
 export interface PayItem {

@@ -1,4 +1,4 @@
-import {BaseSchemaInterface} from '../base.interface';
+import {IRemitance} from './employee.interface';
 
 export interface IOrganizationResponse {
   name: string;
@@ -7,7 +7,7 @@ export interface IOrganizationResponse {
 }
 
 export interface Organization {
-  country: string;
+  country: {id: string; name: string};
   email: string;
   name: string;
   logo?: string;
@@ -19,4 +19,10 @@ export interface Organization {
   createdBy: string;
   isDeleted?: boolean;
   deletedAt?: Date;
+}
+
+export interface OrganizationSettings {
+  hasSalaryBreakdown: boolean;
+  salaryBreakdown?: Record<string, number>;
+  remittances: Record<string, IRemitance>;
 }

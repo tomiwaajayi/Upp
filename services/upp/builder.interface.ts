@@ -1,4 +1,7 @@
-import {Organization} from '../../interfaces/account/organization.interface';
+import {
+  Organization,
+  OrganizationSettings,
+} from '../../interfaces/account/organization.interface';
 import {
   IPayroll,
   IPayrollDTO,
@@ -12,6 +15,7 @@ export interface IPayrollBuilder {
 
 export interface BuilderPayload {
   organization: Organization;
+  organizationSettings: OrganizationSettings;
   employees: IPayrollEmployee[];
   meta: IPayrollMeta;
   payrollInit: IPayrollDTO;
