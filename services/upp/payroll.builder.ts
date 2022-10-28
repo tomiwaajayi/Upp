@@ -6,9 +6,11 @@ import {
   IPayroll,
   IPayrollEmployee,
   IPayrollMeta,
+  OrganizationSettings,
   PayrollSalaryAddon,
 } from '../../interfaces/payroll/payroll.interface';
 import {BuilderPayload, IPayrollBuilder} from './builder.interface';
+import {PensionService} from './pension/pesion.service';
 
 /**
  * To improve the speed, this builder implements the Builder Design Pattern.
@@ -21,6 +23,7 @@ export class PayrollBuilder implements IPayrollBuilder {
   /** List of employees in payroll */
   private employees: IPayrollEmployee[];
   private organization: Organization;
+  private organizationSettings: OrganizationSettings;
   /**
    * This holds query data or data from backend that needs to be input in each processes
    */
@@ -29,6 +32,7 @@ export class PayrollBuilder implements IPayrollBuilder {
   constructor(data: BuilderPayload) {
     this.employees = data.employees;
     this.organization = data.organization;
+    this.organizationSettings = data.organizationSettings;
     this.meta = data.meta;
     this.payroll = {
       ...data.payrollInit,
@@ -172,6 +176,16 @@ export class PayrollBuilder implements IPayrollBuilder {
    * https://sbcode.net/typescript/factory/
    */
   processPension(employee: IPayrollEmployee): void {
-    // code goes here
+    const {group} = employee;
+    const remittances = group
+      ? group.remittances
+      : this.organizationSettings.remittances;
+    if (remittances && remittances.pension && remittances.pension.enabled) {
+      PensionService.process(this.organization.country.name, {
+        group,
+        organizationSettings: this.organizationSettings,
+        employee,
+      });
+    }
   }
 }

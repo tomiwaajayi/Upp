@@ -4,6 +4,7 @@ import {
   IPayrollDTO,
   IPayrollEmployee,
   IPayrollMeta,
+  OrganizationSettings,
 } from '../../interfaces/payroll/payroll.interface';
 
 export interface IPayrollBuilder {
@@ -12,6 +13,7 @@ export interface IPayrollBuilder {
 
 export interface BuilderPayload {
   organization: Organization;
+  organizationSettings: OrganizationSettings;
   employees: IPayrollEmployee[];
   meta: IPayrollMeta;
   payrollInit: IPayrollDTO;
