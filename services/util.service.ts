@@ -181,7 +181,7 @@ export class UtilService {
 
   static getKafkaConfig(configuration: any): any {
     return {
-      brokers: configuration().kafka.endpoint.split(','),
+      brokers: configuration.kafka.endpoint.split(','),
       // sasl: configuration().kafka.ssl && {
       //   mechanism: 'scram-sha-512',
       //   username: configuration().kafka.username,
@@ -190,7 +190,7 @@ export class UtilService {
       retry: {
         retries: 0,
       },
-      ssl: configuration().kafka.ssl && {
+      ssl: configuration.kafka.ssl && {
         ca: [configuration.kafka.ca],
         key: configuration.kafka.key,
         cert: configuration.kafka.cert,
