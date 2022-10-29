@@ -129,6 +129,25 @@ class UtilService {
         }
         return result;
     }
+    static getKafkaConfig(configuration) {
+        return {
+            brokers: configuration().kafka.endpoint.split(','),
+            // sasl: configuration().kafka.ssl && {
+            //   mechanism: 'scram-sha-512',
+            //   username: configuration().kafka.username,
+            //   password: configuration().kafka.password,
+            // },
+            retry: {
+                retries: 0,
+            },
+            ssl: configuration().kafka.ssl && {
+                ca: [configuration.kafka.ca],
+                key: configuration.kafka.key,
+                cert: configuration.kafka.cert,
+                rejectUnauthorized: false,
+            },
+        };
+    }
 }
 exports.UtilService = UtilService;
 //# sourceMappingURL=util.service.js.map

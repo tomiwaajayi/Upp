@@ -11,4 +11,5 @@ export declare class UtilService {
     static parseEmail(email: string): string;
     static formatPhoneNumber(phoneNumber: string, countryCode: string): string;
     static generateRandom(length: number, chars?: string, isOTP?: boolean): string;
+    static getKafkaConfig(configuration: any): any;
 }
