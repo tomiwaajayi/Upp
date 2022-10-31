@@ -1,25 +1,25 @@
 import {NigeriaPensionService} from './nigeria-pension.service';
 import {CountryPensionService, ProcessPensionPayload} from './pension.types';
 
-const registerServices = (() => {
-  let registered = false;
-  return () => {
-    if (registered) {
+export class PensionService {
+  private static countryPensionServices: Record<string, CountryPensionService> =
+    {};
+
+  private static registered = true;
+
+  private static registerServices() {
+    if (this.registered) {
       return;
     }
 
     PensionService.countryPensionServices[NigeriaPensionService.country] =
       new NigeriaPensionService();
 
-    registered = true;
-  };
-})();
-
-export class PensionService {
-  static countryPensionServices: Record<string, CountryPensionService> = {};
+    this.registered = true;
+  }
 
   static get(name: string) {
-    registerServices();
+    this.registerServices();
 
     const service = PensionService.countryPensionServices[name];
     if (!service) {
