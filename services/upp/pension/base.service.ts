@@ -65,11 +65,17 @@ export class BaseCountryPensionService implements CountryPensionService {
       salary,
       this.employerPercent
     );
-    const employeeContribution = this.calculatePension(
+    let employeeContribution = this.calculatePension(
       breakdown,
       salary,
       this.employeePercent
     );
+    if (employee.pensionContributionEnabled) {
+      employeeContribution = Money.add(employeeContribution, {
+        value: employee.pensionContribution || 0,
+        currency: employeeContribution.currency,
+      });
+    }
 
     return {
       amount: Money.add(employeeContribution, employerContribution),
@@ -84,12 +90,18 @@ export class BaseCountryPensionService implements CountryPensionService {
     const {base: salary} = employee;
     const breakdown =
       group?.salaryBreakdown || organizationSettings.salaryBreakdown || {};
-    const employeeContribution = {value: 0, currency: salary.currency};
+    let employeeContribution = {value: 0, currency: salary.currency};
     const employerContribution = this.calculatePension(
       breakdown,
       salary,
       this.employerPercent * 2 // Quote is 20% of employee base salary
     );
+    if (employee.pensionContributionEnabled) {
+      employeeContribution = Money.add(employeeContribution, {
+        value: employee.pensionContribution || 0,
+        currency: employeeContribution.currency,
+      });
+    }
 
     return {
       amount: Money.add(employeeContribution, employerContribution),

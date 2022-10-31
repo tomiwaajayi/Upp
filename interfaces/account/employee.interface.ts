@@ -61,6 +61,8 @@ export interface Employee {
   // TODO: add Pension Fund Admin Schema ID
   pensionFundAdmin?: string;
   pensionId?: string;
+  pensionContributionEnabled?: boolean;
+  pensionContribution?: number;
   nhfId?: string;
   itfId?: string;
   nsitfId?: string;
