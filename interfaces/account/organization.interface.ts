@@ -25,4 +25,7 @@ export interface OrganizationSettings {
   hasSalaryBreakdown: boolean;
   salaryBreakdown?: Record<string, number>;
   remittances: Record<string, IRemitance>;
+  isTotalNsitfEnumeration?: boolean;
+  isTotalItfEnumeration?: boolean;
+  enableConsolidatedGross?: boolean;
 }

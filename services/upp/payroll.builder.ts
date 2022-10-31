@@ -172,15 +172,12 @@ export class PayrollBuilder implements IPayrollBuilder {
       : this.organizationSettings.remittances[CountryStatutories.ITF];
 
     if (itfRecord && itfRecord.enabled && itfRecord.remit) {
-      const grossSalary = base;
-      // TODO: that check for <isTotalItfEnumeration> || <isTotalNsitfItfEnumeration>
-      // if (
-      //   organization.isTotalItfEnumeration ||
-      //   organization.isTotalNsitfItfEnumeration
-      // ) {
-      //   const {totalBonus, totalLeaveAllowance} = employee;
-      //   grossSalary = Money.addMany([base, totalBonus, totalLeaveAllowance]);
-      // }
+      let grossSalary = base;
+
+      if (this.organizationSettings.isTotalItfEnumeration) {
+        const {totalBonus, totalLeaveAllowance} = employee;
+        grossSalary = Money.addMany([base, totalBonus, totalLeaveAllowance]);
+      }
 
       const baseIncomeWithITF = Money.mul(grossSalary, {
         value: 0.01,
@@ -217,10 +214,9 @@ export class PayrollBuilder implements IPayrollBuilder {
         {
           value: 2.5,
           currency: base.currency,
-        }
+        },
+        this.organizationSettings.enableConsolidatedGross
       );
-
-      // TODO: add those things for <enableConsolidatedGross>
 
       if (nhfRecord.remit) {
         const remittances = employee?.remittances || [];
@@ -275,11 +271,16 @@ export class PayrollBuilder implements IPayrollBuilder {
       : this.organizationSettings.remittances[CountryStatutories.NSITF];
 
     if (nsitfRecord && nsitfRecord.enabled) {
-      // TODO: some kind check for organization <isTotalNsitfEnumeration> omo I no too get
+      let grossSalary = base;
 
-      const nsitfContribution = Money.mul(base, {
+      if (this.organizationSettings.isTotalNsitfEnumeration) {
+        const {totalBonus, totalLeaveAllowance} = employee;
+        grossSalary = Money.addMany([base, totalBonus, totalLeaveAllowance]);
+      }
+
+      const nsitfContribution = Money.mul(grossSalary, {
         value: 0.01,
-        currency: base.currency,
+        currency: grossSalary.currency,
       });
 
       if (nsitfRecord.remit) {
