@@ -132,20 +132,19 @@ class UtilService {
     static getKafkaConfig(configuration) {
         return {
             brokers: configuration.kafka.endpoint.split(','),
-            // sasl: configuration().kafka.ssl && {
-            //   mechanism: 'scram-sha-512',
-            //   username: configuration().kafka.username,
-            //   password: configuration().kafka.password,
-            // },
+            connectionTimeout: 10000,
+            requestTimeout: 10000,
+            enforceRequestTimeout: true,
+            clientId: configuration.kafka.clientId,
+            sasl: configuration.kafka.ssl && {
+                mechanism: 'scram-sha-512',
+                username: configuration.kafka.username,
+                password: configuration.kafka.password,
+            },
             retry: {
-                retries: 0,
+                retries: 100,
             },
-            ssl: configuration.kafka.ssl && {
-                ca: [configuration.kafka.ca],
-                key: configuration.kafka.key,
-                cert: configuration.kafka.cert,
-                rejectUnauthorized: false,
-            },
+            ssl: configuration.kafka.ssl,
         };
     }
 }
