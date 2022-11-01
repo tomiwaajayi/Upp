@@ -12,6 +12,7 @@ export interface IPayrollDTO {
 
 export interface IPayrollMeta {
   proRateMonth: string;
+  proRates: any[];
 }
 
 export interface IPayroll {
@@ -40,6 +41,8 @@ export interface IPayrollEmployee extends Employee {
   deductions?: EmployeeSalaryAddon[];
   totalDeductions?: IMoney;
   totalProRate?: IMoney;
+  basePayable?: IMoney;
+  variableAmount?: IMoney;
   remittances?: [
     {
       // value is null if tax is disabled
@@ -53,6 +56,8 @@ export interface IPayrollEmployee extends Employee {
       amount: IMoney;
     }
   ];
+  proRateDeduction?: IMoney;
+  proRates?: IProrate[];
 }
 
 export interface IPayrollRemittance {
@@ -86,4 +91,25 @@ export interface PayrollSalaryAddon {
   id: string;
   name: string;
   amount: IMoney;
+}
+export enum ProrateTypeEnum {
+  Once = 'once',
+  Recurring = 'recurring',
+}
+
+export enum ProrateStatusEnum {
+  Pending = 'pending',
+  Processing = 'processing',
+  Canceled = 'cancelled',
+  Failed = 'failed',
+  Completed = 'completed',
+}
+export interface IProrate {
+  attributes: string;
+  type: ProrateTypeEnum;
+  startDate: Date;
+  endDate: Date;
+  status?: ProrateStatusEnum;
+  organization: string;
+  employee: string;
 }

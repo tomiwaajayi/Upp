@@ -2,13 +2,18 @@ import {groupBy, isEmpty} from 'lodash';
 import {BonusSalaryModeEnum} from '../../interfaces/account/employee.interface';
 import {Organization} from '../../interfaces/account/organization.interface';
 import {IMoney, Money} from '../../interfaces/payment/money.interface';
+import * as moment from 'moment';
 import {
   IPayroll,
   IPayrollEmployee,
   IPayrollMeta,
+  IProrate,
   PayrollSalaryAddon,
+  ProrateStatusEnum,
+  ProrateTypeEnum,
 } from '../../interfaces/payroll/payroll.interface';
 import {BuilderPayload, IPayrollBuilder} from './builder.interface';
+// import {calculateWeekDays} from './util.service';
 
 /**
  * To improve the speed, this builder implements the Builder Design Pattern.
@@ -103,9 +108,65 @@ export class PayrollBuilder implements IPayrollBuilder {
    * note that there can only be a single prorate entry for an employee
    */
   processProRates(employee: IPayrollEmployee): void {
-    employee.totalProRate = {value: 5000, currency: 'NGN'};
-  }
+    const {proRateMonth, proRates} = this.meta;
+    if (isEmpty(proRates)) return;
 
+    const monthStart = moment().month(proRateMonth).startOf('month');
+    const monthEnd = moment().month(proRateMonth).endOf('month');
+
+    let paidDays = 0;
+    const payrollDays = monthEnd.add(1, 'hour').diff(monthStart, 'days') + 1;
+    proRates.forEach((prorate: IProrate) => {
+      const {startDate, endDate} = prorate;
+
+      let start = moment(startDate);
+      let end = moment(endDate);
+      let recurrType = false;
+
+      if (start.isBefore(monthStart)) {
+        recurrType = true;
+        start = monthStart;
+      }
+
+      if (end.isBefore(monthEnd) && end.month() === monthEnd.month()) {
+        recurrType = false;
+      }
+      if (end.isAfter(monthEnd)) {
+        recurrType = true;
+        end = monthEnd;
+      }
+      prorate.type = recurrType
+        ? ProrateTypeEnum.Recurring
+        : ProrateTypeEnum.Once;
+      prorate.status = ProrateStatusEnum.Pending;
+      paidDays += end.add(1, 'hour').diff(start, 'days') + 1;
+    });
+    let base = employee.base;
+
+    if (this.organization?.removeVariableAmount)
+      base = Money.substractMany([
+        base as IMoney,
+        employee.variableAmount as IMoney,
+      ]);
+
+    const proRatedSalary = Money.toMoney((base.value / payrollDays) * paidDays);
+    const proRateDeduction = Money.substractMany([
+      base as IMoney,
+      proRatedSalary,
+    ]);
+
+    employee.proRates = proRates;
+    employee.proRateDeduction = paidDays > 0 ? proRateDeduction : undefined;
+
+    employee.basePayable = paidDays > 0 ? proRatedSalary : base;
+
+    if (this.organization?.removeVariableAmount) {
+      employee.basePayable = Money.addMany([
+        employee.basePayable as IMoney,
+        employee.variableAmount as IMoney,
+      ]);
+    }
+  }
   /**
    * In a single loop processes single employee bonus, untaxed bonus, extra month, leave allowance, and deductions
    */

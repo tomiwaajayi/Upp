@@ -72,6 +72,25 @@ export class Money extends Currency {
     );
   }
 
+  static substractMany(addends: IMoney[] | unknown[], key?: string) {
+    let array: IMoney[];
+    let currency = '';
+    if (!key) {
+      array = addends as IMoney[];
+    } else {
+      array = addends.map(a => (a as Record<string, IMoney>)[key]);
+    }
+
+    currency = (array[0] as IMoney).currency;
+    return array.reduce(
+      (acc: IMoney, amount: IMoney) => this.sub(amount, acc),
+      {
+        value: 0,
+        currency,
+      }
+    );
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static toMoney(data: any): IMoney {
     return {
