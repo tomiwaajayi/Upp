@@ -38,6 +38,7 @@
     "currency.js": "^2.0.4",
     "google-libphonenumber": "^3.2.30",
     "lodash": "^4.17.21",
+    "moment": "^2.29.4",
     "mongoose": "^6.4.3",
     "mongoose-aggregate-paginate-v2": "^1.0.6",
     "mongoose-autopopulate": "^0.16.1",
