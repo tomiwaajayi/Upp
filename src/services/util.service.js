@@ -129,6 +129,24 @@ class UtilService {
         }
         return result;
     }
+    static getKafkaConfig(configuration) {
+        return {
+            brokers: configuration.kafka.endpoint.split(','),
+            connectionTimeout: 10000,
+            requestTimeout: 10000,
+            enforceRequestTimeout: true,
+            clientId: configuration.kafka.clientId,
+            sasl: configuration.kafka.ssl && {
+                mechanism: 'scram-sha-512',
+                username: configuration.kafka.username,
+                password: configuration.kafka.password,
+            },
+            retry: {
+                retries: 100,
+            },
+            ssl: configuration.kafka.ssl,
+        };
+    }
 }
 exports.UtilService = UtilService;
 //# sourceMappingURL=util.service.js.map
