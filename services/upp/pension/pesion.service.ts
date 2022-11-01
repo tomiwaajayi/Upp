@@ -24,7 +24,7 @@ export class PensionService {
     PensionService.countryPensionServices[KenyaPensionService.country] =
       new KenyaPensionService();
 
-    this.registered = true;
+    this.registered = false;
   }
 
   static get(name: string) {
