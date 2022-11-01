@@ -8,7 +8,7 @@ export class PensionService {
   private static countryPensionServices: Record<string, CountryPensionService> =
     {};
 
-  private static registered = true;
+  private static registered = false;
 
   private static registerServices() {
     if (this.registered) {
@@ -24,7 +24,7 @@ export class PensionService {
     PensionService.countryPensionServices[KenyaPensionService.country] =
       new KenyaPensionService();
 
-    this.registered = false;
+    this.registered = true;
   }
 
   static get(name: string) {
