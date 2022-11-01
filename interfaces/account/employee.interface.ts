@@ -1,11 +1,8 @@
-import {IsOptional} from 'class-validator';
 import {IMoney} from '../payment/money.interface';
 import {Organization} from './organization.interface';
 
 export class CheckEmployeeDTO {
-  @IsOptional()
   emailOrPhonenumber?: string;
-  @IsOptional()
   employeeId?: string;
 }
 
@@ -63,6 +60,7 @@ export interface Employee {
   pensionId?: string;
   pensionContributionEnabled?: boolean;
   pensionContribution?: number;
+  employerPensionContribution?: number;
   nhfId?: string;
   itfId?: string;
   nsitfId?: string;

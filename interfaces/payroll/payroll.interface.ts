@@ -85,4 +85,7 @@ export interface OrganizationSettings {
   hasSalaryBreakdown?: boolean;
   salaryBreakdown?: Record<string, number>;
   remittances?: Record<string, Record<string, unknown>>;
+  excessPensionToTierThree?: boolean;
+  medicalEnabled?: boolean;
+  pensionDeductType?: string;
 }

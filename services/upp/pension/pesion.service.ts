@@ -1,5 +1,8 @@
+import {GahanaPensionService} from './ghana-pension.service';
+import {KenyaPensionService} from './kenya-pension.service';
 import {NigeriaPensionService} from './nigeria-pension.service';
 import {CountryPensionService, ProcessPensionPayload} from './pension.types';
+import {RwandaPensionService} from './rwanda-pension.service';
 
 export class PensionService {
   private static countryPensionServices: Record<string, CountryPensionService> =
@@ -14,6 +17,12 @@ export class PensionService {
 
     PensionService.countryPensionServices[NigeriaPensionService.country] =
       new NigeriaPensionService();
+    PensionService.countryPensionServices[GahanaPensionService.country] =
+      new GahanaPensionService();
+    PensionService.countryPensionServices[RwandaPensionService.country] =
+      new RwandaPensionService();
+    PensionService.countryPensionServices[KenyaPensionService.country] =
+      new KenyaPensionService();
 
     this.registered = true;
   }

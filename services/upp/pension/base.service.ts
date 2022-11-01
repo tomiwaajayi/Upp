@@ -55,11 +55,16 @@ export class BaseCountryPensionService implements CountryPensionService {
     return {value: itemsTotal * (percent / 100), currency: salary.currency};
   }
 
+  protected getBreakdown(payload: ProcessPensionPayload) {
+    const {group, organizationSettings} = payload;
+
+    return group?.salaryBreakdown || organizationSettings.salaryBreakdown || {};
+  }
+
   processEmployeePensionDeduction(payload: ProcessPensionPayload) {
-    const {employee, group, organizationSettings} = payload;
+    const {employee} = payload;
     const {base: salary} = employee;
-    const breakdown =
-      group?.salaryBreakdown || organizationSettings.salaryBreakdown || {};
+    const breakdown = this.getBreakdown(payload);
     const employerContribution = this.calculatePension(
       breakdown,
       salary,
@@ -86,10 +91,9 @@ export class BaseCountryPensionService implements CountryPensionService {
   }
 
   processEmployeePensionQuote(payload: ProcessPensionPayload) {
-    const {employee, group, organizationSettings} = payload;
+    const {employee} = payload;
     const {base: salary} = employee;
-    const breakdown =
-      group?.salaryBreakdown || organizationSettings.salaryBreakdown || {};
+    const breakdown = this.getBreakdown(payload);
     let employeeContribution = {value: 0, currency: salary.currency};
     const employerContribution = this.calculatePension(
       breakdown,

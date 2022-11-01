@@ -1,9 +1,10 @@
+import {PENSION} from '../../../constants/pension.constant';
 import {BaseCountryPensionService} from './base.service';
 import {ProcessPensionPayload} from './pension.types';
 
 export class NigeriaPensionService extends BaseCountryPensionService {
   constructor() {
-    super(8, 10);
+    super(PENSION.NIGERIA.EMPLOYEE_PERCENT, PENSION.NIGERIA.EMPLOYER_PERCENT);
   }
 
   static country = 'Nigeria';
