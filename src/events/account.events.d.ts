@@ -23,4 +23,5 @@ export declare const ACCOUNT_EVENTS: {
     getOrganization: string;
     fetchActiveEmployeesData: string;
     fetchEmployeesForWorksheet: string;
+    restoreEmployee: string;
 };

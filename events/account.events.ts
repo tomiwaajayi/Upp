@@ -25,4 +25,5 @@ export const ACCOUNT_EVENTS = {
   getOrganization: `${SERVICES.ACCOUNT_SERVICE}.organization.get`,
   fetchActiveEmployeesData: `${SERVICES.ACCOUNT_SERVICE}.employee.fetchActiveEmployeesData`,
   fetchEmployeesForWorksheet: `${SERVICES.ACCOUNT_SERVICE}.employee.fetchEmployeesForWorksheet`,
+  restoreEmployee: `${SERVICES.ACCOUNT_SERVICE}.employee.restoreEmployee`,
 };
