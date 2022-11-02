@@ -8,6 +8,7 @@ export class BaseSchemaInterface {
 
 export interface Country {
   _id: string;
+  id: string;
   name: string;
   isoCode: string;
   iso2: string;
@@ -27,3 +28,5 @@ export interface Country {
   isActive: boolean;
   symbol: string;
 }
+
+export type TRecord<T> = Record<string, T>;

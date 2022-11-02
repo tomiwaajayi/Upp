@@ -1,4 +1,4 @@
-import {BaseSchemaInterface} from '../base.interface';
+import {Country} from '../base.interface';
 
 export interface IOrganizationResponse {
   name: string;
@@ -7,7 +7,7 @@ export interface IOrganizationResponse {
 }
 
 export interface Organization {
-  country: string;
+  country: Country | string;
   email: string;
   name: string;
   logo?: string;
@@ -19,4 +19,20 @@ export interface Organization {
   createdBy: string;
   isDeleted?: boolean;
   deletedAt?: Date;
+}
+
+export interface OrganizationSettings {
+  useGrossOnlyForMinimumWage?: boolean; // formally proratedTax
+  remittances: Record<string, RemittanceItem>;
+  payFullTax: boolean;
+  useCRAGross: boolean;
+}
+
+export interface RemittanceItem {
+  enabled: boolean;
+  remit: boolean;
+  WHTaxRate?: number;
+  enabledWithHoldingTax?: boolean;
+  useGrossOnlyForMinimumWage: boolean;
+  type?: string; // pension type quote or deduct
 }

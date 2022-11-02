@@ -1,14 +1,23 @@
 import {groupBy, isEmpty} from 'lodash';
-import {BonusSalaryModeEnum} from '../../interfaces/account/employee.interface';
-import {Organization} from '../../interfaces/account/organization.interface';
-import {IMoney, Money} from '../../interfaces/payment/money.interface';
 import {
+  BonusSalaryModeEnum,
+  Group,
+} from '../../interfaces/account/employee.interface';
+import {
+  Organization,
+  OrganizationSettings,
+} from '../../interfaces/account/organization.interface';
+import {Country, TRecord} from '../../interfaces/base.interface';
+import {Money} from '../../interfaces/payment/money.interface';
+import {
+  EmployeeRemittancesItem,
   IPayroll,
   IPayrollEmployee,
   IPayrollMeta,
   PayrollSalaryAddon,
 } from '../../interfaces/payroll/payroll.interface';
 import {BuilderPayload, IPayrollBuilder} from './builder.interface';
+import {CountryTax} from './tax/country.tax';
 
 /**
  * To improve the speed, this builder implements the Builder Design Pattern.
@@ -21,6 +30,8 @@ export class PayrollBuilder implements IPayrollBuilder {
   /** List of employees in payroll */
   private employees: IPayrollEmployee[];
   private organization: Organization;
+  private organizationSettings: OrganizationSettings;
+  private organizationCountry: Country;
   /**
    * This holds query data or data from backend that needs to be input in each processes
    */
@@ -29,7 +40,10 @@ export class PayrollBuilder implements IPayrollBuilder {
   constructor(data: BuilderPayload) {
     this.employees = data.employees;
     this.organization = data.organization;
-    this.meta = data.meta;
+    this.organizationSettings = data.organizationSettings || {};
+    this.organizationCountry = <Country>this.organization.country;
+    this.meta = data.meta; // TODO: changed to _.pick(data.payrollInit, ['proRateMonth', 'payItem']);
+    this.meta.payItem = data.payrollInit.payItem;
     this.payroll = {
       ...data.payrollInit,
     };
@@ -83,6 +97,7 @@ export class PayrollBuilder implements IPayrollBuilder {
   get() {
     Promise.all(
       this.employees.map((employee: IPayrollEmployee) => {
+        employee.zeroMoney = {value: 0, currency: employee.currency};
         // employee processes goes here
         this.buildPartA(employee)
           .buildPartB(employee)
@@ -163,7 +178,45 @@ export class PayrollBuilder implements IPayrollBuilder {
    * https://sbcode.net/typescript/factory/
    */
   processTax(employee: IPayrollEmployee): void {
-    // code goes here
+    try {
+      const countryTaxService = CountryTax.get(
+        this.organization,
+        this.organizationCountry,
+        this.organizationSettings,
+        this.meta
+      );
+
+      const entity = (<Group>employee.group || this.organizationSettings)
+        .remittances;
+
+      const enabledTaxes = entity?.tax?.enabled;
+
+      const enabledWHT = (<Group>employee.group)?.remittances?.tax
+        ?.enabledWithHoldingTax;
+
+      if (!enabledTaxes || countryTaxService.exempt(employee)) {
+        return;
+      }
+
+      const {relief, tax} = enabledWHT
+        ? countryTaxService.processEmployeeWHT(employee)
+        : countryTaxService.processEmployeeTax(employee);
+
+      const employeeTaxObj = {
+        remittanceEnabled: entity.tax?.remit,
+        amount: tax,
+        relief: relief.relief,
+        taxableSalary: relief.taxableSalary,
+      };
+      let remittances = <TRecord<EmployeeRemittancesItem>>(
+        (employee.remittances || {})
+      );
+
+      remittances = {...remittances, tax: employeeTaxObj};
+      employee.remittances = remittances;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   /**

@@ -11,6 +11,7 @@ describe('Process Bonus (e2e)', () => {
     const {entities} = cloneDeep(fixture);
     data = {
       organization: entities.defaultOrg,
+      organizationSettings: entities.defaultOrgSettings,
       employees: entities.defaultEmps,
       meta: entities.defaultMeta,
       payrollInit: entities.data,

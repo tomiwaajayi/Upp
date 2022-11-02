@@ -12,6 +12,7 @@ export interface IPayrollDTO {
 
 export interface IPayrollMeta {
   proRateMonth: string;
+  payItem: PayItem;
 }
 
 export interface IPayroll {
@@ -28,7 +29,7 @@ export interface IPayroll {
 
 export interface IPayrollEmployee extends Employee {
   remitanceEnabled?: true;
-  base: IMoney;
+  basePayable?: IMoney;
   bonuses?: EmployeeSalaryAddon[];
   totalBonus?: IMoney;
   untaxedBonuses?: EmployeeSalaryAddon[];
@@ -40,19 +41,18 @@ export interface IPayrollEmployee extends Employee {
   deductions?: EmployeeSalaryAddon[];
   totalDeductions?: IMoney;
   totalProRate?: IMoney;
-  remittances?: [
-    {
-      // value is null if tax is disabled
-      name: string;
-      remitanceEnabled: boolean;
-      amount: IMoney;
-    },
-    {
-      name: string;
-      remitanceEnabled: boolean;
-      amount: IMoney;
-    }
-  ];
+  whtaxApplied?: boolean;
+  whtaxRate?: number;
+  remittances?: Record<string, EmployeeRemittancesItem>;
+  netIncome?: IMoney;
+  zeroMoney?: IMoney;
+}
+
+export interface EmployeeRemittancesItem {
+  remittanceEnabled: boolean;
+  amount: IMoney;
+  relief: IMoney;
+  taxableSalary?: IMoney;
 }
 
 export interface IPayrollRemittance {
@@ -73,6 +73,8 @@ export enum PayItemStatus {
 }
 
 export interface PayItem {
+  base: PayItemStatus | string;
+  bonus: PayItemStatus | string;
   tax: PayItemStatus | string;
   pension: PayItemStatus | string;
   health: PayItemStatus | string;

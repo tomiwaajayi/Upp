@@ -8,6 +8,10 @@
   },
   "include": ["**/*.ts", "test/**/*.ts", "./package.json"],
   "exclude": [
-    "./src/" // This is what fixed it!
-  ]
+    "./src/", // This is what fixed it!
+    "coverage",
+  ],
+  "paths": {
+    "@shared/*": ["*"],
+  }
 }

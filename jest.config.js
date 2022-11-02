@@ -10,4 +10,7 @@ module.exports = {
   coverageDirectory: './coverage/jest',
   testEnvironment: 'node',
   modulePathIgnorePatterns: ['<rootDir>/src/'],
+  moduleNameMapper: {
+    '@shared/(.*)': '<rootDir>/$1',
+  },
 };

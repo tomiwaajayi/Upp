@@ -7,3 +7,10 @@ export const SERVICES = {
   INTEGRATION_SERVICE: 'integration.service',
   PAYROLL_SERVICE: 'payroll.service'
 };
+
+export const COUNTRY = {
+  NGN: 'NGN',
+  GHS: 'GHS',
+  KES: 'KES',
+  RWF: 'RWF',
+};
