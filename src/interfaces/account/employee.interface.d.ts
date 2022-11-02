@@ -85,6 +85,11 @@ export interface EmployeeSalaryAddon {
     isDeleted?: boolean;
     deletedAt?: Date;
 }
+export interface Group {
+    hasSalaryBreakdown?: boolean;
+    salaryBreakdown?: Record<string, number>;
+    remittances?: Record<string, unknown>;
+}
 export declare enum SalaryAddonFrequencyEnum {
     Once = "once",
     Recurring = "recurring"
