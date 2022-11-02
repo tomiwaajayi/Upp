@@ -1,68 +1,70 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Money = void 0;
-const dinero_js_1 = require("dinero.js");
-const lodash_1 = require("lodash");
-class Money {
+const Currency = require("currency.js");
+class Money extends Currency {
     /**
      * @example
      * import {add} from 'dinero.js'
-     * const amount = { amount: 400, currency: 'NGN' }
-     * const anotherAmount = { amount: 900, currency: 'NGN' }
+     * const amount = { value: 400, currency: 'NGN' }
+     * const anotherAmount = { value: 900, currency: 'NGN' }
      * Money.add(amount, anotherAmount)
      */
-    static _({ amount, currency }) {
-        return (0, dinero_js_1.dinero)({
-            amount,
-            currency: {
-                code: currency,
-                base: 10,
-                exponent: 3,
-            },
-        });
+    static _({ value, currency }) {
+        return Currency(value, { symbol: currency });
     }
     static add(a, b) {
-        return this.toMoney((0, dinero_js_1.add)(this._(a), this._(b)));
+        return this.toMoney(this._(a).add(this._(b)));
     }
     static sub(a, b) {
-        return this.toMoney((0, dinero_js_1.subtract)(this._(a), this._(b)));
+        return this.toMoney(this._(a).subtract(this._(b)));
     }
     static mul(a, b) {
-        return this.toMoney((0, dinero_js_1.multiply)(this._(a), (0, lodash_1.toNumber)(this._(b))));
+        return this.toMoney(this._(a).multiply(this._(b)));
     }
     static div(a, b) {
-        return this.toMoney((0, dinero_js_1.multiply)(this._(a), (0, lodash_1.toNumber)(this._(b))));
+        return this.toMoney(this._(a).divide(this._(b)));
     }
     /**
      * Adds array of objects or array of money interface
      * @example
      * Money.addMany(
         [
-          {loan: {amount: 1000, currency: 'NGN'}},
-          {loan: {amount: 300, currency: 'NGN'}},
-          {loan: {amount: 488, currency: 'NGN'}},
+          {loanAmount: {value: 1000, currency: 'NGN'}},
+          {loanAmount: {value: 300, currency: 'NGN'}},
+          {loanAmount: {value: 488, currency: 'NGN'}},
         ],
-        'loan'
+        'loanAmount'
       )
       @example
       Money.addMany(
         [
-          {amount: 1000, currency: 'NGN'},
-          {amount: 300, currency: 'NGN'},
-          {amount: 488, currency: 'NGN'},
+          {value: 1000, currency: 'NGN'},
+          {value: 300, currency: 'NGN'},
+          {value: 488, currency: 'NGN'},
         ]
       )
      */
-    static addMany(addends, on) {
-        if (!on)
-            return this.toMoney(addends.map(a => Money._(a)).reduce(dinero_js_1.add));
-        return this.toMoney(addends.map(a => Money._(a[on])).reduce(dinero_js_1.add));
+    static addMany(addends, key) {
+        let array;
+        let currency = '';
+        if (!key) {
+            array = addends;
+        }
+        else {
+            array = addends.map(a => a[key]);
+        }
+        currency = array[0].currency;
+        return array.reduce((acc, amount) => this.add(amount, acc), {
+            value: 0,
+            currency,
+        });
     }
-    static toMoney(dineroObject) {
-        const obj = JSON.parse(JSON.stringify(dineroObject));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    static toMoney(data) {
         return {
-            amount: obj.amount,
-            currency: obj.currency.code,
+            value: data.value,
+            currency: data.s.symbol,
         };
     }
 }

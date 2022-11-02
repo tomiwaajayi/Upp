@@ -3,19 +3,18 @@ import {
   BonusSalaryModeEnum,
   IGroup,
 } from '../../interfaces/account/employee.interface';
-import {
-  Organization,
-  OrganizationSettings,
-} from '../../interfaces/account/organization.interface';
+import {Organization} from '../../interfaces/account/organization.interface';
 import {IMoney, Money} from '../../interfaces/payment/money.interface';
 import {
   CountryStatutories,
   IPayroll,
   IPayrollEmployee,
   IPayrollMeta,
+  OrganizationSettings,
   PayrollSalaryAddon,
 } from '../../interfaces/payroll/payroll.interface';
 import {BuilderPayload, IPayrollBuilder} from './builder.interface';
+import {PensionService} from './pension/pesion.service';
 
 /**
  * To improve the speed, this builder implements the Builder Design Pattern.
@@ -384,6 +383,16 @@ export class PayrollBuilder implements IPayrollBuilder {
    * https://sbcode.net/typescript/factory/
    */
   processPension(employee: IPayrollEmployee): void {
-    // code goes here
+    const {group} = employee;
+    const remittances = group
+      ? group.remittances
+      : this.organizationSettings.remittances;
+    if (remittances && remittances.pension && remittances.pension.enabled) {
+      PensionService.process(this.organization.country.name, {
+        group,
+        organizationSettings: this.organizationSettings,
+        employee,
+      });
+    }
   }
 }

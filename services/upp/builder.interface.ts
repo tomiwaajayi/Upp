@@ -7,6 +7,7 @@ import {
   IPayrollDTO,
   IPayrollEmployee,
   IPayrollMeta,
+  OrganizationSettings,
 } from '../../interfaces/payroll/payroll.interface';
 
 export interface IPayrollBuilder {

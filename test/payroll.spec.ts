@@ -5,6 +5,7 @@ import {BuilderPayload} from '../services/upp/builder.interface';
 import {cloneDeep} from 'lodash';
 import {IEmployeeWithGroup} from '../interfaces/account/employee.interface';
 import {CountryStatutories} from '../interfaces/payroll/payroll.interface';
+import {IMoney} from '../interfaces/payment/money.interface';
 
 describe('Process Bonus (e2e)', () => {
   let data: BuilderPayload;
@@ -124,5 +125,31 @@ describe('Process Bonus (e2e)', () => {
 
     expect(empTwoNSITFRecord?.remittanceEnabled).toBe(true);
     expect(empTwoNSITFRecord?.amount.value).toBe(1000);
+  });
+
+  it('Should successfully and properly process pension', async () => {
+    const payroll = PayrollDirector.build(data);
+
+    expect(payroll.employees[0].remittances).toBeDefined();
+    expect(payroll.employees[1].remittances).toBeDefined();
+
+    const pension1 = payroll.employees[0].remittances?.find(
+      r => r.name === 'pension'
+    );
+    const pension2 = payroll.employees[1].remittances?.find(
+      r => r.name === 'pension'
+    );
+
+    expect(pension1).toBeDefined();
+    expect(pension1?.amount.value).toBe(18000);
+    expect((pension1?.employeeContribution as IMoney)?.value).toBe(8000);
+    expect((pension1?.employerContribution as IMoney)?.value).toBe(10000);
+    expect(pension1?.remittanceEnabled).toBeFalsy();
+
+    expect(pension2).toBeDefined();
+    expect(pension2?.amount.value).toBe(12000);
+    expect((pension2?.employeeContribution as IMoney)?.value).toBe(0);
+    expect((pension2?.employerContribution as IMoney)?.value).toBe(12000);
+    expect(pension2?.remittanceEnabled).toBeTruthy();
   });
 });

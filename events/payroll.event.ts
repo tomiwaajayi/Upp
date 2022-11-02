@@ -2,6 +2,7 @@ import {SERVICES} from '../constants/services.constant';
 export const WORKSHEET = 'worksheet';
 export const PAYROLL = 'payroll';
 export const ORGANIZATION = 'organization';
+export const WALLET = 'wallet';
 
 export const PAYROLL_EVENTS = {
   fetchWorksheet: `${SERVICES.PAYROLL_SERVICE}.${WORKSHEET}.fetchWorksheet`,
@@ -10,4 +11,6 @@ export const PAYROLL_EVENTS = {
   removeEmployeeFromWorksheet: `${SERVICES.PAYROLL_SERVICE}.${WORKSHEET}.removeEmployeeFromWorksheet`,
   getOrganizationSetting: `${SERVICES.PAYROLL_SERVICE}.${ORGANIZATION}.getSettings`,
   updateOrganizationSetting: `${SERVICES.PAYROLL_SERVICE}.${ORGANIZATION}.updateSettings`,
+  fetchOrgWalletAccount: `${SERVICES.PAYROLL_SERVICE}.${WALLET}.fetchOrgWalletAccount`,
+  createOrgWalletAccount: `${SERVICES.PAYROLL_SERVICE}.${WALLET}.createOrgWalletAccount`,
 };

@@ -20,12 +20,3 @@ export interface Organization {
   isDeleted?: boolean;
   deletedAt?: Date;
 }
-
-export interface OrganizationSettings {
-  hasSalaryBreakdown: boolean;
-  salaryBreakdown?: Record<string, number>;
-  remittances: Record<string, IRemitance>;
-  isTotalNsitfEnumeration?: boolean;
-  isTotalItfEnumeration?: boolean;
-  enableConsolidatedGross?: boolean;
-}

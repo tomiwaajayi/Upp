@@ -1,4 +1,8 @@
-import {Employee, EmployeeSalaryAddon} from '../account/employee.interface';
+import {
+  Employee,
+  EmployeeSalaryAddon,
+  IRemitance,
+} from '../account/employee.interface';
 import {Organization} from '../account/organization.interface';
 import {Country} from '../base.interface';
 import {IMoney} from '../payment/money.interface';
@@ -86,4 +90,16 @@ export interface PayrollSalaryAddon {
   id: string;
   name: string;
   amount: IMoney;
+}
+
+export interface OrganizationSettings {
+  hasSalaryBreakdown: boolean;
+  salaryBreakdown?: Record<string, number>;
+  remittances: Record<string, IRemitance>;
+  isTotalNsitfEnumeration?: boolean;
+  isTotalItfEnumeration?: boolean;
+  enableConsolidatedGross?: boolean;
+  excessPensionToTierThree?: boolean;
+  medicalEnabled?: boolean;
+  pensionDeductType?: string;
 }

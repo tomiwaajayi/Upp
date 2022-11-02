@@ -28,7 +28,7 @@ export interface IRemitance {
 }
 
 export interface IGroup {
-  name: string;
+  name?: string;
   remittances?: Record<string, IRemitance>;
   useOrgSalaryBreakdown?: boolean;
   hasSalaryBreakdown?: boolean;
@@ -70,6 +70,9 @@ export interface Employee {
   taxId?: string;
   pensionFundAdmin?: string;
   pensionId?: string;
+  pensionContributionEnabled?: boolean;
+  pensionContribution?: number;
+  employerPensionContribution?: number;
   nhfId?: string;
   itfId?: string;
   nsitfId?: string;
@@ -79,7 +82,7 @@ export interface Employee {
   healthReliefAmount?: number;
   hasHealthReliefEnabled?: boolean;
   hasSalaryBreakdown?: boolean;
-  salaryBreakdown?: Map<string, number>;
+  salaryBreakdown?: Record<string, number>;
   completionStatus?: EmployeeCompletionStatus | string;
   /** Virtuals */
   bonuses?: EmployeeSalaryAddon[];
