@@ -1,11 +1,8 @@
-import {IsOptional} from 'class-validator';
 import {IMoney} from '../payment/money.interface';
 import {Organization} from './organization.interface';
 
 export class CheckEmployeeDTO {
-  @IsOptional()
   emailOrPhonenumber?: string;
-  @IsOptional()
   employeeId?: string;
 }
 
@@ -54,13 +51,16 @@ export interface Employee {
   invitationSent?: boolean;
   salary?: number;
   // TODO: add Group Schema ID
-  group?: string;
+  group?: Group;
   // TODO: add Tax State Schema ID
   taxState?: string;
   taxId?: string;
   // TODO: add Pension Fund Admin Schema ID
   pensionFundAdmin?: string;
   pensionId?: string;
+  pensionContributionEnabled?: boolean;
+  pensionContribution?: number;
+  employerPensionContribution?: number;
   nhfId?: string;
   itfId?: string;
   nsitfId?: string;
@@ -70,7 +70,7 @@ export interface Employee {
   healthReliefAmount?: number;
   hasHealthReliefEnabled?: boolean;
   hasSalaryBreakdown?: boolean;
-  salaryBreakdown?: Map<string, number>;
+  salaryBreakdown?: Record<string, number>;
   completionStatus?: EmployeeCompletionStatus | string;
   /** Virtuals */
   bonuses?: EmployeeSalaryAddon[];
@@ -94,6 +94,12 @@ export interface EmployeeSalaryAddon {
   createdBy: string;
   isDeleted?: boolean;
   deletedAt?: Date;
+}
+
+export interface Group {
+  hasSalaryBreakdown?: boolean;
+  salaryBreakdown?: Record<string, number>;
+  remittances?: Record<string, Record<string, unknown>>;
 }
 
 export enum SalaryAddonFrequencyEnum {

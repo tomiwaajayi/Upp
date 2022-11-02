@@ -7,7 +7,7 @@ export interface IOrganizationResponse {
 }
 
 export interface Organization {
-  country: string;
+  country: {id: string; name: string};
   email: string;
   name: string;
   logo?: string;

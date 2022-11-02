@@ -40,19 +40,12 @@ export interface IPayrollEmployee extends Employee {
   deductions?: EmployeeSalaryAddon[];
   totalDeductions?: IMoney;
   totalProRate?: IMoney;
-  remittances?: [
-    {
-      // value is null if tax is disabled
-      name: string;
-      remitanceEnabled: boolean;
-      amount: IMoney;
-    },
-    {
-      name: string;
-      remitanceEnabled: boolean;
-      amount: IMoney;
-    }
-  ];
+  remittances?: (Record<string, unknown> & {
+    // value is null if tax is disabled
+    name: string;
+    remittanceEnabled: boolean;
+    amount: IMoney;
+  })[];
 }
 
 export interface IPayrollRemittance {
@@ -86,4 +79,13 @@ export interface PayrollSalaryAddon {
   id: string;
   name: string;
   amount: IMoney;
+}
+
+export interface OrganizationSettings {
+  hasSalaryBreakdown?: boolean;
+  salaryBreakdown?: Record<string, number>;
+  remittances?: Record<string, Record<string, unknown>>;
+  excessPensionToTierThree?: boolean;
+  medicalEnabled?: boolean;
+  pensionDeductType?: string;
 }
