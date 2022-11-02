@@ -1,16 +1,16 @@
-import {TRecord} from '../../../interfaces/base.interface';
+import {NestedRecord} from '../../../interfaces/base.interface';
 import {IMoney, Money} from '../../../interfaces/payment/money.interface';
-import {
-  EmployeeRemittancesItem,
-  IPayrollEmployee,
-} from '../../../interfaces/payroll/payroll.interface';
+import {IPayrollEmployee} from '../../../interfaces/payroll/payroll.interface';
 import {NIGERIA_TAX_SETTINGS} from '../constants';
-import {BaseClass, CountryTaxPayload, ITax} from './base.tax';
+import {BaseClass} from './base.tax';
+import {ProcessTaxPayload} from './tax.types';
 
-export class NigeriaTax extends BaseClass implements ITax {
+export class NigeriaTax extends BaseClass {
+  static country = 'Nigeria';
+
   private ngTaxSettings;
-  constructor(payload: CountryTaxPayload) {
-    super(payload);
+  constructor(context: ProcessTaxPayload) {
+    super(context);
     this.ngTaxSettings = NIGERIA_TAX_SETTINGS;
   }
 
@@ -34,9 +34,9 @@ export class NigeriaTax extends BaseClass implements ITax {
       base,
       <IMoney>employee.totalBonus || employee.zeroMoney
     );
-    const taxSettings = this.settings.remittances.tax;
+    const taxSettings = (<NestedRecord>this.settings.remittances)?.tax;
 
-    if (taxSettings.useGrossOnlyForMinimumWage) {
+    if (taxSettings?.useGrossOnlyForMinimumWage) {
       gross = <IMoney>employee.salary;
     }
     return gross.value <= this.ngTaxSettings.MINIMUM_WAGE;
@@ -48,14 +48,21 @@ export class NigeriaTax extends BaseClass implements ITax {
 
   getTaxableSalary(employee: IPayrollEmployee, grossSalary: IMoney) {
     // Pensions also acts as a relief
-    const {pension: pensionObj, nhf: nhfObj} = (employee.remittances ||
-      {}) as TRecord<EmployeeRemittancesItem>;
+    // const {pension: pensionObj, nhf: nhfObj} = (employee.remittances ||
+    //   {}) as TRecord<unknown>;
+    const pensionObj = (employee.remittances || []).find(
+      b => b.name === 'pension'
+    );
+    const nhfObj = (employee.remittances || []).find(b => b.name === 'nhf');
 
     // reliefs
     const pension = pensionObj?.amount || employee.zeroMoney;
     const nhf = nhfObj?.amount || employee.zeroMoney;
 
-    const taxGrossSalary = Money.subMany(grossSalary, [pension, nhf]);
+    const taxGrossSalary = Money.subMany(grossSalary, [
+      <IMoney>pension,
+      <IMoney>nhf,
+    ]);
 
     const cra = this.getConsolidatedRelief(
       grossSalary,

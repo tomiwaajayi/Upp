@@ -28,6 +28,7 @@ export interface IPayroll {
 }
 
 export interface IPayrollEmployee extends Employee {
+  base: IMoney;
   remitanceEnabled?: true;
   basePayable?: IMoney;
   bonuses?: EmployeeSalaryAddon[];

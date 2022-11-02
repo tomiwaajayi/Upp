@@ -1,41 +1,54 @@
 import {Employee, Group} from '../../../interfaces/account/employee.interface';
-import {
-  Organization,
-  OrganizationSettings,
-} from '../../../interfaces/account/organization.interface';
-import {Country} from '../../../interfaces/base.interface';
+import {Organization} from '../../../interfaces/account/organization.interface';
+import {Country, NestedRecord} from '../../../interfaces/base.interface';
 import {IMoney, Money} from '../../../interfaces/payment/money.interface';
 import {
   IPayrollEmployee,
   IPayrollMeta,
+  OrganizationSettings,
 } from '../../../interfaces/payroll/payroll.interface';
+import {CountryTaxService, ProcessTaxPayload} from './tax.types';
 
-export type CountryTaxPayload = {
-  organization: Organization;
-  country: Country;
-  settings: OrganizationSettings;
-  meta: IPayrollMeta;
-};
+export class BaseClass implements CountryTaxService {
+  protected organization: Organization;
+  protected settings: OrganizationSettings;
+  protected meta: IPayrollMeta;
 
-export interface ITax {
-  calculateWithHoldingTax(taxableIncome: IMoney, whtaxRate: number): unknown;
-  calculateWithHoldingTaxRelief(employee: IPayrollEmployee): unknown;
-  processEmployeeWHT(employee: IPayrollEmployee): unknown;
-  processEmployeeTax?(employee: Employee): ProcessEmployeeTax;
-  exempt?(employee?: Employee): boolean;
-}
-
-export class BaseClass implements ITax {
-  protected organization;
-  protected country;
-  protected settings;
-  protected meta;
-
-  constructor({organization, country, settings, meta}: CountryTaxPayload) {
+  constructor(context: ProcessTaxPayload) {
+    const {organization, settings, meta} = context;
     this.organization = organization;
-    this.country = country;
     this.settings = settings;
     this.meta = meta;
+  }
+
+  process(employee: IPayrollEmployee): void {
+    const {group} = employee;
+
+    const entity = <NestedRecord>(<Group>group || this.settings).remittances;
+
+    const enabledTaxes = entity?.tax?.enabled;
+
+    const enabledWHT = (<Group>group)?.remittances?.tax?.enabledWithHoldingTax;
+
+    if (!enabledTaxes || this.exempt(employee)) {
+      return;
+    }
+
+    const {relief, tax} = enabledWHT
+      ? this.processEmployeeWHT(employee)
+      : this.processEmployeeTax(employee);
+
+    const remittances = employee.remittances || [];
+
+    employee.remittances = [
+      ...remittances,
+      {
+        ...relief,
+        name: 'tax',
+        amount: tax,
+        remittanceEnabled: <boolean>entity.tax?.remit,
+      },
+    ];
   }
   calculateWithHoldingTax(taxableIncome: IMoney, whtaxRate: number) {
     // WHT
@@ -60,7 +73,6 @@ export class BaseClass implements ITax {
   processEmployeeWHT(employee: IPayrollEmployee) {
     employee.whtaxApplied = true;
     const groupTaxSettings = (employee.group as Group).remittances?.tax;
-    employee.whtaxRate = groupTaxSettings?.WHTaxRate || 0.05;
     const relief = this.calculateWithHoldingTaxRelief(employee);
     const tax = this.calculateWithHoldingTax(
       relief.taxableSalary,
@@ -75,16 +87,11 @@ export class BaseClass implements ITax {
     return !employee;
   }
 
-  processEmployeeTax(employee: IPayrollEmployee): ProcessEmployeeTax {
+  processEmployeeTax(employee: IPayrollEmployee) {
     const {zeroMoney} = employee;
     return {
       relief: {relief: <IMoney>zeroMoney, taxableSalary: <IMoney>zeroMoney},
       tax: {value: 0, currency: employee.currency},
     };
   }
-}
-
-export interface ProcessEmployeeTax {
-  relief: Record<string, IMoney>;
-  tax: IMoney;
 }

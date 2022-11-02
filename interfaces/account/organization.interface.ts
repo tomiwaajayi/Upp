@@ -20,12 +20,3 @@ export interface Organization {
   isDeleted?: boolean;
   deletedAt?: Date;
 }
-
-export interface RemittanceItem {
-  enabled: boolean;
-  remit: boolean;
-  WHTaxRate?: number;
-  enabledWithHoldingTax?: boolean;
-  useGrossOnlyForMinimumWage: boolean;
-  type?: string; // pension type quote or deduct
-}

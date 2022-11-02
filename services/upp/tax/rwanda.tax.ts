@@ -1,7 +1,10 @@
-import {BaseClass, CountryTaxPayload} from './base.tax';
+import {BaseClass} from './base.tax';
+import {ProcessTaxPayload} from './tax.types';
 
 export class RwandaTax extends BaseClass {
-  constructor(payload: CountryTaxPayload) {
-    super(payload);
+  static country = 'Rwanda';
+
+  constructor(context: ProcessTaxPayload) {
+    super(context);
   }
 }

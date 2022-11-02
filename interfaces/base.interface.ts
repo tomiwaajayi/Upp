@@ -29,4 +29,4 @@ export interface Country {
   symbol: string;
 }
 
-export type TRecord<T> = Record<string, T>;
+export type NestedRecord = Record<string, Record<string, unknown>>;

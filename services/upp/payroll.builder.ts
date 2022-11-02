@@ -1,10 +1,7 @@
 import {groupBy, isEmpty} from 'lodash';
-import {
-  BonusSalaryModeEnum,
-  Group,
-} from '../../interfaces/account/employee.interface';
+import {BonusSalaryModeEnum} from '../../interfaces/account/employee.interface';
 import {Organization} from '../../interfaces/account/organization.interface';
-import {Country} from '../../interfaces/base.interface';
+import {Country, NestedRecord} from '../../interfaces/base.interface';
 import {Money} from '../../interfaces/payment/money.interface';
 import {
   IPayroll,
@@ -14,8 +11,8 @@ import {
   PayrollSalaryAddon,
 } from '../../interfaces/payroll/payroll.interface';
 import {BuilderPayload, IPayrollBuilder} from './builder.interface';
-import {CountryTax} from './tax/country.tax';
 import {PensionService} from './pension/pesion.service';
+import {TaxService} from './tax/tax.service';
 
 /**
  * To improve the speed, this builder implements the Builder Design Pattern.
@@ -177,37 +174,22 @@ export class PayrollBuilder implements IPayrollBuilder {
    */
   processTax(employee: IPayrollEmployee): void {
     try {
-      const countryTaxService = CountryTax.get(
-        this.organization,
-        this.organizationCountry,
-        this.organizationSettings,
-        this.meta
-      );
+      const {group} = employee;
+      const remittances = group
+        ? group.remittances
+        : this.organizationSettings.remittances;
 
-      const entity = (<Group>employee.group || this.organizationSettings)
-        .remittances;
-
-      const enabledTaxes = entity?.tax?.enabled;
-
-      const enabledWHT = (<Group>employee.group)?.remittances?.tax
-        ?.enabledWithHoldingTax;
-
-      if (!enabledTaxes || countryTaxService.exempt(employee)) {
-        return;
+      if ((<NestedRecord>remittances).tax?.enabled) {
+        TaxService.process(
+          this.organization.country.name,
+          {
+            organization: this.organization,
+            settings: this.organizationSettings,
+            meta: this.meta,
+          },
+          employee
+        );
       }
-
-      const {relief, tax} = enabledWHT
-        ? countryTaxService.processEmployeeWHT(employee)
-        : countryTaxService.processEmployeeTax(employee);
-
-      const employeeTaxObj = {
-        name: 'tax',
-        remittanceEnabled: <boolean>entity.tax?.remit,
-        amount: tax,
-        relief: relief.relief,
-        taxableSalary: relief.taxableSalary,
-      };
-      (employee.remittances || []).push(employeeTaxObj);
     } catch (error) {
       console.log(error);
     }

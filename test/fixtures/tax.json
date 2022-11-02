@@ -34,26 +34,10 @@
       "createdAt": "2022-10-06T21:58:08.970Z",
       "updatedAt": "2022-10-06T21:58:08.970Z"
     },
-    "defaultOrgSettings": {
-      "useGrossOnlyForMinimumWage": true,
-      "payFullTax": true,
-      "useCRAGross": true,
-      "remittances": {
-        "tax": {
-          "enabled": true,
-          "remit": true,
-          "WHTaxRate": 5,
-          "enabledWithHoldingTax": false,
-          "useGrossOnlyForMinimumWage": false
-        }
-      }
-    },
     "defaultEmps": [
       {
-        "salary": {
-          "value": 100000,
-          "currency": "NGN"
-        },
+        "salary": { "value": 100000, "currency": "NGN" },
+        "base": { "value": 100000, "currency": "NGN" },
         "workEmail": "zoltofulmo2@vusra.com",
         "firstName": "Sarah",
         "middleName": "Rose",
@@ -165,6 +149,11 @@
           "name": "User Grp",
           "organization": "63401825fb3550d8580f8530",
           "remittances": {
+            "pension": {
+              "enabled": false,
+              "type": "deduct",
+              "remit": false
+            },
             "tax": {
               "enabled": true,
               "remit": true,
@@ -177,6 +166,25 @@
         }
       }
     ],
+    "orgSettings": {
+      "useGrossOnlyForMinimumWage": true,
+      "payFullTax": true,
+      "useCRAGross": true,
+      "remittances": {
+        "pension": {
+          "enabled": false,
+          "type": "deduct",
+          "remit": false
+        },
+        "tax": {
+          "enabled": true,
+          "remit": true,
+          "WHTaxRate": 5,
+          "enabledWithHoldingTax": false,
+          "useGrossOnlyForMinimumWage": false
+        }
+      }
+    },
     "defaultMeta": {
       "payItem": {
         "base": "pending",
