@@ -43,16 +43,14 @@ export interface IPayrollEmployee extends Employee {
   totalProRate?: IMoney;
   whtaxApplied?: boolean;
   whtaxRate?: number;
-  remittances?: Record<string, EmployeeRemittancesItem>;
   netIncome?: IMoney;
   zeroMoney?: IMoney;
-}
-
-export interface EmployeeRemittancesItem {
-  remittanceEnabled: boolean;
-  amount: IMoney;
-  relief: IMoney;
-  taxableSalary?: IMoney;
+  remittances?: (Record<string, unknown> & {
+    // value is null if tax is disabled
+    name: string;
+    remittanceEnabled: boolean;
+    amount: IMoney;
+  })[];
 }
 
 export interface IPayrollRemittance {
@@ -88,4 +86,16 @@ export interface PayrollSalaryAddon {
   id: string;
   name: string;
   amount: IMoney;
+}
+
+export interface OrganizationSettings {
+  hasSalaryBreakdown?: boolean;
+  salaryBreakdown?: Record<string, number>;
+  remittances?: Record<string, Record<string, unknown>>;
+  excessPensionToTierThree?: boolean;
+  medicalEnabled?: boolean;
+  pensionDeductType?: string;
+  useGrossOnlyForMinimumWage?: boolean; // formally proratedTax
+  payFullTax: boolean;
+  useCRAGross: boolean;
 }

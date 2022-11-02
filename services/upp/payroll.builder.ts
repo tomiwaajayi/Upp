@@ -3,21 +3,19 @@ import {
   BonusSalaryModeEnum,
   Group,
 } from '../../interfaces/account/employee.interface';
-import {
-  Organization,
-  OrganizationSettings,
-} from '../../interfaces/account/organization.interface';
-import {Country, TRecord} from '../../interfaces/base.interface';
+import {Organization} from '../../interfaces/account/organization.interface';
+import {Country} from '../../interfaces/base.interface';
 import {Money} from '../../interfaces/payment/money.interface';
 import {
-  EmployeeRemittancesItem,
   IPayroll,
   IPayrollEmployee,
   IPayrollMeta,
+  OrganizationSettings,
   PayrollSalaryAddon,
 } from '../../interfaces/payroll/payroll.interface';
 import {BuilderPayload, IPayrollBuilder} from './builder.interface';
 import {CountryTax} from './tax/country.tax';
+import {PensionService} from './pension/pesion.service';
 
 /**
  * To improve the speed, this builder implements the Builder Design Pattern.
@@ -40,9 +38,9 @@ export class PayrollBuilder implements IPayrollBuilder {
   constructor(data: BuilderPayload) {
     this.employees = data.employees;
     this.organization = data.organization;
-    this.organizationSettings = data.organizationSettings || {};
+    this.organizationSettings = data.organizationSettings;
     this.organizationCountry = <Country>this.organization.country;
-    this.meta = data.meta; // TODO: changed to _.pick(data.payrollInit, ['proRateMonth', 'payItem']);
+    this.meta = data.meta;
     this.meta.payItem = data.payrollInit.payItem;
     this.payroll = {
       ...data.payrollInit,
@@ -203,17 +201,13 @@ export class PayrollBuilder implements IPayrollBuilder {
         : countryTaxService.processEmployeeTax(employee);
 
       const employeeTaxObj = {
-        remittanceEnabled: entity.tax?.remit,
+        name: 'tax',
+        remittanceEnabled: <boolean>entity.tax?.remit,
         amount: tax,
         relief: relief.relief,
         taxableSalary: relief.taxableSalary,
       };
-      let remittances = <TRecord<EmployeeRemittancesItem>>(
-        (employee.remittances || {})
-      );
-
-      remittances = {...remittances, tax: employeeTaxObj};
-      employee.remittances = remittances;
+      (employee.remittances || []).push(employeeTaxObj);
     } catch (error) {
       console.log(error);
     }
@@ -225,6 +219,16 @@ export class PayrollBuilder implements IPayrollBuilder {
    * https://sbcode.net/typescript/factory/
    */
   processPension(employee: IPayrollEmployee): void {
-    // code goes here
+    const {group} = employee;
+    const remittances = group
+      ? group.remittances
+      : this.organizationSettings.remittances;
+    if (remittances && remittances.pension && remittances.pension.enabled) {
+      PensionService.process(this.organization.country.name, {
+        group,
+        organizationSettings: this.organizationSettings,
+        employee,
+      });
+    }
   }
 }

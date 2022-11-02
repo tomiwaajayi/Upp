@@ -7,7 +7,7 @@ export interface IOrganizationResponse {
 }
 
 export interface Organization {
-  country: Country | string;
+  country: Country;
   email: string;
   name: string;
   logo?: string;
@@ -19,13 +19,6 @@ export interface Organization {
   createdBy: string;
   isDeleted?: boolean;
   deletedAt?: Date;
-}
-
-export interface OrganizationSettings {
-  useGrossOnlyForMinimumWage?: boolean; // formally proratedTax
-  remittances: Record<string, RemittanceItem>;
-  payFullTax: boolean;
-  useCRAGross: boolean;
 }
 
 export interface RemittanceItem {
