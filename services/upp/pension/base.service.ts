@@ -1,3 +1,4 @@
+import {IRemitance} from '../../../interfaces/account/employee.interface';
 import {IMoney, Money} from '../../../interfaces/payment/money.interface';
 import {CountryPensionService, ProcessPensionPayload} from './pension.types';
 
@@ -11,7 +12,7 @@ export class BaseCountryPensionService implements CountryPensionService {
     const {group, organizationSettings, employee} = context;
     const pension =
       (group ? group : organizationSettings).remittances?.pension || {};
-    const pensionType = pension.type as 'deduct' | 'quote';
+    const pensionType = (pension as IRemitance).type as 'deduct' | 'quote';
     const remittances = employee.remittances || [];
     if (pensionType === 'deduct') {
       employee.remittances = [

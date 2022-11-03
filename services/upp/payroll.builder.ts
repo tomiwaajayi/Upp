@@ -1,8 +1,12 @@
 import {groupBy, isEmpty} from 'lodash';
-import {BonusSalaryModeEnum} from '../../interfaces/account/employee.interface';
+import {
+  BonusSalaryModeEnum,
+  IGroup,
+} from '../../interfaces/account/employee.interface';
 import {Organization} from '../../interfaces/account/organization.interface';
 import {IMoney, Money} from '../../interfaces/payment/money.interface';
 import {
+  CountryStatutories,
   IPayroll,
   IPayrollEmployee,
   IPayrollMeta,
@@ -158,7 +162,210 @@ export class PayrollBuilder implements IPayrollBuilder {
    * https://sbcode.net/typescript/factory/
    */
   processCountryStatutory(employee: IPayrollEmployee): void {
-    // code goes here
+    const group = employee.group as IGroup;
+    const {base} = employee;
+
+    // ITF
+    const itfRecord = !isEmpty(group)
+      ? group.remittances && group.remittances[CountryStatutories.ITF]
+      : this.organizationSettings.remittances[CountryStatutories.ITF];
+
+    if (itfRecord && itfRecord.enabled && itfRecord.remit) {
+      let grossSalary = base;
+
+      if (this.organizationSettings.isTotalItfEnumeration) {
+        const {totalBonus, totalLeaveAllowance} = employee;
+        grossSalary = Money.addMany([base, totalBonus, totalLeaveAllowance]);
+      }
+
+      const baseIncomeWithITF = Money.mul(grossSalary, {
+        value: 0.01,
+        currency: base.currency,
+      });
+
+      const remittances = employee?.remittances || [];
+      remittances.push({
+        name: CountryStatutories.ITF,
+        remittanceEnabled: itfRecord.remit,
+        amount: baseIncomeWithITF,
+      });
+
+      employee.remittances = remittances;
+    }
+    // ->> end ITF
+
+    // NHF
+    const nhfRecord = !isEmpty(group)
+      ? group.remittances && group.remittances[CountryStatutories.NHF]
+      : this.organizationSettings.remittances[CountryStatutories.NHF];
+
+    if (!isEmpty(nhfRecord) && nhfRecord.enabled) {
+      let salaryBreakdown: Record<string, number> | undefined =
+        group.salaryBreakdown;
+
+      if (group.useOrgSalaryBreakdown) {
+        salaryBreakdown = this.organizationSettings.salaryBreakdown;
+      }
+
+      const nhfContribution = this.calculateNHF(
+        salaryBreakdown as Record<string, number>,
+        base,
+        {
+          value: 2.5,
+          currency: base.currency,
+        },
+        this.organizationSettings.enableConsolidatedGross
+      );
+
+      if (nhfRecord.remit) {
+        const remittances = employee?.remittances || [];
+
+        remittances.push({
+          name: CountryStatutories.NHF,
+          remittanceEnabled: nhfRecord.remit,
+          amount: nhfContribution,
+        });
+
+        employee.remittances = remittances;
+      }
+    }
+    // --> end NHF
+
+    // NHIF
+    const nhifRecord = !isEmpty(group)
+      ? group.remittances && group.remittances[CountryStatutories.NHIF]
+      : this.organizationSettings.remittances[CountryStatutories.NHIF];
+
+    if (nhifRecord && nhifRecord.enabled) {
+      const defaultAmount: IMoney = {
+        value: 0,
+        currency: base.currency,
+      };
+
+      const grossSalary = Money.addMany([
+        base,
+        employee.totalBonus || defaultAmount,
+        employee.totalLeaveAllowance || defaultAmount,
+      ]);
+
+      const nhifContribution = this.calculateNHIF(grossSalary);
+
+      if (nhifRecord.remit) {
+        const remittances = employee?.remittances || [];
+
+        remittances.push({
+          name: CountryStatutories.NHIF,
+          remittanceEnabled: nhifRecord.remit,
+          amount: nhifContribution,
+        });
+
+        employee.remittances = remittances;
+      }
+    }
+    // --> end NHIF
+
+    // NSITF
+    const nsitfRecord = !isEmpty(group)
+      ? group.remittances && group.remittances[CountryStatutories.NSITF]
+      : this.organizationSettings.remittances[CountryStatutories.NSITF];
+
+    if (nsitfRecord && nsitfRecord.enabled) {
+      let grossSalary = base;
+
+      if (this.organizationSettings.isTotalNsitfEnumeration) {
+        const {totalBonus, totalLeaveAllowance} = employee;
+        grossSalary = Money.addMany([base, totalBonus, totalLeaveAllowance]);
+      }
+
+      const nsitfContribution = Money.mul(grossSalary, {
+        value: 0.01,
+        currency: grossSalary.currency,
+      });
+
+      if (nsitfRecord.remit) {
+        const remittances = employee?.remittances || [];
+
+        remittances.push({
+          name: CountryStatutories.NSITF,
+          remittanceEnabled: nsitfRecord.remit,
+          amount: nsitfContribution,
+        });
+
+        employee.remittances = remittances;
+      }
+    }
+    // --> end NSITF
+  }
+
+  calculateNHF(
+    salaryBreakdown: Record<string, number>,
+    grossMonthly: IMoney,
+    percentage: IMoney,
+    enableConsolidatedGross?: boolean
+  ): IMoney {
+    const basicPercent = salaryBreakdown['basic'] || 0;
+    const housingPercent = salaryBreakdown['housing'] || 0;
+    const transportPercent = salaryBreakdown['transport'] || 0;
+
+    const basic = Money.mul(grossMonthly, {
+      value: basicPercent,
+      currency: grossMonthly.currency,
+    });
+
+    if (
+      (basicPercent === 0 && housingPercent === 0 && transportPercent === 0) ||
+      enableConsolidatedGross
+    ) {
+      return Money.div(percentage, {value: 100, currency: percentage.currency});
+    }
+
+    return Money.mul(
+      basic,
+      Money.div(percentage, {value: 100, currency: percentage.currency})
+    );
+  }
+
+  calculateNHIF(grossSalary: IMoney): IMoney {
+    let value = 1700;
+
+    if (grossSalary.value <= 5999) {
+      value = 150;
+    } else if (grossSalary.value <= 7999) {
+      value = 300;
+    } else if (grossSalary.value <= 11999) {
+      value = 400;
+    } else if (grossSalary.value <= 14999) {
+      value = 500;
+    } else if (grossSalary.value <= 19999) {
+      value = 600;
+    } else if (grossSalary.value <= 24999) {
+      value = 750;
+    } else if (grossSalary.value <= 29999) {
+      value = 850;
+    } else if (grossSalary.value <= 34999) {
+      value = 900;
+    } else if (grossSalary.value <= 39999) {
+      value = 950;
+    } else if (grossSalary.value <= 44999) {
+      value = 1000;
+    } else if (grossSalary.value <= 49999) {
+      value = 1100;
+    } else if (grossSalary.value <= 59999) {
+      value = 1200;
+    } else if (grossSalary.value <= 69999) {
+      value = 1300;
+    } else if (grossSalary.value <= 79999) {
+      value = 1400;
+    } else if (grossSalary.value <= 89999) {
+      value = 1500;
+    } else if (grossSalary.value <= 99999) {
+      value = 1600;
+    }
+
+    return {
+      value,
+      currency: grossSalary.currency,
+    };
   }
 
   /**

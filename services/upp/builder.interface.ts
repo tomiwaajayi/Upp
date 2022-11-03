@@ -1,4 +1,7 @@
-import {Organization} from '../../interfaces/account/organization.interface';
+import {
+  Organization,
+  OrganizationSettings,
+} from '../../interfaces/account/organization.interface';
 import {
   IPayroll,
   IPayrollDTO,

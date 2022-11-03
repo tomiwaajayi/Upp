@@ -1,4 +1,4 @@
-import {BaseSchemaInterface} from '../base.interface';
+import {IRemitance} from './employee.interface';
 
 export interface IOrganizationResponse {
   name: string;

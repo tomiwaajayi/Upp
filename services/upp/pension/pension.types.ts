@@ -1,11 +1,11 @@
-import {Group} from '../../../interfaces/account/employee.interface';
+import {IGroup} from '../../../interfaces/account/employee.interface';
 import {
   IPayrollEmployee,
   OrganizationSettings,
 } from '../../../interfaces/payroll/payroll.interface';
 
 export interface ProcessPensionPayload {
-  group?: Group;
+  group?: IGroup;
   organizationSettings: OrganizationSettings;
   employee: IPayrollEmployee;
 }
