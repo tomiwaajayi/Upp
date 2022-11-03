@@ -9,15 +9,6 @@
         "isoCode": "NG",
         "iso2": "ng",
         "dialCode": "234",
-        "lat": 8.0,
-        "long": 10.0,
-        "location": {
-          "type": "Point",
-          "coordinates": [
-            10.0,
-            8.0
-          ]
-        },
         "code": "NGN",
         "isDeleted": false,
         "slug": "nigeria",
@@ -216,6 +207,27 @@
       },
       "deselected": [],
       "createdBy": "633f4f707c6aa9362ca61f2a"
+    },
+    "ghana": {
+      "id" : "6079e7ef44fa123583c5bdca",
+      "name" : "Ghana",
+      "iso2" : "gh",
+      "dialCode" : "233",
+      "priority" : 0.0,
+      "symbol" : "GH₵",
+      "code" : "GHS",
+      "areaCodes" : null,
+      "isDeleted" : false,
+      "createdAt" : "2021-04-16T19:39:27.578Z",
+      "updatedAt" : "2021-04-16T19:39:27.578Z",
+      "imageUrl" : "https://www.countryflags.io/gh/flat/64.png",
+      "isActive" : true
+    },
+    "salaryBreakdown": {
+      "basic": 20,
+      "housing": 20,
+      "transport": 20,
+      "salary": 40
     }
   }
 }

@@ -56,7 +56,7 @@ export class BaseClass implements CountryTaxService {
   }
 
   calculateWithHoldingTaxRelief(employee: IPayrollEmployee) {
-    const base = (employee.basePayable as IMoney) || employee.salary;
+    const base = (employee.basePayable as IMoney) || employee.base;
 
     const grossSalary = Money.add(base, employee.totalBonus as IMoney);
 
@@ -93,5 +93,16 @@ export class BaseClass implements CountryTaxService {
       relief: {relief: <IMoney>zeroMoney, taxableSalary: <IMoney>zeroMoney},
       tax: {value: 0, currency: employee.currency},
     };
+  }
+
+  protected getBreakdown(employee: IPayrollEmployee) {
+    const {group} = employee;
+
+    return (
+      employee.salaryBreakdown ||
+      group?.salaryBreakdown ||
+      this.settings.salaryBreakdown ||
+      {}
+    );
   }
 }

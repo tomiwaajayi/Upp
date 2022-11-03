@@ -8,10 +8,10 @@ import {ProcessTaxPayload} from './tax.types';
 export class NigeriaTax extends BaseClass {
   static country = 'Nigeria';
 
-  private ngTaxSettings;
+  private taxSettings;
   constructor(context: ProcessTaxPayload) {
     super(context);
-    this.ngTaxSettings = NIGERIA_TAX_SETTINGS;
+    this.taxSettings = NIGERIA_TAX_SETTINGS;
   }
 
   getConsolidatedRelief(gross: IMoney, grossCRA: IMoney, useCRAGross: boolean) {
@@ -28,18 +28,16 @@ export class NigeriaTax extends BaseClass {
   }
 
   isMinimumWage(employee: IPayrollEmployee) {
-    const base = <IMoney>employee.basePayable || <IMoney>employee.salary;
+    const {totalBonus, zeroMoney} = employee;
+    const base = employee.basePayable || employee.base;
 
-    let gross = Money.add(
-      base,
-      <IMoney>employee.totalBonus || employee.zeroMoney
-    );
+    let gross = Money.add(base, totalBonus || <IMoney>zeroMoney);
     const taxSettings = (<NestedRecord>this.settings.remittances)?.tax;
 
     if (taxSettings?.useGrossOnlyForMinimumWage) {
-      gross = <IMoney>employee.salary;
+      gross = <IMoney>employee.base;
     }
-    return gross.value <= this.ngTaxSettings.MINIMUM_WAGE;
+    return Money.lessThanEq(gross, this.taxSettings.MINIMUM_WAGE);
   }
 
   exempt(employee: IPayrollEmployee) {
@@ -47,9 +45,6 @@ export class NigeriaTax extends BaseClass {
   }
 
   getTaxableSalary(employee: IPayrollEmployee, grossSalary: IMoney) {
-    // Pensions also acts as a relief
-    // const {pension: pensionObj, nhf: nhfObj} = (employee.remittances ||
-    //   {}) as TRecord<unknown>;
     const pensionObj = (employee.remittances || []).find(
       b => b.name === 'pension'
     );
@@ -115,7 +110,7 @@ export class NigeriaTax extends BaseClass {
       payItem && payItem.base === 'unpaid' && payItem.bonus !== 'unpaid';
 
     const {totalBonus, totalLeaveAllowance} = employee;
-    const base = employee.basePayable || employee.salary;
+    const base = employee.basePayable || employee.base;
 
     let grossSalary = Money.addMany([
       base,

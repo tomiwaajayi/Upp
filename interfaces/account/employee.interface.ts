@@ -61,6 +61,8 @@ export interface Employee {
   pensionContributionEnabled?: boolean;
   pensionContribution?: number;
   employerPensionContribution?: number;
+  voluntaryPensionContribution?: number;
+  voluntaryPensionContributionEmployer?: number;
   nhfId?: string;
   itfId?: string;
   nsitfId?: string;

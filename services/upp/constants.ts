@@ -2,3 +2,18 @@ export const NIGERIA_TAX_SETTINGS = {
   MINIMUM_WAGE: 30000,
   TAX_REMITTANCE_FEE: 35,
 };
+
+export const GHANA_TAX_SETTINGS = {
+  SSNIT_PERCENTAGE: 0.05,
+  PENSION_CAP: 1925,
+  MINIMUM_WAGE: 365,
+};
+
+export const KENYA_TAX_SETTINGS = {
+  MINIMUM_WAGE: 24000,
+  PERSONAL_RELIEF: 2400, // 2400 monthly personal relief
+};
+
+export const RWANDA_TAX_SETTINGS = {
+  MINIMUM_WAGE: 30000,
+};
