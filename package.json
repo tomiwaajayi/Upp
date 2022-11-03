@@ -22,7 +22,8 @@
     "fix": "gts fix",
     "prepare": "yarn run compile",
     "posttest": "yarn run lint",
-    "test": "jest --coverage --runInBand --forceExit",
+    "test": "jest --runInBand --forceExit",
+    "test:coverage": "jest --coverage --runInBand --forceExit",
     "test-watch": "jest --watch"
   },
   "dependencies": {
