@@ -2,7 +2,10 @@
     "entities": {
         "defaultOrg": {
             "id": "633f4f707c6aa9362ca61f2a",
-            "country": "60e7c3f3bf19830b5cf4e422",
+            "country": {
+                "id": "60e7c3f3bf19830b5cf4e422",
+                "name": "Nigeria"
+            },
             "email": "koredujar@gmail.com",
             "name": "Corestack NG",
             "createdBy": "633f4f70a8483a76209ac2e7",
@@ -100,12 +103,77 @@
                         "id": "6347ed2b4f8f252ac3cae1ec"
                     }
                 ],
-                "country": "60e7c3f3bf19830b5cf4e422",
+                "country": "ng",
                 "organization": "63401825fb3550d8580f8530",
                 "createdBy": "634018244ee4e237f9eb7ea1",
                 "id": "6347ec944f8f252ac3cae1e4"
+            },
+            {
+                "base": { "value": 100000, "currency": "NGN" },
+                "workEmail": "zoltofulmo2@vusra.com",
+                "firstName": "Sarah",
+                "middleName": "Rose",
+                "lastName": "Mandem",
+                "phoneNumber": "2349019261257",
+                "department": "Enginerring",
+                "currency": "NGN",
+                "completionStatus": "Payment info pending",
+                "createdAt": "2022-10-13T10:46:44.827Z",
+                "country": "gh",
+                "organization": "63401825fb3550d8580f8530",
+                "createdBy": "634018244ee4e237f9eb7ea1",
+                "id": "6347ec944f8f252ac3cae1e4",
+                "pensionId": "f8f252ac3cae1e4",
+                "pensionFundAdmin": "634018244ee4e237f9eb7ea1",
+                "bonuses": [],
+                "deductions": [],
+                "group": {
+                    "name": "Manager",
+                    "useOrgsettings": false,
+                    "useOrgSalaryBreakdown": false,
+                    "remittances": {
+                        "pension": {
+                            "enabled": true,
+                            "type": "quote",
+                            "remit": true
+                        },
+                        "itf": {
+                            "enabled": true,
+                            "remit": true
+                        },
+                        "nhf": {
+                            "enabled": true,
+                            "remit": true
+                        },
+                        "nhif": {
+                            "enabled": true,
+                            "remit": true
+                        },
+                        "nsitf": {
+                            "enabled": true,
+                            "remit": true
+                        }
+                    },
+                    "hasSalaryBreakdown": false,
+                    "salaryBreakdown": {
+                        "basic": 20,
+                        "housing": 20,
+                        "transport": 20,
+                        "salary": 40
+                    }
+                }
             }
         ],
+        "orgSettings": {
+            "hasSalaryBreakdown": true,
+            "remittances": {
+                "pension": {
+                    "enabled": true,
+                    "type": "deduct",
+                    "remit": true
+                }
+            }
+        },
         "defaultMeta": {
             "payItem": {
                 "tax": "unpaid",

@@ -17,6 +17,19 @@ export interface ICheckEmployeeResponse {
     user?: string;
     employeeExist: boolean;
 }
+export interface IRemitance {
+    enabled: boolean;
+    remit: boolean;
+    useOrgsettings?: boolean;
+    type?: string;
+}
+export interface IGroup {
+    name?: string;
+    remittances?: Record<string, IRemitance>;
+    useOrgSalaryBreakdown?: boolean;
+    hasSalaryBreakdown?: boolean;
+    salaryBreakdown?: Record<string, number>;
+}
 export interface Employee {
     id: string;
     country: string;
@@ -47,11 +60,14 @@ export interface Employee {
     organization: Organization | string;
     invitationSent?: boolean;
     salary?: number;
-    group?: string;
+    group?: IGroup;
     taxState?: string;
     taxId?: string;
     pensionFundAdmin?: string;
     pensionId?: string;
+    pensionContributionEnabled?: boolean;
+    pensionContribution?: number;
+    employerPensionContribution?: number;
     nhfId?: string;
     itfId?: string;
     nsitfId?: string;
@@ -61,13 +77,16 @@ export interface Employee {
     healthReliefAmount?: number;
     hasHealthReliefEnabled?: boolean;
     hasSalaryBreakdown?: boolean;
-    salaryBreakdown?: Map<string, number>;
+    salaryBreakdown?: Record<string, number>;
     completionStatus?: EmployeeCompletionStatus | string;
     /** Virtuals */
     bonuses?: EmployeeSalaryAddon[];
     deductions?: EmployeeSalaryAddon[];
     biks?: string[];
     proratedSalaries?: string[];
+}
+export interface IEmployeeWithGroup {
+    group: IGroup;
 }
 export interface EmployeeSalaryAddon {
     id: string;
@@ -84,11 +103,6 @@ export interface EmployeeSalaryAddon {
     createdBy: string;
     isDeleted?: boolean;
     deletedAt?: Date;
-}
-export interface Group {
-    hasSalaryBreakdown?: boolean;
-    salaryBreakdown?: Record<string, number>;
-    remittances?: Record<string, unknown>;
 }
 export declare enum SalaryAddonFrequencyEnum {
     Once = "once",

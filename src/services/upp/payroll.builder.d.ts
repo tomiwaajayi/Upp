@@ -13,6 +13,7 @@ export declare class PayrollBuilder implements IPayrollBuilder {
     /** List of employees in payroll */
     private employees;
     private organization;
+    private organizationSettings;
     /**
      * This holds query data or data from backend that needs to be input in each processes
      */
@@ -74,6 +75,8 @@ export declare class PayrollBuilder implements IPayrollBuilder {
      * https://sbcode.net/typescript/factory/
      */
     processCountryStatutory(employee: IPayrollEmployee): void;
+    calculateNHF(salaryBreakdown: Record<string, number>, grossMonthly: IMoney, percentage: IMoney, enableConsolidatedGross?: boolean): IMoney;
+    calculateNHIF(grossSalary: IMoney): IMoney;
     /**
      * Process Tax for all countries
      * Should implement a factory design pattern check Pay v2 tax or pension setup and link

@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const payroll_director_1 = require("../services/upp/payroll.director");
 const fixture = require("./fixtures/bonus.json");
 const lodash_1 = require("lodash");
+const payroll_interface_1 = require("../interfaces/payroll/payroll.interface");
 describe('Process Bonus (e2e)', () => {
     let data;
     beforeEach(async () => {
@@ -12,6 +13,7 @@ describe('Process Bonus (e2e)', () => {
             employees: entities.defaultEmps,
             meta: entities.defaultMeta,
             payrollInit: entities.data,
+            organizationSettings: entities.orgSettings,
         };
     });
     it('Should test payroll bonuses', async () => {
@@ -27,6 +29,68 @@ describe('Process Bonus (e2e)', () => {
         const payroll = payroll_director_1.PayrollDirector.build(data);
         expect(payroll.employees[0].totalBonus).toBe(undefined);
         expect(payroll.employees[0].extraMonthBonus).toBe(undefined);
+    });
+    it('Should ensure employee with itf is defined and successfully added to remittances', async () => {
+        var _a, _b, _c;
+        const payroll = payroll_director_1.PayrollDirector.build(data);
+        expect((_a = payroll.employees[0]) === null || _a === void 0 ? void 0 : _a.group).toBeUndefined();
+        expect(payroll.employees[1].group.remittances).toBeDefined();
+        const empOneITFRecord = (_b = payroll.employees[0].remittances) === null || _b === void 0 ? void 0 : _b.find(record => record.name === payroll_interface_1.CountryStatutories.ITF);
+        expect(empOneITFRecord).toBeUndefined();
+        const empTwoITFRecord = (_c = payroll.employees[1].remittances) === null || _c === void 0 ? void 0 : _c.find(record => record.name === payroll_interface_1.CountryStatutories.ITF);
+        expect(empTwoITFRecord === null || empTwoITFRecord === void 0 ? void 0 : empTwoITFRecord.remittanceEnabled).toBe(true);
+        expect(empTwoITFRecord === null || empTwoITFRecord === void 0 ? void 0 : empTwoITFRecord.amount.value).toBe(1000);
+    });
+    it('Should ensure employee with nhf is defined and successfully added to remittances', async () => {
+        var _a, _b, _c;
+        const payroll = payroll_director_1.PayrollDirector.build(data);
+        expect((_a = payroll.employees[0]) === null || _a === void 0 ? void 0 : _a.group).toBeUndefined();
+        expect(payroll.employees[1].group.remittances).toBeDefined();
+        const empOneNHFRecord = (_b = payroll.employees[0].remittances) === null || _b === void 0 ? void 0 : _b.find(record => record.name === payroll_interface_1.CountryStatutories.NHF);
+        expect(empOneNHFRecord).toBeUndefined();
+        const empTwoNHFRecord = (_c = payroll.employees[1].remittances) === null || _c === void 0 ? void 0 : _c.find(record => record.name === payroll_interface_1.CountryStatutories.NHF);
+        expect(empTwoNHFRecord === null || empTwoNHFRecord === void 0 ? void 0 : empTwoNHFRecord.remittanceEnabled).toBe(true);
+        expect(empTwoNHFRecord === null || empTwoNHFRecord === void 0 ? void 0 : empTwoNHFRecord.amount.value).toBe(60000);
+    });
+    it('Should ensure employee with nhif is defined and successfully added to remittances', async () => {
+        var _a, _b, _c;
+        const payroll = payroll_director_1.PayrollDirector.build(data);
+        expect((_a = payroll.employees[0]) === null || _a === void 0 ? void 0 : _a.group).toBeUndefined();
+        expect(payroll.employees[1].group.remittances).toBeDefined();
+        const empOneNHIFRecord = (_b = payroll.employees[0].remittances) === null || _b === void 0 ? void 0 : _b.find(record => record.name === payroll_interface_1.CountryStatutories.NHIF);
+        expect(empOneNHIFRecord).toBeUndefined();
+        const empTwoNHIFRecord = (_c = payroll.employees[1].remittances) === null || _c === void 0 ? void 0 : _c.find(record => record.name === payroll_interface_1.CountryStatutories.NHIF);
+        expect(empTwoNHIFRecord === null || empTwoNHIFRecord === void 0 ? void 0 : empTwoNHIFRecord.remittanceEnabled).toBe(true);
+        expect(empTwoNHIFRecord === null || empTwoNHIFRecord === void 0 ? void 0 : empTwoNHIFRecord.amount.value).toBe(1700);
+    });
+    it('Should ensure employee with nsitf is defined and successfully added to remittances', async () => {
+        var _a, _b, _c;
+        const payroll = payroll_director_1.PayrollDirector.build(data);
+        expect((_a = payroll.employees[0]) === null || _a === void 0 ? void 0 : _a.group).toBeUndefined();
+        expect(payroll.employees[1].group.remittances).toBeDefined();
+        const empOneNSITFRecord = (_b = payroll.employees[0].remittances) === null || _b === void 0 ? void 0 : _b.find(record => record.name === payroll_interface_1.CountryStatutories.NSITF);
+        expect(empOneNSITFRecord).toBeUndefined();
+        const empTwoNSITFRecord = (_c = payroll.employees[1].remittances) === null || _c === void 0 ? void 0 : _c.find(record => record.name === payroll_interface_1.CountryStatutories.NSITF);
+        expect(empTwoNSITFRecord === null || empTwoNSITFRecord === void 0 ? void 0 : empTwoNSITFRecord.remittanceEnabled).toBe(true);
+        expect(empTwoNSITFRecord === null || empTwoNSITFRecord === void 0 ? void 0 : empTwoNSITFRecord.amount.value).toBe(1000);
+    });
+    it('Should successfully and properly process pension', async () => {
+        var _a, _b, _c, _d, _e, _f;
+        const payroll = payroll_director_1.PayrollDirector.build(data);
+        expect(payroll.employees[0].remittances).toBeDefined();
+        expect(payroll.employees[1].remittances).toBeDefined();
+        const pension1 = (_a = payroll.employees[0].remittances) === null || _a === void 0 ? void 0 : _a.find(r => r.name === 'pension');
+        const pension2 = (_b = payroll.employees[1].remittances) === null || _b === void 0 ? void 0 : _b.find(r => r.name === 'pension');
+        expect(pension1).toBeDefined();
+        expect(pension1 === null || pension1 === void 0 ? void 0 : pension1.amount.value).toBe(18000);
+        expect((_c = pension1 === null || pension1 === void 0 ? void 0 : pension1.employeeContribution) === null || _c === void 0 ? void 0 : _c.value).toBe(8000);
+        expect((_d = pension1 === null || pension1 === void 0 ? void 0 : pension1.employerContribution) === null || _d === void 0 ? void 0 : _d.value).toBe(10000);
+        expect(pension1 === null || pension1 === void 0 ? void 0 : pension1.remittanceEnabled).toBeFalsy();
+        expect(pension2).toBeDefined();
+        expect(pension2 === null || pension2 === void 0 ? void 0 : pension2.amount.value).toBe(12000);
+        expect((_e = pension2 === null || pension2 === void 0 ? void 0 : pension2.employeeContribution) === null || _e === void 0 ? void 0 : _e.value).toBe(0);
+        expect((_f = pension2 === null || pension2 === void 0 ? void 0 : pension2.employerContribution) === null || _f === void 0 ? void 0 : _f.value).toBe(12000);
+        expect(pension2 === null || pension2 === void 0 ? void 0 : pension2.remittanceEnabled).toBeTruthy();
     });
 });
 //# sourceMappingURL=payroll.spec.js.map

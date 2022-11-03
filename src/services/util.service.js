@@ -137,7 +137,7 @@ class UtilService {
             enforceRequestTimeout: true,
             clientId: configuration.kafka.clientId,
             sasl: configuration.kafka.ssl && {
-                mechanism: 'scram-sha-512',
+                mechanism: 'plain',
                 username: configuration.kafka.username,
                 password: configuration.kafka.password,
             },
