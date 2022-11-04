@@ -1,9 +1,9 @@
-import {NestedRecord} from '../../../interfaces/base.interface';
-import {IMoney, Money} from '../../../interfaces/payment/money.interface';
-import {IPayrollEmployee} from '../../../interfaces/payroll/payroll.interface';
-import {NIGERIA_TAX_SETTINGS} from '../constants';
-import {BaseClass} from './base.tax';
-import {ProcessTaxPayload} from './tax.types';
+import {ProcessTaxPayload} from '@sh/services/upp/tax/tax.types';
+import {NestedRecord} from '@sh/interfaces/base.interface';
+import {BaseClass} from '@upp/tax/base.tax';
+import {TAX} from '@sh/constants/tax.constants';
+import {IMoney, Money} from '@sh/interfaces/payment/money.interface';
+import {IPayrollEmployee} from '@sh/interfaces/payroll/payroll.interface';
 
 export class NigeriaTax extends BaseClass {
   static country = 'Nigeria';
@@ -11,7 +11,7 @@ export class NigeriaTax extends BaseClass {
   private taxSettings;
   constructor(context: ProcessTaxPayload) {
     super(context);
-    this.taxSettings = NIGERIA_TAX_SETTINGS;
+    this.taxSettings = TAX.NIGERIA;
   }
 
   getConsolidatedRelief(gross: IMoney, grossCRA: IMoney, useCRAGross: boolean) {

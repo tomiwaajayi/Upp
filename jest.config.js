@@ -11,6 +11,8 @@ module.exports = {
   testEnvironment: 'node',
   modulePathIgnorePatterns: ['<rootDir>/src/'],
   moduleNameMapper: {
-    '@shared/(.*)': '<rootDir>/$1',
+    '@sh/(.*)': '<rootDir>/$1',
+    '@upp/(.*)': '<rootDir>/services/upp/$1',
+    '@test/(.*)': '<rootDir>/test/$1',
   },
 };

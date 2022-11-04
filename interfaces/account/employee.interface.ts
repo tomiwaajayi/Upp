@@ -33,6 +33,7 @@ export interface Employee {
   bankId?: string;
   accountNumber?: string;
   salaryType?: SalaryTypeEnum | string;
+  employmentType?: EmploymentTypeEnum | string;
   ibanAccountNumber?: string;
   swiftBIC?: string;
   bankAddress?: string;
@@ -149,6 +150,12 @@ export enum GenderEnum {
 export enum SalaryTypeEnum {
   Net = 'net',
   Gross = 'gross',
+}
+
+export enum EmploymentTypeEnum {
+  Permanent = 'permanent',
+  FullTime = 'full-time',
+  Casual = 'casual',
 }
 
 export enum SupportedCurrencyEnum {

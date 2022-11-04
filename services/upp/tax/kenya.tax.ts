@@ -1,8 +1,8 @@
-import {IMoney, Money} from '../../../interfaces/payment/money.interface';
-import {IPayrollEmployee} from '../../../interfaces/payroll/payroll.interface';
-import {KENYA_TAX_SETTINGS} from '../constants';
-import {BaseClass} from './base.tax';
-import {ProcessTaxPayload} from './tax.types';
+import {IMoney, Money} from '@sh/interfaces/payment/money.interface';
+import {IPayrollEmployee} from '@sh/interfaces/payroll/payroll.interface';
+import {TAX} from '@sh/constants/tax.constants';
+import {BaseClass} from '@upp/tax/base.tax';
+import {ProcessTaxPayload} from '@upp/tax/tax.types';
 
 export class KenyaTax extends BaseClass {
   static country = 'Kenya';
@@ -10,7 +10,7 @@ export class KenyaTax extends BaseClass {
   private taxSettings;
   constructor(context: ProcessTaxPayload) {
     super(context);
-    this.taxSettings = KENYA_TAX_SETTINGS;
+    this.taxSettings = TAX.KENYA;
   }
 
   getTaxableSalary(employee: IPayrollEmployee, grossSalary: IMoney) {
@@ -92,7 +92,7 @@ export class KenyaTax extends BaseClass {
     );
 
     relief.relief = Money.add(relief.relief, otherReliefs);
-    tax = Money.sub(otherReliefs, tax);
+    tax = Money.sub(tax, otherReliefs);
 
     return {
       tax,

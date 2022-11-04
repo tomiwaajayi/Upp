@@ -1,6 +1,6 @@
 import {IMoney, Money} from '../../../interfaces/payment/money.interface';
 import {IPayrollEmployee} from '../../../interfaces/payroll/payroll.interface';
-import {GHANA_TAX_SETTINGS} from '../constants';
+import {TAX} from '../../../constants/tax.constants';
 import {BaseClass} from './base.tax';
 import {ProcessTaxPayload} from './tax.types';
 
@@ -10,7 +10,7 @@ export class GhanaTax extends BaseClass {
   private taxSettings;
   constructor(context: ProcessTaxPayload) {
     super(context);
-    this.taxSettings = GHANA_TAX_SETTINGS;
+    this.taxSettings = TAX.GHANA;
   }
 
   calculateTaxRelief(employee: IPayrollEmployee) {

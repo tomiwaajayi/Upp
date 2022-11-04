@@ -1,13 +1,13 @@
-import {Employee, Group} from '../../../interfaces/account/employee.interface';
-import {Organization} from '../../../interfaces/account/organization.interface';
-import {Country, NestedRecord} from '../../../interfaces/base.interface';
-import {IMoney, Money} from '../../../interfaces/payment/money.interface';
+import {Group} from '@sh/interfaces/account/employee.interface';
+import {Organization} from '@sh/interfaces/account/organization.interface';
+import {NestedRecord} from '@sh/interfaces/base.interface';
+import {IMoney, Money} from '@sh/interfaces/payment/money.interface';
 import {
   IPayrollEmployee,
   IPayrollMeta,
   OrganizationSettings,
-} from '../../../interfaces/payroll/payroll.interface';
-import {CountryTaxService, ProcessTaxPayload} from './tax.types';
+} from '@sh/interfaces/payroll/payroll.interface';
+import {CountryTaxService, ProcessTaxPayload} from '@upp/tax/tax.types';
 
 export class BaseClass implements CountryTaxService {
   protected organization: Organization;

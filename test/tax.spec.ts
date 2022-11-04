@@ -1,10 +1,9 @@
-import {PayrollDirector} from '../services/upp/payroll.director';
-
-import fixture = require('./fixtures/tax.json');
-import {BuilderPayload} from '../services/upp/builder.interface';
+import {PayrollDirector} from '@upp/payroll.director';
+import fixture = require('@test/fixtures/tax.json');
+import {BuilderPayload} from '@upp/builder.interface';
 import {cloneDeep} from 'lodash';
-import {Group} from '../interfaces/account/employee.interface';
-import {NestedRecord} from '../interfaces/base.interface';
+import {Group} from '@sh/interfaces/account/employee.interface';
+import {NestedRecord} from '@sh/interfaces/base.interface';
 
 describe('Process Tax (e2e)', () => {
   describe('Nigeria Tax', () => {
@@ -107,6 +106,7 @@ describe('Process Tax (e2e)', () => {
       expect(tax?.amount.value).toBe(5540);
     });
   });
+
   describe('Ghana Tax', () => {
     let data: BuilderPayload;
 
@@ -146,6 +146,86 @@ describe('Process Tax (e2e)', () => {
       expect(tax).toBeDefined();
       expect(tax?.remittanceEnabled).toBe(true);
       expect(tax?.amount.value).toBe(85.875);
+    });
+  });
+
+  describe('Kenya Tax', () => {
+    let data: BuilderPayload;
+
+    beforeEach(async () => {
+      const {entities} = cloneDeep(fixture);
+      data = {
+        organization: entities.defaultOrg,
+        organizationSettings: entities.orgSettings,
+        employees: entities.defaultEmps,
+        meta: entities.defaultMeta,
+        payrollInit: entities.data,
+      };
+
+      data.organization.country = fixture.entities.kenya;
+      data.employees[0].base = {value: 100000, currency: 'KES'};
+      data.employees[0].currency = 'KES';
+      data.employees[0].country = fixture.entities.kenya.id;
+      delete data.employees[0].bonuses;
+      delete data.employees[0].untaxedBonuses;
+      delete data.employees[0].leaveAllowance;
+    });
+
+    it('Should test payroll tax for kenya', async () => {
+      (<NestedRecord>(
+        (<Group>data.employees[0].group).remittances
+      )).pension.enabled = true;
+
+      const payroll = PayrollDirector.build(data);
+
+      expect(payroll.employees[0].remittances).toBeDefined();
+
+      const tax = (payroll.employees[0].remittances || []).find(
+        r => r.name === 'tax'
+      );
+      expect(tax).toBeDefined();
+      expect(tax?.remittanceEnabled).toBe(true);
+      expect(tax?.amount.value).toBe(21735.35);
+    });
+  });
+
+  describe('Rwanda Tax', () => {
+    let data: BuilderPayload;
+
+    beforeEach(async () => {
+      const {entities} = cloneDeep(fixture);
+      data = {
+        organization: entities.defaultOrg,
+        organizationSettings: entities.orgSettings,
+        employees: entities.defaultEmps,
+        meta: entities.defaultMeta,
+        payrollInit: entities.data,
+      };
+
+      data.organization.country = fixture.entities.rwanda;
+      data.employees[0].base = {value: 100000, currency: 'RWF'};
+      data.employees[0].currency = 'RWF';
+      data.employees[0].country = fixture.entities.rwanda.id;
+      delete data.employees[0].bonuses;
+      delete data.employees[0].untaxedBonuses;
+      delete data.employees[0].leaveAllowance;
+    });
+
+    it('Should test payroll tax for rwanda', async () => {
+      (<NestedRecord>(
+        (<Group>data.employees[0].group).remittances
+      )).pension.enabled = true;
+
+      const payroll = PayrollDirector.build(data);
+
+      expect(payroll.employees[0].remittances).toBeDefined();
+
+      const tax = (payroll.employees[0].remittances || []).find(
+        r => r.name === 'tax'
+      );
+      expect(tax).toBeDefined();
+      expect(tax?.remittanceEnabled).toBe(true);
+      expect(tax?.amount.value).toBe(14000);
     });
   });
 });
