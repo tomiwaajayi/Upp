@@ -191,6 +191,11 @@ export class PayrollBuilder implements IPayrollBuilder {
       });
 
       employee.remittances = remittances;
+
+      this.updatePayrollStatutoryTotal(
+        baseIncomeWithITF,
+        CountryStatutories.ITF
+      );
     }
     // ->> end ITF
 
@@ -227,6 +232,11 @@ export class PayrollBuilder implements IPayrollBuilder {
         });
 
         employee.remittances = remittances;
+
+        this.updatePayrollStatutoryTotal(
+          nhfContribution,
+          CountryStatutories.NHF
+        );
       }
     }
     // --> end NHF
@@ -260,6 +270,11 @@ export class PayrollBuilder implements IPayrollBuilder {
         });
 
         employee.remittances = remittances;
+
+        this.updatePayrollStatutoryTotal(
+          nhifContribution,
+          CountryStatutories.NHIF
+        );
       }
     }
     // --> end NHIF
@@ -292,9 +307,38 @@ export class PayrollBuilder implements IPayrollBuilder {
         });
 
         employee.remittances = remittances;
+
+        this.updatePayrollStatutoryTotal(
+          nsitfContribution,
+          CountryStatutories.NSITF
+        );
       }
     }
     // --> end NSITF
+  }
+
+  protected updatePayrollStatutoryTotal(
+    currentIncome: IMoney,
+    statutory: CountryStatutories
+  ) {
+    let total = (this.payroll.totalStatutories &&
+      this.payroll.totalStatutories[statutory]) || {
+      value: 0,
+      currency: currentIncome.currency,
+    };
+
+    if (total) {
+      total = Money.add(currentIncome, total);
+    }
+
+    if (this.payroll.totalStatutories) {
+      this.payroll.totalStatutories[statutory] = total;
+    } else {
+      this.payroll.totalStatutories = {
+        [statutory]: total,
+      };
+    }
+    return this;
   }
 
   calculateNHF(

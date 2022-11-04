@@ -28,6 +28,7 @@ export interface IPayroll {
   remittances?: IPayrollRemittance[];
   hasProrates?: boolean;
   totalCharge?: IMoney;
+  totalStatutories?: Record<string, IMoney>;
 }
 
 export interface IPayrollEmployee extends Employee {
