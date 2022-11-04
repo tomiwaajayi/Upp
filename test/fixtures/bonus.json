@@ -1,206 +1,249 @@
 {
-  "entities": {
-    "defaultOrg": {
-      "id": "633f4f707c6aa9362ca61f2a",
-      "country": {
-        "id": "60e7c3f3bf19830b5cf4e422",
-        "name": "Nigeria"
-      },
-      "email": "koredujar@gmail.com",
-      "name": "Corestack NG",
-      "createdBy": "633f4f70a8483a76209ac2e7",
-      "isDeleted": false,
-      "createdAt": "2022-10-06T21:58:08.970Z",
-      "updatedAt": "2022-10-06T21:58:08.970Z"
-    },
-    "defaultEmps": [
-      {
-        "base": {"value": 100000, "currency": "NGN"},
-        "workEmail": "zoltofulmo2@vusra.com",
-        "firstName": "Sarah",
-        "middleName": "Rose",
-        "lastName": "Mandem",
-        "phoneNumber": "2349019261257",
-        "department": "Enginerring",
-        "currency": "NGN",
-        "completionStatus": "Payment info pending",
-        "createdAt": "2022-10-13T10:46:44.827Z",
-        "bonuses": [
-          {
-            "name": "E dey mezebu",
-            "employee": "6347ec944f8f252ac3cae1e4",
-            "organization": "63401825fb3550d8580f8530",
-            "amount": {"value": 2500, "currency": "NGN"},
-            "frequency": "recurring",
-            "type": "bonus",
-            "mode": "quick",
-            "status": "pending",
-            "createdBy": "634018244ee4e237f9eb7ea1",
-            "isDeleted": false,
-            "createdAt": "2022-10-13T10:49:15.536Z",
-            "updatedAt": "2022-10-13T10:49:15.536Z",
-            "id": "6347ed2b4f8f252ac3cae1ed"
-          },
-          {
-            "name": "Untaxed Bonus",
-            "employee": "6347ec944f8f252ac3cae1e4",
-            "organization": "63401825fb3550d8580f8530",
-            "amount": {"value": 5500, "currency": "NGN"},
-            "frequency": "recurring",
-            "type": "bonus",
-            "mode": "untaxed",
-            "status": "pending",
-            "createdBy": "634018244ee4e237f9eb7ea1",
-            "isDeleted": false,
-            "createdAt": "2022-10-13T10:49:15.536Z",
-            "updatedAt": "2022-10-13T10:49:15.536Z",
-            "id": "6347ed2b4f8f252ac3cae133"
-          },
-          {
-            "name": "Leave Allowance",
-            "employee": "6347ec944f8f252ac3cae1e4",
-            "organization": "63401825fb3550d8580f8530",
-            "amount": {"value": 7500, "currency": "NGN"},
-            "frequency": "recurring",
-            "type": "bonus",
-            "mode": "leave-allowance",
-            "status": "pending",
-            "createdBy": "634018244ee4e237f9eb7ea1",
-            "isDeleted": false,
-            "createdAt": "2022-10-13T10:49:15.536Z",
-            "updatedAt": "2022-10-13T10:49:15.536Z",
-            "id": "6347ed2b4f8f252ac3cae133"
-          },
-          {
-            "name": "Extra month",
-            "employee": "6347ec944f8f252ac3cae1e4",
-            "organization": "63401825fb3550d8580f8530",
-            "amount": {"value": 10000, "currency": "NGN"},
-            "frequency": "recurring",
-            "type": "bonus",
-            "mode": "extra-month",
-            "status": "pending",
-            "createdBy": "634018244ee4e237f9eb7ea1",
-            "isDeleted": false,
-            "createdAt": "2022-10-13T10:49:15.536Z",
-            "updatedAt": "2022-10-13T10:49:15.536Z",
-            "id": "6347ed2b4f8f252ac3cae133"
-          }
-        ],
-        "deductions": [
-          {
-            "name": "E dey meant",
-            "employee": "6347ec944f8f252ac3cae1e4",
-            "organization": "63401825fb3550d8580f8530",
-            "amount": {"value": 5000, "currency": "NGN"},
-            "frequency": "once",
-            "type": "deduction",
-            "status": "pending",
-            "createdBy": "634018244ee4e237f9eb7ea1",
-            "isDeleted": false,
-            "createdAt": "2022-10-13T10:49:15.535Z",
-            "updatedAt": "2022-10-13T10:49:15.535Z",
-            "id": "6347ed2b4f8f252ac3cae1ec"
-          }
-        ],
-        "country": "ng",
-        "organization": "63401825fb3550d8580f8530",
-        "createdBy": "634018244ee4e237f9eb7ea1",
-        "id": "6347ec944f8f252ac3cae1e4"
-      },
-      {
-        "base": {"value": 100000, "currency": "NGN"},
-        "workEmail": "zoltofulmo2@vusra.com",
-        "firstName": "Sarah",
-        "middleName": "Rose",
-        "lastName": "Mandem",
-        "phoneNumber": "2349019261257",
-        "department": "Enginerring",
-        "currency": "NGN",
-        "completionStatus": "Payment info pending",
-        "createdAt": "2022-10-13T10:46:44.827Z",
-        "country": "gh",
-        "organization": "63401825fb3550d8580f8530",
-        "createdBy": "634018244ee4e237f9eb7ea1",
-        "id": "6347ec944f8f252ac3cae1e4",
-        "pensionId": "f8f252ac3cae1e4",
-        "pensionFundAdmin": "634018244ee4e237f9eb7ea1",
-        "bonuses": [],
-        "deductions": [],
-        "group": {
-          "name": "Manager",
-          "useOrgsettings": false,
-          "useOrgSalaryBreakdown": false,
-          "remittances": {
-            "pension": {
-              "enabled": true,
-              "type": "quote",
-              "remit": true
+    "entities": {
+        "defaultOrg": {
+            "id": "633f4f707c6aa9362ca61f2a",
+            "country": {
+                "id": "60e7c3f3bf19830b5cf4e422",
+                "name": "Nigeria"
             },
-            "itf": {
-              "enabled": true,
-              "remit": true
+            "email": "koredujar@gmail.com",
+            "name": "Corestack NG",
+            "createdBy": "633f4f70a8483a76209ac2e7",
+            "isDeleted": false,
+            "createdAt": "2022-10-06T21:58:08.970Z",
+            "updatedAt": "2022-10-06T21:58:08.970Z"
+        },
+        "defaultEmps": [
+            {
+                "base": {
+                    "value": 100000,
+                    "currency": "NGN"
+                },
+                "workEmail": "zoltofulmo2@vusra.com",
+                "firstName": "Sarah",
+                "middleName": "Rose",
+                "lastName": "Mandem",
+                "phoneNumber": "2349019261257",
+                "department": "Enginerring",
+                "currency": "NGN",
+                "completionStatus": "Payment info pending",
+                "createdAt": "2022-10-13T10:46:44.827Z",
+                "bonuses": [
+                    {
+                        "name": "E dey mezebu",
+                        "employee": "6347ec944f8f252ac3cae1e4",
+                        "organization": "63401825fb3550d8580f8530",
+                        "amount": {
+                            "value": 2500,
+                            "currency": "NGN"
+                        },
+                        "frequency": "recurring",
+                        "type": "bonus",
+                        "mode": "quick",
+                        "status": "pending",
+                        "createdBy": "634018244ee4e237f9eb7ea1",
+                        "isDeleted": false,
+                        "createdAt": "2022-10-13T10:49:15.536Z",
+                        "updatedAt": "2022-10-13T10:49:15.536Z",
+                        "id": "6347ed2b4f8f252ac3cae1ed"
+                    },
+                    {
+                        "name": "Untaxed Bonus",
+                        "employee": "6347ec944f8f252ac3cae1e4",
+                        "organization": "63401825fb3550d8580f8530",
+                        "amount": {
+                            "value": 5500,
+                            "currency": "NGN"
+                        },
+                        "frequency": "recurring",
+                        "type": "bonus",
+                        "mode": "untaxed",
+                        "status": "pending",
+                        "createdBy": "634018244ee4e237f9eb7ea1",
+                        "isDeleted": false,
+                        "createdAt": "2022-10-13T10:49:15.536Z",
+                        "updatedAt": "2022-10-13T10:49:15.536Z",
+                        "id": "6347ed2b4f8f252ac3cae133"
+                    },
+                    {
+                        "name": "Leave Allowance",
+                        "employee": "6347ec944f8f252ac3cae1e4",
+                        "organization": "63401825fb3550d8580f8530",
+                        "amount": {
+                            "value": 7500,
+                            "currency": "NGN"
+                        },
+                        "frequency": "recurring",
+                        "type": "bonus",
+                        "mode": "leave-allowance",
+                        "status": "pending",
+                        "createdBy": "634018244ee4e237f9eb7ea1",
+                        "isDeleted": false,
+                        "createdAt": "2022-10-13T10:49:15.536Z",
+                        "updatedAt": "2022-10-13T10:49:15.536Z",
+                        "id": "6347ed2b4f8f252ac3cae133"
+                    },
+                    {
+                        "name": "Extra month",
+                        "employee": "6347ec944f8f252ac3cae1e4",
+                        "organization": "63401825fb3550d8580f8530",
+                        "amount": {
+                            "value": 10000,
+                            "currency": "NGN"
+                        },
+                        "frequency": "recurring",
+                        "type": "bonus",
+                        "mode": "extra-month",
+                        "status": "pending",
+                        "createdBy": "634018244ee4e237f9eb7ea1",
+                        "isDeleted": false,
+                        "createdAt": "2022-10-13T10:49:15.536Z",
+                        "updatedAt": "2022-10-13T10:49:15.536Z",
+                        "id": "6347ed2b4f8f252ac3cae133"
+                    }
+                ],
+                "deductions": [
+                    {
+                        "name": "E dey meant",
+                        "employee": "6347ec944f8f252ac3cae1e4",
+                        "organization": "63401825fb3550d8580f8530",
+                        "amount": {
+                            "value": 5000,
+                            "currency": "NGN"
+                        },
+                        "frequency": "once",
+                        "type": "deduction",
+                        "status": "pending",
+                        "createdBy": "634018244ee4e237f9eb7ea1",
+                        "isDeleted": false,
+                        "createdAt": "2022-10-13T10:49:15.535Z",
+                        "updatedAt": "2022-10-13T10:49:15.535Z",
+                        "id": "6347ed2b4f8f252ac3cae1ec"
+                    }
+                ],
+                "country": "ng",
+                "variableAmount": {
+                    "value": 3125,
+                    "currency": "NGN"
+                },
+                "organization": "63401825fb3550d8580f8530",
+                "createdBy": "634018244ee4e237f9eb7ea1",
+                "id": "6347ec944f8f252ac3cae1e4"
             },
-            "nhf": {
-              "enabled": true,
-              "remit": true
-            },
-            "nhif": {
-              "enabled": true,
-              "remit": true
-            },
-            "nsitf": {
-              "enabled": true,
-              "remit": true
+            {
+                "base": {
+                    "value": 100000,
+                    "currency": "NGN"
+                },
+                "workEmail": "zoltofulmo2@vusra.com",
+                "firstName": "Sarah",
+                "middleName": "Rose",
+                "lastName": "Mandem",
+                "phoneNumber": "2349019261257",
+                "department": "Enginerring",
+                "currency": "NGN",
+                "completionStatus": "Payment info pending",
+                "createdAt": "2022-10-13T10:46:44.827Z",
+                "country": "gh",
+                "organization": "63401825fb3550d8580f8530",
+                "createdBy": "634018244ee4e237f9eb7ea1",
+                "id": "6347ec944f8f252ac3cae1e5",
+                "pensionId": "f8f252ac3cae1e4",
+                "pensionFundAdmin": "634018244ee4e237f9eb7ea1",
+                "bonuses": [],
+                "deductions": [],
+                "variableAmount": {
+                    "value": 0,
+                    "currency": "NGN"
+                },
+                "group": {
+                    "name": "Manager",
+                    "useOrgsettings": false,
+                    "useOrgSalaryBreakdown": false,
+                    "remittances": {
+                        "pension": {
+                            "enabled": true,
+                            "type": "quote",
+                            "remit": true
+                        },
+                        "itf": {
+                            "enabled": true,
+                            "remit": true
+                        },
+                        "nhf": {
+                            "enabled": true,
+                            "remit": true
+                        },
+                        "nhif": {
+                            "enabled": true,
+                            "remit": true
+                        },
+                        "nsitf": {
+                            "enabled": true,
+                            "remit": true
+                        }
+                    },
+                    "hasSalaryBreakdown": false,
+                    "salaryBreakdown": {
+                        "basic": 20,
+                        "housing": 20,
+                        "transport": 20,
+                        "salary": 40
+                    }
+                }
             }
-          },
-          "hasSalaryBreakdown": false,
-          "salaryBreakdown": {
-            "basic": 20,
-            "housing": 20,
-            "transport": 20,
-            "salary": 40
-          }
+        ],
+        "orgSettings": {
+            "hasSalaryBreakdown": true,
+            "remittances": {
+                "pension": {
+                    "enabled": true,
+                    "type": "deduct",
+                    "remit": true
+                }
+            }
+        },
+        "defaultMeta": {
+            "payItem": {
+                "tax": "unpaid",
+                "pension": "unpaid",
+                "health": "unpaid",
+                "nhf": "unpaid",
+                "nhif": "unpaid",
+                "itf": "unpaid",
+                "nsitf": "unpaid"
+            },
+            "deselected": [],
+            "proRateMonth": "October",
+            "proRates": [
+                {
+                    "attributes": "any",
+                    "startDate":  "2022-10-08T10:49:15.535Z",
+                    "endDate": "2022-10-23T10:49:15.535Z",
+                    "employeeId": "6347ec944f8f252ac3cae1e4"
+                },
+                {
+                    "attributes": "any",
+                    "startDate": "2022-10-08T10:49:15.535Z",
+                    "endDate": "2022-10-23T10:49:15.535Z",
+                    "employeeId": "6347ec944f8f252ac3cae1e5"
+                }
+            ],
+            "createdBy": "60e7c3f3bf19830b5cf4e422"
+        },
+        "data": {
+            "proRateMonth": "October",
+            "payItem": {
+                "tax": "unpaid",
+                "pension": "unpaid",
+                "health": "unpaid",
+                "nhf": "unpaid",
+                "nhif": "unpaid",
+                "itf": "unpaid",
+                "nsitf": "unpaid"
+            },
+            "deselected": [],
+            "createdBy": "633f4f707c6aa9362ca61f2a"
         }
-      }
-    ],
-    "orgSettings": {
-      "hasSalaryBreakdown": true,
-      "remittances": {
-        "pension": {
-          "enabled": true,
-          "type": "deduct",
-          "remit": true
-        }
-      }
-    },
-    "defaultMeta": {
-      "payItem": {
-        "tax": "unpaid",
-        "pension": "unpaid",
-        "health": "unpaid",
-        "nhf": "unpaid",
-        "nhif": "unpaid",
-        "itf": "unpaid",
-        "nsitf": "unpaid"
-      },
-      "deselected": [],
-      "proRateMonth": "October",
-      "createdBy": "60e7c3f3bf19830b5cf4e422"
-    },
-    "data": {
-      "proRateMonth": "October",
-      "payItem": {
-        "tax": "unpaid",
-        "pension": "unpaid",
-        "health": "unpaid",
-        "nhf": "unpaid",
-        "nhif": "unpaid",
-        "itf": "unpaid",
-        "nsitf": "unpaid"
-      },
-      "deselected": [],
-      "createdBy": "633f4f707c6aa9362ca61f2a"
     }
-  }
 }

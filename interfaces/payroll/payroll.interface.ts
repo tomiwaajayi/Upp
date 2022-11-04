@@ -16,7 +16,7 @@ export interface IPayrollDTO {
 
 export interface IPayrollMeta {
   proRateMonth: string;
-  proRates: any[];
+  proRates: IProrate[] | [] | null;
 }
 
 export interface IPayroll {
@@ -110,12 +110,11 @@ export enum ProrateStatusEnum {
 }
 export interface IProrate {
   attributes: string;
-  type: ProrateTypeEnum;
-  startDate: Date;
-  endDate: Date;
+  type?: ProrateTypeEnum;
+  startDate: string;
+  endDate: string;
   status?: ProrateStatusEnum;
-  organization: string;
-  employee: string;
+  employeeId: string;
 }
 
 export interface OrganizationSettings {
@@ -128,4 +127,5 @@ export interface OrganizationSettings {
   excessPensionToTierThree?: boolean;
   medicalEnabled?: boolean;
   pensionDeductType?: string;
+  removeProrateVariableAmount: boolean;
 }

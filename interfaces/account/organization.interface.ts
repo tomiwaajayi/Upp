@@ -1,5 +1,3 @@
-import {IRemitance} from './employee.interface';
-
 export interface IOrganizationResponse {
   name: string;
   email: string;
@@ -19,5 +17,4 @@ export interface Organization {
   createdBy: string;
   isDeleted?: boolean;
   deletedAt?: Date;
-  removeVariableAmount?: boolean;
 }

@@ -117,18 +117,20 @@ export class PayrollBuilder implements IPayrollBuilder {
    */
   processProRates(employee: IPayrollEmployee): void {
     const {proRateMonth, proRates} = this.meta;
-    if (isEmpty(proRates)) return;
+    const EmployeeProrates = (proRates as IProrate[]).filter(
+      (prorate: IProrate) => prorate.employeeId === employee.id
+    );
+    if (isEmpty(EmployeeProrates)) return;
 
     const monthStart = moment().month(proRateMonth).startOf('month');
     const monthEnd = moment().month(proRateMonth).endOf('month');
 
     let paidDays = 0;
     const payrollDays = monthEnd.add(1, 'hour').diff(monthStart, 'days') + 1;
-    proRates.forEach((prorate: IProrate) => {
+    EmployeeProrates?.forEach((prorate: IProrate) => {
       const {startDate, endDate} = prorate;
-
-      let start = moment(startDate);
-      let end = moment(endDate);
+      let start = moment(new Date(startDate));
+      let end = moment(new Date(endDate));
       let recurrType = false;
 
       if (start.isBefore(monthStart)) {
@@ -147,32 +149,30 @@ export class PayrollBuilder implements IPayrollBuilder {
         ? ProrateTypeEnum.Recurring
         : ProrateTypeEnum.Once;
       prorate.status = ProrateStatusEnum.Pending;
-      paidDays += end.add(1, 'hour').diff(start, 'days') + 1;
+      paidDays += end.add(1, 'hour').diff(start, 'days');
     });
     let base = employee.base;
 
-    if (this.organization?.removeVariableAmount)
-      base = Money.substractMany([
+    if (this.organizationSettings.removeProrateVariableAmount) {
+      base = Money.sub(
         base as IMoney,
-        employee.variableAmount as IMoney,
-      ]);
+        (employee.variableAmount as IMoney) || 0
+      );
+    }
+    const proRatedSalary = Money.mul(Money.div(base, payrollDays), paidDays);
+    const proRateDeduction = Money.sub(base as IMoney, proRatedSalary);
 
-    const proRatedSalary = Money.toMoney((base.value / payrollDays) * paidDays);
-    const proRateDeduction = Money.substractMany([
-      base as IMoney,
-      proRatedSalary,
-    ]);
-
-    employee.proRates = proRates;
-    employee.proRateDeduction = paidDays > 0 ? proRateDeduction : undefined;
+    employee.proRates = EmployeeProrates;
+    employee.proRateDeduction =
+      paidDays > 0 ? proRateDeduction : Money.toMoney(0);
 
     employee.basePayable = paidDays > 0 ? proRatedSalary : base;
 
-    if (this.organization?.removeVariableAmount) {
-      employee.basePayable = Money.addMany([
+    if (this.organizationSettings.removeProrateVariableAmount) {
+      employee.basePayable = Money.add(
         employee.basePayable as IMoney,
-        employee.variableAmount as IMoney,
-      ]);
+        (employee.variableAmount as IMoney) || 0
+      );
     }
   }
   /**

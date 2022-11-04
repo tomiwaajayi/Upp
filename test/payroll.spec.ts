@@ -21,6 +21,32 @@ describe('Process Bonus (e2e)', () => {
     };
   });
 
+  it('Should test empty prorate', async () => {
+    data.meta.proRates = [];
+    const payroll = PayrollDirector.build(data);
+    expect(payroll.employees[0].proRates).toBe(undefined);
+    expect(payroll.employees[0].proRateDeduction).toBe(undefined);
+    expect(payroll.employees[0].basePayable).toBe(undefined);
+  });
+  it('Should successfully calculate prorates ', async () => {
+    data.employees[0].proRates = undefined;
+    data.organizationSettings.removeProrateVariableAmount = true;
+    const payroll = PayrollDirector.build(data);
+    expect(payroll.employees[0].proRateDeduction?.value).toBe(51464.84);
+    expect(payroll.employees[1].proRateDeduction?.value).toBe(53125);
+    expect(payroll.employees[0].basePayable?.value).toBe(48535.16);
+    expect(payroll.employees[1].basePayable?.value).toBe(46875);
+  });
+
+  it('Should successfully calculate prorates ', async () => {
+    data.organizationSettings.removeProrateVariableAmount = false;
+    const payroll = PayrollDirector.build(data);
+    expect(payroll.employees[0].proRateDeduction?.value).toBe(53125);
+    expect(payroll.employees[1].proRateDeduction?.value).toBe(53125);
+    expect(payroll.employees[0].basePayable?.value).toBe(46875);
+    expect(payroll.employees[1].basePayable?.value).toBe(46875);
+  });
+
   it('Should test payroll bonuses', async () => {
     const {entities} = fixture;
     const payroll = PayrollDirector.build(data);
@@ -38,6 +64,7 @@ describe('Process Bonus (e2e)', () => {
 
   it('Should test empty Payroll Bonuses', async () => {
     data.employees[0].bonuses = [];
+    data.meta.proRates = [];
     const payroll = PayrollDirector.build(data);
     expect(payroll.employees[0].totalBonus).toBe(undefined);
     expect(payroll.employees[0].extraMonthBonus).toBe(undefined);
@@ -82,7 +109,7 @@ describe('Process Bonus (e2e)', () => {
     );
 
     expect(empTwoNHFRecord?.remittanceEnabled).toBe(true);
-    expect(empTwoNHFRecord?.amount.value).toBe(60000);
+    expect(empTwoNHFRecord?.amount.value).toBe(50000);
   });
 
   it('Should ensure employee with nhif is defined and successfully added to remittances', async () => {
