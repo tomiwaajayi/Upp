@@ -91,6 +91,12 @@ export class PayrollBuilder implements IPayrollBuilder {
   get() {
     Promise.all(
       this.employees.map((employee: IPayrollEmployee) => {
+        // init employee base
+        employee.base = employee.base || {
+          value: employee.salary || 0,
+          currency: employee.currency.toUpperCase(),
+        };
+
         // employee processes goes here
         this.buildPartA(employee)
           .buildPartB(employee)
