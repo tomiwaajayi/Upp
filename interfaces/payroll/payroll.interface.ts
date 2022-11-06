@@ -28,6 +28,10 @@ export interface IPayroll {
   remittances?: IPayrollRemittance[];
   hasProrates?: boolean;
   totalCharge?: IMoney;
+  totalBonus?: Record<string, IMoney>;
+  totalUntaxedBonus?: Record<string, IMoney>;
+  totalExtraMonthBonus?: Record<string, IMoney>;
+  totalLeaveAllowance?: Record<string, IMoney>;
   totalBase: Record<string, IMoney>;
   totalStatutories: Record<string, Record<string, IMoney>>;
 }

@@ -147,9 +147,9 @@ describe('Process Bonus (e2e)', () => {
     expect(pension1?.remittanceEnabled).toBeFalsy();
 
     expect(pension2).toBeDefined();
-    expect(pension2?.amount.value).toBe(12000);
+    expect(pension2?.amount.value).toBe(5200);
     expect((pension2?.employeeContribution as IMoney)?.value).toBe(0);
-    expect((pension2?.employerContribution as IMoney)?.value).toBe(12000);
+    expect((pension2?.employerContribution as IMoney)?.value).toBe(5200);
     expect(pension2?.remittanceEnabled).toBeTruthy();
   });
 });
