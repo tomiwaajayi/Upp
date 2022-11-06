@@ -134,6 +134,24 @@ export class PayrollBuilder implements IPayrollBuilder {
   processBonuses(employee: IPayrollEmployee): void {
     if (isEmpty(employee.bonuses)) return;
 
+    const currency = employee.base.currency.toUpperCase();
+    const sumBonus = (
+      name:
+        | 'totalBonus'
+        | 'totalUntaxedBonus'
+        | 'totalExtraMonthBonus'
+        | 'totalLeaveAllowance',
+      amount: IMoney
+    ) => {
+      this.payroll[name] = this.payroll[name] || {};
+      (this.payroll[name] as Record<string, IMoney>)[currency] = Money.add(
+        amount,
+        (this.payroll[name] as Record<string, IMoney>)[currency] || {
+          value: 0,
+          currency,
+        }
+      );
+    };
     const groupedBonuses = groupBy(employee.bonuses, 'mode');
     if (!isEmpty(groupedBonuses[BonusSalaryModeEnum.Quick])) {
       employee.bonuses = groupedBonuses[BonusSalaryModeEnum.Quick];
@@ -142,6 +160,7 @@ export class PayrollBuilder implements IPayrollBuilder {
         employee.bonuses as PayrollSalaryAddon[],
         'amount'
       );
+      sumBonus('totalBonus', employee.totalBonus);
     }
 
     if (!isEmpty(groupedBonuses[BonusSalaryModeEnum.UnTaxed])) {
@@ -151,6 +170,7 @@ export class PayrollBuilder implements IPayrollBuilder {
         employee.untaxedBonuses as PayrollSalaryAddon[],
         'amount'
       );
+      sumBonus('totalUntaxedBonus', employee.totalUntaxedBonus);
     }
 
     if (!isEmpty(groupedBonuses[BonusSalaryModeEnum.ExtraMonth])) {
@@ -158,6 +178,7 @@ export class PayrollBuilder implements IPayrollBuilder {
         groupedBonuses[BonusSalaryModeEnum.ExtraMonth][0];
 
       employee.totalExtraMonthBonus = employee.extraMonthBonus.amount;
+      sumBonus('totalExtraMonthBonus', employee.totalExtraMonthBonus);
     }
 
     if (!isEmpty(groupedBonuses[BonusSalaryModeEnum.LeaveAllowance])) {
@@ -165,6 +186,7 @@ export class PayrollBuilder implements IPayrollBuilder {
         groupedBonuses[BonusSalaryModeEnum.LeaveAllowance][0];
 
       employee.totalLeaveAllowance = employee.leaveAllowance.amount;
+      sumBonus('totalLeaveAllowance', employee.totalLeaveAllowance);
     }
   }
 
