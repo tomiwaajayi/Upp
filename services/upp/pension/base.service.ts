@@ -14,24 +14,60 @@ export class BaseCountryPensionService implements CountryPensionService {
       (group ? group : organizationSettings).remittances?.pension || {};
     const pensionType = (pension as IRemitance).type as 'deduct' | 'quote';
     const remittances = employee.remittances || [];
+    let remittance:
+      | ((
+          | ReturnType<typeof this.processEmployeePensionDeduction>
+          | ReturnType<typeof this.processEmployeePensionQuote>
+        ) & {
+          remittanceEnabled: boolean;
+        })
+      | null = null;
+
     if (pensionType === 'deduct') {
-      employee.remittances = [
-        ...remittances,
-        {
-          ...this.processEmployeePensionDeduction(context),
-          remittanceEnabled: this.remitEnabled(context),
-        },
-      ];
+      remittance = {
+        ...this.processEmployeePensionDeduction(context),
+        remittanceEnabled: this.remitEnabled(context),
+      };
+
+      employee.remittances = [...remittances, remittance];
     }
 
     if (pensionType === 'quote') {
-      employee.remittances = [
-        ...remittances,
-        {
-          ...this.processEmployeePensionQuote(context),
-          remittanceEnabled: this.remitEnabled(context),
-        },
-      ];
+      remittance = {
+        ...this.processEmployeePensionQuote(context),
+        remittanceEnabled: this.remitEnabled(context),
+      };
+    }
+
+    if (remittance) {
+      context.payroll.totalPension = context.payroll.totalPension || {};
+      context.payroll.totalPension[remittance.amount.currency] = Money.add(
+        remittance.amount,
+        context.payroll.totalPension[remittance.amount.currency] || {
+          value: 0,
+          currency: remittance.amount.currency,
+        }
+      );
+
+      if (remittance?.remittanceEnabled) {
+        employee.remittances = [...remittances, remittance];
+        context.payroll.remittances = context.payroll.remittances || {};
+        context.payroll.remittances[employee.currency] =
+          context.payroll.remittances[employee.currency] || {};
+
+        context.payroll.remittances[employee.currency][remittance.name] =
+          context.payroll.remittances[employee.currency][remittance.name] || {
+            ...remittance,
+            amount: {value: 0, currency: employee.base.currency},
+          };
+
+        context.payroll.remittances[employee.currency][remittance.name].amount =
+          Money.add(
+            context.payroll.remittances[employee.currency][remittance.name]
+              .amount,
+            remittance.amount
+          );
+      }
     }
   }
 

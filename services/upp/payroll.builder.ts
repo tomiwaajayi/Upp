@@ -472,6 +472,7 @@ export class PayrollBuilder implements IPayrollBuilder {
         group,
         organizationSettings: this.organizationSettings,
         employee,
+        payroll: this.payroll,
       });
     }
   }

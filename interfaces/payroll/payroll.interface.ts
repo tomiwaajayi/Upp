@@ -25,7 +25,7 @@ export interface IPayroll {
   createdBy: string;
   organization?: Organization | string;
   employees?: IPayrollEmployee[];
-  remittances?: IPayrollRemittance[];
+  remittances?: Record<string, Record<string, IPayrollRemittance>>;
   hasProrates?: boolean;
   totalCharge?: IMoney;
   totalBonus?: Record<string, IMoney>;
@@ -34,6 +34,7 @@ export interface IPayroll {
   totalLeaveAllowance?: Record<string, IMoney>;
   totalBase: Record<string, IMoney>;
   totalStatutories?: Record<string, IMoney>;
+  totalPension?: Record<string, IMoney>;
 }
 
 export interface IPayrollEmployee extends Employee {
