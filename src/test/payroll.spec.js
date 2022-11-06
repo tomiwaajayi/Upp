@@ -56,12 +56,12 @@ describe('Process Bonus (e2e)', () => {
         var _a, _b, _c;
         const payroll = payroll_director_1.PayrollDirector.build(data);
         expect((_a = payroll.employees[0]) === null || _a === void 0 ? void 0 : _a.group).toBeUndefined();
-        expect(payroll.employees[1].group.remittances).toBeDefined();
+        expect(payroll.employees[2].group.remittances).toBeDefined();
         const empOneNHIFRecord = (_b = payroll.employees[0].remittances) === null || _b === void 0 ? void 0 : _b.find(record => record.name === payroll_interface_1.CountryStatutories.NHIF);
         expect(empOneNHIFRecord).toBeUndefined();
-        const empTwoNHIFRecord = (_c = payroll.employees[1].remittances) === null || _c === void 0 ? void 0 : _c.find(record => record.name === payroll_interface_1.CountryStatutories.NHIF);
+        const empTwoNHIFRecord = (_c = payroll.employees[2].remittances) === null || _c === void 0 ? void 0 : _c.find(record => record.name === payroll_interface_1.CountryStatutories.NHIF);
         expect(empTwoNHIFRecord === null || empTwoNHIFRecord === void 0 ? void 0 : empTwoNHIFRecord.remittanceEnabled).toBe(true);
-        expect(empTwoNHIFRecord === null || empTwoNHIFRecord === void 0 ? void 0 : empTwoNHIFRecord.amount.value).toBe(1700);
+        expect(empTwoNHIFRecord === null || empTwoNHIFRecord === void 0 ? void 0 : empTwoNHIFRecord.amount.value).toBe(850);
     });
     it('Should ensure employee with nsitf is defined and successfully added to remittances', async () => {
         var _a, _b, _c;
@@ -87,9 +87,9 @@ describe('Process Bonus (e2e)', () => {
         expect((_d = pension1 === null || pension1 === void 0 ? void 0 : pension1.employerContribution) === null || _d === void 0 ? void 0 : _d.value).toBe(10000);
         expect(pension1 === null || pension1 === void 0 ? void 0 : pension1.remittanceEnabled).toBeFalsy();
         expect(pension2).toBeDefined();
-        expect(pension2 === null || pension2 === void 0 ? void 0 : pension2.amount.value).toBe(12000);
+        expect(pension2 === null || pension2 === void 0 ? void 0 : pension2.amount.value).toBe(5200);
         expect((_e = pension2 === null || pension2 === void 0 ? void 0 : pension2.employeeContribution) === null || _e === void 0 ? void 0 : _e.value).toBe(0);
-        expect((_f = pension2 === null || pension2 === void 0 ? void 0 : pension2.employerContribution) === null || _f === void 0 ? void 0 : _f.value).toBe(12000);
+        expect((_f = pension2 === null || pension2 === void 0 ? void 0 : pension2.employerContribution) === null || _f === void 0 ? void 0 : _f.value).toBe(5200);
         expect(pension2 === null || pension2 === void 0 ? void 0 : pension2.remittanceEnabled).toBeTruthy();
     });
 });

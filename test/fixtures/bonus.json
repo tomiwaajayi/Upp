@@ -188,9 +188,9 @@
           "useOrgSalaryBreakdown": false,
           "remittances": {
             "pension": {
-              "enabled": true,
+              "enabled": false,
               "type": "quote",
-              "remit": true
+              "remit": false
             },
             "itf": {
               "enabled": false,

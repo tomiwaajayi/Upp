@@ -68,5 +68,5 @@ class KenyaPensionService extends base_service_1.BaseCountryPensionService {
     }
 }
 exports.KenyaPensionService = KenyaPensionService;
-KenyaPensionService.country = 'Kenya';
+KenyaPensionService.country = 'KE';
 //# sourceMappingURL=kenya-pension.service.js.map

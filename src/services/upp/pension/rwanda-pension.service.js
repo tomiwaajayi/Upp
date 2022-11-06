@@ -84,5 +84,5 @@ class RwandaPensionService extends base_service_1.BaseCountryPensionService {
     }
 }
 exports.RwandaPensionService = RwandaPensionService;
-RwandaPensionService.country = 'Rwanda';
+RwandaPensionService.country = 'RW';
 //# sourceMappingURL=rwanda-pension.service.js.map

@@ -19,6 +19,8 @@ class PayrollBuilder {
         this.meta = data.meta;
         this.payroll = {
             ...data.payrollInit,
+            totalBase: {},
+            totalStatutories: {},
         };
     }
     /**
@@ -64,6 +66,14 @@ class PayrollBuilder {
      */
     get() {
         Promise.all(this.employees.map((employee) => {
+            const currency = employee.currency.toUpperCase();
+            // init employee base
+            employee.base = employee.base || {
+                value: employee.salary || 0,
+                currency,
+            };
+            // get total base
+            this.payroll.totalBase[currency] = money_interface_1.Money.add(employee.base, this.payroll.totalBase[currency] || { value: 0, currency });
             // employee processes goes here
             this.buildPartA(employee)
                 .buildPartB(employee)
@@ -89,24 +99,36 @@ class PayrollBuilder {
     processBonuses(employee) {
         if ((0, lodash_1.isEmpty)(employee.bonuses))
             return;
+        const currency = employee.base.currency.toUpperCase();
+        const sumBonus = (name, amount) => {
+            this.payroll[name] = this.payroll[name] || {};
+            this.payroll[name][currency] = money_interface_1.Money.add(amount, this.payroll[name][currency] || {
+                value: 0,
+                currency,
+            });
+        };
         const groupedBonuses = (0, lodash_1.groupBy)(employee.bonuses, 'mode');
         if (!(0, lodash_1.isEmpty)(groupedBonuses[employee_interface_1.BonusSalaryModeEnum.Quick])) {
             employee.bonuses = groupedBonuses[employee_interface_1.BonusSalaryModeEnum.Quick];
             employee.totalBonus = money_interface_1.Money.addMany(employee.bonuses, 'amount');
+            sumBonus('totalBonus', employee.totalBonus);
         }
         if (!(0, lodash_1.isEmpty)(groupedBonuses[employee_interface_1.BonusSalaryModeEnum.UnTaxed])) {
             employee.untaxedBonuses = groupedBonuses[employee_interface_1.BonusSalaryModeEnum.UnTaxed];
             employee.totalUntaxedBonus = money_interface_1.Money.addMany(employee.untaxedBonuses, 'amount');
+            sumBonus('totalUntaxedBonus', employee.totalUntaxedBonus);
         }
         if (!(0, lodash_1.isEmpty)(groupedBonuses[employee_interface_1.BonusSalaryModeEnum.ExtraMonth])) {
             employee.extraMonthBonus =
                 groupedBonuses[employee_interface_1.BonusSalaryModeEnum.ExtraMonth][0];
             employee.totalExtraMonthBonus = employee.extraMonthBonus.amount;
+            sumBonus('totalExtraMonthBonus', employee.totalExtraMonthBonus);
         }
         if (!(0, lodash_1.isEmpty)(groupedBonuses[employee_interface_1.BonusSalaryModeEnum.LeaveAllowance])) {
             employee.leaveAllowance =
                 groupedBonuses[employee_interface_1.BonusSalaryModeEnum.LeaveAllowance][0];
             employee.totalLeaveAllowance = employee.leaveAllowance.amount;
+            sumBonus('totalLeaveAllowance', employee.totalLeaveAllowance);
         }
     }
     /**
@@ -140,6 +162,7 @@ class PayrollBuilder {
                 amount: baseIncomeWithITF,
             });
             employee.remittances = remittances;
+            this.updatePayrollStatutoryTotal(payroll_interface_1.CountryISO.Nigeria, payroll_interface_1.CountryStatutories.ITF, baseIncomeWithITF);
         }
         // ->> end ITF
         // NHF
@@ -163,9 +186,36 @@ class PayrollBuilder {
                     amount: nhfContribution,
                 });
                 employee.remittances = remittances;
+                this.updatePayrollStatutoryTotal(payroll_interface_1.CountryISO.Nigeria, payroll_interface_1.CountryStatutories.NHF, nhfContribution);
             }
         }
         // --> end NHF
+        // NSITF
+        const nsitfRecord = !(0, lodash_1.isEmpty)(group)
+            ? group.remittances && group.remittances[payroll_interface_1.CountryStatutories.NSITF]
+            : this.organizationSettings.remittances[payroll_interface_1.CountryStatutories.NSITF];
+        if (nsitfRecord && nsitfRecord.enabled) {
+            let grossSalary = base;
+            if (this.organizationSettings.isTotalNsitfEnumeration) {
+                const { totalBonus, totalLeaveAllowance } = employee;
+                grossSalary = money_interface_1.Money.addMany([base, totalBonus, totalLeaveAllowance]);
+            }
+            const nsitfContribution = money_interface_1.Money.mul(grossSalary, {
+                value: 0.01,
+                currency: grossSalary.currency,
+            });
+            if (nsitfRecord.remit) {
+                const remittances = (employee === null || employee === void 0 ? void 0 : employee.remittances) || [];
+                remittances.push({
+                    name: payroll_interface_1.CountryStatutories.NSITF,
+                    remittanceEnabled: nsitfRecord.remit,
+                    amount: nsitfContribution,
+                });
+                employee.remittances = remittances;
+                this.updatePayrollStatutoryTotal(payroll_interface_1.CountryISO.Nigeria, payroll_interface_1.CountryStatutories.NSITF, nsitfContribution);
+            }
+        }
+        // --> end NSITF
         // NHIF
         const nhifRecord = !(0, lodash_1.isEmpty)(group)
             ? group.remittances && group.remittances[payroll_interface_1.CountryStatutories.NHIF]
@@ -189,34 +239,33 @@ class PayrollBuilder {
                     amount: nhifContribution,
                 });
                 employee.remittances = remittances;
+                this.updatePayrollStatutoryTotal(payroll_interface_1.CountryISO.Kenya, payroll_interface_1.CountryStatutories.NHIF, nhifContribution);
             }
         }
         // --> end NHIF
-        // NSITF
-        const nsitfRecord = !(0, lodash_1.isEmpty)(group)
-            ? group.remittances && group.remittances[payroll_interface_1.CountryStatutories.NSITF]
-            : this.organizationSettings.remittances[payroll_interface_1.CountryStatutories.NSITF];
-        if (nsitfRecord && nsitfRecord.enabled) {
-            let grossSalary = base;
-            if (this.organizationSettings.isTotalNsitfEnumeration) {
-                const { totalBonus, totalLeaveAllowance } = employee;
-                grossSalary = money_interface_1.Money.addMany([base, totalBonus, totalLeaveAllowance]);
+    }
+    updatePayrollStatutoryTotal(country, statutory, currentIncome) {
+        if (this.payroll.totalStatutories[country]) {
+            const cloned = (0, lodash_1.cloneDeep)(this.payroll.totalStatutories[country]);
+            if (this.payroll.totalStatutories[country][statutory]) {
+                const total = money_interface_1.Money.add(currentIncome, this.payroll.totalStatutories[country][statutory]);
+                this.payroll.totalStatutories[country] = {
+                    ...cloned,
+                    [statutory]: total,
+                };
             }
-            const nsitfContribution = money_interface_1.Money.mul(grossSalary, {
-                value: 0.01,
-                currency: grossSalary.currency,
-            });
-            if (nsitfRecord.remit) {
-                const remittances = (employee === null || employee === void 0 ? void 0 : employee.remittances) || [];
-                remittances.push({
-                    name: payroll_interface_1.CountryStatutories.NSITF,
-                    remittanceEnabled: nsitfRecord.remit,
-                    amount: nsitfContribution,
-                });
-                employee.remittances = remittances;
+            else {
+                this.payroll.totalStatutories[country] = {
+                    ...cloned,
+                    [statutory]: currentIncome,
+                };
             }
         }
-        // --> end NSITF
+        else {
+            this.payroll.totalStatutories[country] = {
+                [statutory]: currentIncome,
+            };
+        }
     }
     calculateNHF(salaryBreakdown, grossMonthly, percentage, enableConsolidatedGross) {
         const basicPercent = salaryBreakdown['basic'] || 0;
@@ -306,7 +355,7 @@ class PayrollBuilder {
             ? group.remittances
             : this.organizationSettings.remittances;
         if (remittances && remittances.pension && remittances.pension.enabled) {
-            pesion_service_1.PensionService.process(this.organization.country.name, {
+            pesion_service_1.PensionService.process(employee.country.toUpperCase(), {
                 group,
                 organizationSettings: this.organizationSettings,
                 employee,
