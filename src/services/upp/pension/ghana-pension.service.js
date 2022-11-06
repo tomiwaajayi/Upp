@@ -74,5 +74,5 @@ class GahanaPensionService extends base_service_1.BaseCountryPensionService {
     }
 }
 exports.GahanaPensionService = GahanaPensionService;
-GahanaPensionService.country = 'Ghana';
+GahanaPensionService.country = 'GH';
 //# sourceMappingURL=ghana-pension.service.js.map

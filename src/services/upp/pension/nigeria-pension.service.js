@@ -17,5 +17,5 @@ class NigeriaPensionService extends base_service_1.BaseCountryPensionService {
     }
 }
 exports.NigeriaPensionService = NigeriaPensionService;
-NigeriaPensionService.country = 'Nigeria';
+NigeriaPensionService.country = 'NG';
 //# sourceMappingURL=nigeria-pension.service.js.map

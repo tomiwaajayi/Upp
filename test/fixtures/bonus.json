@@ -119,7 +119,7 @@
         "currency": "NGN",
         "completionStatus": "Payment info pending",
         "createdAt": "2022-10-13T10:46:44.827Z",
-        "country": "gh",
+        "country": "ng",
         "organization": "63401825fb3550d8580f8530",
         "createdBy": "634018244ee4e237f9eb7ea1",
         "id": "6347ec944f8f252ac3cae1e4",
@@ -145,11 +145,66 @@
               "enabled": true,
               "remit": true
             },
-            "nhif": {
+            "nsitf": {
               "enabled": true,
               "remit": true
             },
+            "nhif": {
+              "enabled": false,
+              "remit": false
+            }
+          },
+          "hasSalaryBreakdown": false,
+          "salaryBreakdown": {
+            "basic": 20,
+            "housing": 20,
+            "transport": 20,
+            "salary": 40
+          }
+        }
+      },
+      {
+        "base": {"value": 25000, "currency": "KES"},
+        "workEmail": "zoltofulmo2@vusra.com",
+        "firstName": "Moses",
+        "middleName": "Kenan",
+        "lastName": "James",
+        "phoneNumber": "2349019261257",
+        "department": "Enginerring",
+        "currency": "KES",
+        "completionStatus": "Payment info pending",
+        "createdAt": "2022-10-13T10:46:44.827Z",
+        "country": "ke",
+        "organization": "63401825fb3550d8580f8530",
+        "createdBy": "634018244ee4e237f9eb7ea1",
+        "id": "6347ec944f8f252ac3cae1e5",
+        "pensionId": "f8f252ac3cae1e4",
+        "pensionFundAdmin": "634018244ee4e237f9eb7ea1",
+        "bonuses": [],
+        "deductions": [],
+        "group": {
+          "name": "Manager",
+          "useOrgsettings": false,
+          "useOrgSalaryBreakdown": false,
+          "remittances": {
+            "pension": {
+              "enabled": false,
+              "type": "quote",
+              "remit": false
+            },
+            "itf": {
+              "enabled": false,
+              "remit": false
+            },
+            "nhf": {
+              "enabled": false,
+              "remit": false
+            },
             "nsitf": {
+              "enabled": false,
+              "remit": false
+            },
+            "nhif": {
               "enabled": true,
               "remit": true
             }

@@ -33,7 +33,7 @@ export interface IPayroll {
   totalExtraMonthBonus?: Record<string, IMoney>;
   totalLeaveAllowance?: Record<string, IMoney>;
   totalBase: Record<string, IMoney>;
-  totalStatutories?: Record<string, IMoney>;
+  totalStatutories: Record<string, Record<string, IMoney>>;
   totalPension?: Record<string, IMoney>;
 }
 
@@ -109,4 +109,9 @@ export interface OrganizationSettings {
   excessPensionToTierThree?: boolean;
   medicalEnabled?: boolean;
   pensionDeductType?: string;
+}
+
+export enum CountryISO {
+  Nigeria = 'ng',
+  Kenya = 'ke',
 }
