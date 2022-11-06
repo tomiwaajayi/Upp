@@ -1,4 +1,4 @@
-import {cloneDeep, groupBy, isEmpty} from 'lodash';
+import {cloneDeep, groupBy, isEmpty, keyBy} from 'lodash';
 import {
   BonusSalaryModeEnum,
   IGroup,
@@ -14,6 +14,7 @@ import {
   OrganizationSettings,
   PayrollSalaryAddon,
 } from '../../interfaces/payroll/payroll.interface';
+import {UtilService} from '../util.service';
 import {BuilderPayload, IPayrollBuilder} from './builder.interface';
 import {PensionService} from './pension/pesion.service';
 
@@ -84,6 +85,7 @@ export class PayrollBuilder implements IPayrollBuilder {
    */
   protected buildPartD(employee: IPayrollEmployee) {
     this.processTax(employee);
+    this.processNetSalaryAndTotalCharge(employee);
     return this;
   }
 
@@ -147,14 +149,20 @@ export class PayrollBuilder implements IPayrollBuilder {
     ) => {
       this.payroll[name] = this.payroll[name] || {};
       (this.payroll[name] as Record<string, IMoney>)[currency] = Money.add(
-        amount,
         (this.payroll[name] as Record<string, IMoney>)[currency] || {
           value: 0,
           currency,
-        }
+        },
+        amount
       );
     };
-    const groupedBonuses = groupBy(employee.bonuses, 'mode');
+    const groupedBonuses = groupBy(employee.bonuses, bonus => {
+      if (typeof bonus.amount === 'number') {
+        bonus.amount = {value: bonus.amount, currency};
+      }
+
+      return bonus.mode;
+    });
     if (!isEmpty(groupedBonuses[BonusSalaryModeEnum.Quick])) {
       employee.bonuses = groupedBonuses[BonusSalaryModeEnum.Quick];
 
@@ -485,6 +493,68 @@ export class PayrollBuilder implements IPayrollBuilder {
         employee,
         payroll: this.payroll,
       });
+    }
+  }
+
+  /**
+   * Process net salary for all countries
+   * Should implement a factory design pattenr
+   * https://sbcode.net/typescript/factory/
+   */
+  processNetSalaryAndTotalCharge(employee: IPayrollEmployee): void {
+    const remittancesKeyedByName = keyBy(employee.remittances || [], 'name');
+
+    employee.netSalary = cloneDeep(employee.base);
+
+    const bonus = Money.addMany(
+      UtilService.cleanArray([
+        {value: 0, currency: employee.base.currency},
+        employee.totalBonus,
+        employee.totalExtraMonthBonus,
+        employee.totalUntaxedBonus,
+        employee.totalLeaveAllowance,
+      ])
+    );
+
+    employee.netSalary = Money.addMany(
+      UtilService.cleanArray([employee.netSalary, bonus])
+    );
+
+    if (this.payroll.payItem.bonus) {
+      this.payroll.totalCharge = Money.addMany(
+        UtilService.cleanArray([this.payroll.totalCharge, bonus])
+      );
+    }
+
+    if (employee.totalDeductions) {
+      employee.netSalary = Money.sub(
+        employee.netSalary,
+        employee.totalDeductions
+      );
+    }
+
+    const pension = remittancesKeyedByName['pension'];
+    if (
+      pension &&
+      pension.remittanceEnabled &&
+      pension.amount.value < employee.netSalary.value
+    ) {
+      employee.netSalary = Money.sub(employee.netSalary, pension.amount);
+
+      if (this.payroll.payItem.pension) {
+        this.payroll.totalCharge = Money.addMany(
+          UtilService.cleanArray([pension.amount, this.payroll.totalCharge])
+        );
+      }
+    }
+
+    if (this.payroll.payItem.base) {
+      this.payroll.totalCharge = Money.addMany(
+        UtilService.cleanArray([
+          Money.sub(employee.netSalary, bonus),
+          this.payroll.totalCharge,
+        ])
+      );
     }
   }
 }

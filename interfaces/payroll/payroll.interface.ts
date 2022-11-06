@@ -38,9 +38,10 @@ export interface IPayroll {
 }
 
 export interface IPayrollEmployee extends Employee {
-  remitanceEnabled?: true;
+  remitanceEnabled?: boolean;
   base: IMoney;
   bonuses?: EmployeeSalaryAddon[];
+  netSalary?: IMoney;
   totalBonus?: IMoney;
   untaxedBonuses?: EmployeeSalaryAddon[];
   totalUntaxedBonus?: IMoney;
@@ -91,6 +92,8 @@ export interface PayItem {
   nhif: PayItemStatus | string;
   itf: PayItemStatus | string;
   nsitf: PayItemStatus | string;
+  base?: PayItemStatus | string;
+  bonus?: PayItemStatus | string;
 }
 
 export interface PayrollSalaryAddon {

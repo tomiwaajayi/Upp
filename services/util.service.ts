@@ -197,4 +197,8 @@ export class UtilService {
       ssl: configuration.kafka.ssl,
     };
   }
+
+  static cleanArray<T>(arr: T[]) {
+    return arr.filter(item => Boolean(item));
+  }
 }

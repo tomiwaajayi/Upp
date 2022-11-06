@@ -9,7 +9,7 @@ export class BaseCountryPensionService implements CountryPensionService {
   ) {}
 
   process(context: ProcessPensionPayload): void {
-    const {group, organizationSettings, employee} = context;
+    const {group, organizationSettings, employee, payroll} = context;
     const pension =
       (group ? group : organizationSettings).remittances?.pension || {};
     const pensionType = (pension as IRemitance).type as 'deduct' | 'quote';
@@ -40,31 +40,31 @@ export class BaseCountryPensionService implements CountryPensionService {
     }
 
     if (remittance) {
-      context.payroll.totalPension = context.payroll.totalPension || {};
-      context.payroll.totalPension[remittance.amount.currency] = Money.add(
+      payroll.totalPension = payroll.totalPension || {};
+      payroll.totalPension[remittance.amount.currency] = Money.add(
         remittance.amount,
-        context.payroll.totalPension[remittance.amount.currency] || {
+        payroll.totalPension[remittance.amount.currency] || {
           value: 0,
           currency: remittance.amount.currency,
         }
       );
 
       if (remittance?.remittanceEnabled) {
+        employee.remitanceEnabled = remittance.remittanceEnabled;
         employee.remittances = [...remittances, remittance];
-        context.payroll.remittances = context.payroll.remittances || {};
-        context.payroll.remittances[employee.currency] =
-          context.payroll.remittances[employee.currency] || {};
+        payroll.remittances = payroll.remittances || {};
+        payroll.remittances[employee.currency] =
+          payroll.remittances[employee.currency] || {};
 
-        context.payroll.remittances[employee.currency][remittance.name] =
-          context.payroll.remittances[employee.currency][remittance.name] || {
-            ...remittance,
-            amount: {value: 0, currency: employee.base.currency},
-          };
+        payroll.remittances[employee.currency][remittance.name] = payroll
+          .remittances[employee.currency][remittance.name] || {
+          ...remittance,
+          amount: {value: 0, currency: employee.base.currency},
+        };
 
-        context.payroll.remittances[employee.currency][remittance.name].amount =
+        payroll.remittances[employee.currency][remittance.name].amount =
           Money.add(
-            context.payroll.remittances[employee.currency][remittance.name]
-              .amount,
+            payroll.remittances[employee.currency][remittance.name].amount,
             remittance.amount
           );
       }
