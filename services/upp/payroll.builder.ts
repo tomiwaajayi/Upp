@@ -40,6 +40,7 @@ export class PayrollBuilder implements IPayrollBuilder {
     this.meta = data.meta;
     this.payroll = {
       ...data.payrollInit,
+      totalBase: {},
     };
   }
 
@@ -91,11 +92,18 @@ export class PayrollBuilder implements IPayrollBuilder {
   get() {
     Promise.all(
       this.employees.map((employee: IPayrollEmployee) => {
+        const currency = employee.currency.toUpperCase();
         // init employee base
         employee.base = employee.base || {
           value: employee.salary || 0,
-          currency: employee.currency.toUpperCase(),
+          currency,
         };
+
+        // get total base
+        this.payroll.totalBase[currency] = Money.add(
+          employee.base,
+          this.payroll.totalBase[currency] || {value: 0, currency}
+        );
 
         // employee processes goes here
         this.buildPartA(employee)
