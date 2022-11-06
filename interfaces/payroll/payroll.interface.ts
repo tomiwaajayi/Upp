@@ -29,7 +29,7 @@ export interface IPayroll {
   hasProrates?: boolean;
   totalCharge?: IMoney;
   totalBase: Record<string, IMoney>;
-  totalStatutories?: Record<string, IMoney>;
+  totalStatutories: Record<string, Record<string, IMoney>>;
 }
 
 export interface IPayrollEmployee extends Employee {
@@ -104,4 +104,9 @@ export interface OrganizationSettings {
   excessPensionToTierThree?: boolean;
   medicalEnabled?: boolean;
   pensionDeductType?: string;
+}
+
+export enum CountryISO {
+  Nigeria = 'ng',
+  Kenya = 'ke',
 }

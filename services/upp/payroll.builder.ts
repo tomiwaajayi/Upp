@@ -1,4 +1,4 @@
-import {groupBy, isEmpty} from 'lodash';
+import {cloneDeep, groupBy, isEmpty} from 'lodash';
 import {
   BonusSalaryModeEnum,
   IGroup,
@@ -6,6 +6,7 @@ import {
 import {Organization} from '../../interfaces/account/organization.interface';
 import {IMoney, Money} from '../../interfaces/payment/money.interface';
 import {
+  CountryISO,
   CountryStatutories,
   IPayroll,
   IPayrollEmployee,
@@ -41,6 +42,7 @@ export class PayrollBuilder implements IPayrollBuilder {
     this.payroll = {
       ...data.payrollInit,
       totalBase: {},
+      totalStatutories: {},
     };
   }
 
@@ -207,8 +209,9 @@ export class PayrollBuilder implements IPayrollBuilder {
       employee.remittances = remittances;
 
       this.updatePayrollStatutoryTotal(
-        baseIncomeWithITF,
-        CountryStatutories.ITF
+        CountryISO.Nigeria,
+        CountryStatutories.ITF,
+        baseIncomeWithITF
       );
     }
     // ->> end ITF
@@ -248,12 +251,51 @@ export class PayrollBuilder implements IPayrollBuilder {
         employee.remittances = remittances;
 
         this.updatePayrollStatutoryTotal(
-          nhfContribution,
-          CountryStatutories.NHF
+          CountryISO.Nigeria,
+          CountryStatutories.NHF,
+          nhfContribution
         );
       }
     }
     // --> end NHF
+
+    // NSITF
+    const nsitfRecord = !isEmpty(group)
+      ? group.remittances && group.remittances[CountryStatutories.NSITF]
+      : this.organizationSettings.remittances[CountryStatutories.NSITF];
+
+    if (nsitfRecord && nsitfRecord.enabled) {
+      let grossSalary = base;
+
+      if (this.organizationSettings.isTotalNsitfEnumeration) {
+        const {totalBonus, totalLeaveAllowance} = employee;
+        grossSalary = Money.addMany([base, totalBonus, totalLeaveAllowance]);
+      }
+
+      const nsitfContribution = Money.mul(grossSalary, {
+        value: 0.01,
+        currency: grossSalary.currency,
+      });
+
+      if (nsitfRecord.remit) {
+        const remittances = employee?.remittances || [];
+
+        remittances.push({
+          name: CountryStatutories.NSITF,
+          remittanceEnabled: nsitfRecord.remit,
+          amount: nsitfContribution,
+        });
+
+        employee.remittances = remittances;
+
+        this.updatePayrollStatutoryTotal(
+          CountryISO.Nigeria,
+          CountryStatutories.NSITF,
+          nsitfContribution
+        );
+      }
+    }
+    // --> end NSITF
 
     // NHIF
     const nhifRecord = !isEmpty(group)
@@ -286,73 +328,42 @@ export class PayrollBuilder implements IPayrollBuilder {
         employee.remittances = remittances;
 
         this.updatePayrollStatutoryTotal(
-          nhifContribution,
-          CountryStatutories.NHIF
+          CountryISO.Kenya,
+          CountryStatutories.NHIF,
+          nhifContribution
         );
       }
     }
     // --> end NHIF
-
-    // NSITF
-    const nsitfRecord = !isEmpty(group)
-      ? group.remittances && group.remittances[CountryStatutories.NSITF]
-      : this.organizationSettings.remittances[CountryStatutories.NSITF];
-
-    if (nsitfRecord && nsitfRecord.enabled) {
-      let grossSalary = base;
-
-      if (this.organizationSettings.isTotalNsitfEnumeration) {
-        const {totalBonus, totalLeaveAllowance} = employee;
-        grossSalary = Money.addMany([base, totalBonus, totalLeaveAllowance]);
-      }
-
-      const nsitfContribution = Money.mul(grossSalary, {
-        value: 0.01,
-        currency: grossSalary.currency,
-      });
-
-      if (nsitfRecord.remit) {
-        const remittances = employee?.remittances || [];
-
-        remittances.push({
-          name: CountryStatutories.NSITF,
-          remittanceEnabled: nsitfRecord.remit,
-          amount: nsitfContribution,
-        });
-
-        employee.remittances = remittances;
-
-        this.updatePayrollStatutoryTotal(
-          nsitfContribution,
-          CountryStatutories.NSITF
-        );
-      }
-    }
-    // --> end NSITF
   }
 
   protected updatePayrollStatutoryTotal(
-    currentIncome: IMoney,
-    statutory: CountryStatutories
+    country: string,
+    statutory: CountryStatutories,
+    currentIncome: IMoney
   ) {
-    let total = (this.payroll.totalStatutories &&
-      this.payroll.totalStatutories[statutory]) || {
-      value: 0,
-      currency: currentIncome.currency,
-    };
-
-    if (total) {
-      total = Money.add(currentIncome, total);
-    }
-
-    if (this.payroll.totalStatutories) {
-      this.payroll.totalStatutories[statutory] = total;
+    if (this.payroll.totalStatutories[country]) {
+      const cloned = cloneDeep(this.payroll.totalStatutories[country]);
+      if (this.payroll.totalStatutories[country][statutory]) {
+        const total = Money.add(
+          currentIncome,
+          this.payroll.totalStatutories[country][statutory]
+        );
+        this.payroll.totalStatutories[country] = {
+          ...cloned,
+          [statutory]: total,
+        };
+      } else {
+        this.payroll.totalStatutories[country] = {
+          ...cloned,
+          [statutory]: currentIncome,
+        };
+      }
     } else {
-      this.payroll.totalStatutories = {
-        [statutory]: total,
+      this.payroll.totalStatutories[country] = {
+        [statutory]: currentIncome,
       };
     }
-    return this;
   }
 
   calculateNHF(

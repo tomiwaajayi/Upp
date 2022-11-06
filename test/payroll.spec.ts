@@ -90,7 +90,7 @@ describe('Process Bonus (e2e)', () => {
 
     expect(payroll.employees[0]?.group).toBeUndefined();
     expect(
-      (payroll.employees[1] as IEmployeeWithGroup).group.remittances
+      (payroll.employees[2] as IEmployeeWithGroup).group.remittances
     ).toBeDefined();
 
     const empOneNHIFRecord = payroll.employees[0].remittances?.find(
@@ -98,12 +98,12 @@ describe('Process Bonus (e2e)', () => {
     );
     expect(empOneNHIFRecord).toBeUndefined();
 
-    const empTwoNHIFRecord = payroll.employees[1].remittances?.find(
+    const empTwoNHIFRecord = payroll.employees[2].remittances?.find(
       record => record.name === CountryStatutories.NHIF
     );
 
     expect(empTwoNHIFRecord?.remittanceEnabled).toBe(true);
-    expect(empTwoNHIFRecord?.amount.value).toBe(1700);
+    expect(empTwoNHIFRecord?.amount.value).toBe(850);
   });
 
   it('Should ensure employee with nsitf is defined and successfully added to remittances', async () => {
