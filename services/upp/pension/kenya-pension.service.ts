@@ -8,7 +8,7 @@ export class KenyaPensionService extends BaseCountryPensionService {
     super(PENSION.KENYA.EMPLOYEE_PERCENT, PENSION.KENYA.EMPLOYER_PERCENT);
   }
 
-  static country = 'Kenya';
+  static country = 'KE';
 
   calculatePension(
     _breakdown: Record<string, number>,

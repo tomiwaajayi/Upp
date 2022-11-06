@@ -446,7 +446,7 @@ export class PayrollBuilder implements IPayrollBuilder {
       ? group.remittances
       : this.organizationSettings.remittances;
     if (remittances && remittances.pension && remittances.pension.enabled) {
-      PensionService.process(this.organization.country.name, {
+      PensionService.process(employee.country.toUpperCase(), {
         group,
         organizationSettings: this.organizationSettings,
         employee,

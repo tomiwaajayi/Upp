@@ -8,7 +8,7 @@ export class RwandaPensionService extends BaseCountryPensionService {
     super(PENSION.RWANDA.EMPLOYEE_PERCENT, PENSION.RWANDA.EMPLOYER_PERCENT);
   }
 
-  static country = 'Rwanda';
+  static country = 'RW';
 
   calculatePension(
     _breakdown: Record<string, number>,
