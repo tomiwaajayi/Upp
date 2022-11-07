@@ -35,7 +35,7 @@ describe('Process Payroll (e2e)', () => {
       },
     });
     expect(payroll.totalStatutories).toEqual({
-      ng: {
+      NGN: {
         itf: {
           value: 1000,
           currency: 'NGN',
@@ -49,7 +49,7 @@ describe('Process Payroll (e2e)', () => {
           currency: 'NGN',
         },
       },
-      ke: {
+      KES: {
         nhif: {
           value: 850,
           currency: 'KES',
@@ -98,21 +98,47 @@ describe('Process Payroll (e2e)', () => {
     });
     expect(payroll.remittances).toEqual({
       NGN: {
+        itf: {
+          name: 'itf',
+          remittanceEnabled: true,
+          amount: {
+            value: 1000,
+            currency: 'NGN',
+          },
+        },
+        nhf: {
+          name: 'nhf',
+          remittanceEnabled: true,
+          amount: {
+            value: 60000,
+            currency: 'NGN',
+          },
+        },
+        nsitf: {
+          name: 'nsitf',
+          remittanceEnabled: true,
+          amount: {
+            value: 1000,
+            currency: 'NGN',
+          },
+        },
         pension: {
+          name: 'pension',
+          remittanceEnabled: true,
           amount: {
             value: 12000,
             currency: 'NGN',
           },
-          name: 'pension',
-          employeeContribution: {
-            value: 0,
-            currency: 'NGN',
-          },
-          employerContribution: {
-            value: 12000,
-            currency: 'NGN',
-          },
+        },
+      },
+      KES: {
+        nhif: {
+          name: 'nhif',
           remittanceEnabled: true,
+          amount: {
+            value: 850,
+            currency: 'KES',
+          },
         },
       },
     });

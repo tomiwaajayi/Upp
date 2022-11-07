@@ -6,7 +6,6 @@ import {
 import {Organization} from '../../interfaces/account/organization.interface';
 import {IMoney, Money} from '../../interfaces/payment/money.interface';
 import {
-  CountryISO,
   CountryStatutories,
   IPayroll,
   IPayrollEmployee,
@@ -544,7 +543,7 @@ export class PayrollBuilder implements IPayrollBuilder {
     }
 
     /************
-     * Base    *
+     * Base     *
      ************/
     this.payroll.totalBase[currency] = Money.add(
       employee.base,
@@ -565,14 +564,31 @@ export class PayrollBuilder implements IPayrollBuilder {
     /****************
      * Statutory    *
      ****************/
+    const addRemittance = (name: string, amount: IMoney) => {
+      this.payroll.remittances = this.payroll.remittances || {};
+      this.payroll.remittances[currency] =
+        this.payroll.remittances[currency] || {};
+      this.payroll.remittances[currency][name] = this.payroll.remittances[
+        currency
+      ][name] || {
+        name,
+        remittanceEnabled: true,
+        amount: zeroMoney,
+      };
+      this.payroll.remittances[currency][name].amount = Money.add(
+        amount,
+        this.payroll.remittances[currency][name].amount
+      );
+    };
     Object.values(CountryStatutories).forEach(countryStatutory => {
       const statutory = remittancesKeyedByName[countryStatutory];
       if (statutory) {
         this.updatePayrollStatutoryTotal(
-          employee.country,
+          currency,
           countryStatutory,
           statutory.amount
         );
+        addRemittance(countryStatutory, statutory.amount);
 
         if (
           this.payroll.payItem[countryStatutory] &&
@@ -588,19 +604,28 @@ export class PayrollBuilder implements IPayrollBuilder {
       }
     });
 
+    /***************
+     * Pension     *
+     ***************/
     const pension = remittancesKeyedByName['pension'];
-    if (
-      this.payroll.payItem.pension &&
-      pension &&
-      pension.remittanceEnabled &&
-      pension.amount.value < (employee.netSalary?.value || 0)
-    ) {
-      this.payroll.totalCharge[currency] = Money.addMany(
-        UtilService.cleanArray([
-          pension.amount,
-          this.payroll.totalCharge[currency],
-        ])
+    if (pension && pension.amount.value < (employee.netSalary?.value || 0)) {
+      this.payroll.totalPension = this.payroll.totalPension || {};
+      this.payroll.totalPension[currency] = Money.add(
+        pension.amount,
+        this.payroll.totalPension[currency] || zeroMoney
       );
+
+      if (pension.remittanceEnabled) {
+        addRemittance(pension.name, pension.amount);
+        if (this.payroll.payItem.pension) {
+          this.payroll.totalCharge[currency] = Money.addMany(
+            UtilService.cleanArray([
+              pension.amount,
+              this.payroll.totalCharge[currency],
+            ])
+          );
+        }
+      }
     }
   }
 }

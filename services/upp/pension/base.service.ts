@@ -39,35 +39,9 @@ export class BaseCountryPensionService implements CountryPensionService {
       };
     }
 
-    if (remittance) {
-      payroll.totalPension = payroll.totalPension || {};
-      payroll.totalPension[remittance.amount.currency] = Money.add(
-        remittance.amount,
-        payroll.totalPension[remittance.amount.currency] || {
-          value: 0,
-          currency: remittance.amount.currency,
-        }
-      );
-
-      if (remittance?.remittanceEnabled) {
-        employee.remitanceEnabled = remittance.remittanceEnabled;
-        employee.remittances = [...remittances, remittance];
-        payroll.remittances = payroll.remittances || {};
-        payroll.remittances[employee.currency] =
-          payroll.remittances[employee.currency] || {};
-
-        payroll.remittances[employee.currency][remittance.name] = payroll
-          .remittances[employee.currency][remittance.name] || {
-          ...remittance,
-          amount: {value: 0, currency: employee.base.currency},
-        };
-
-        payroll.remittances[employee.currency][remittance.name].amount =
-          Money.add(
-            payroll.remittances[employee.currency][remittance.name].amount,
-            remittance.amount
-          );
-      }
+    if (remittance && remittance?.remittanceEnabled) {
+      employee.remitanceEnabled = remittance.remittanceEnabled;
+      employee.remittances = [...remittances, remittance];
     }
   }
 

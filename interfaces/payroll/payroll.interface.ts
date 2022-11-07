@@ -28,13 +28,13 @@ export interface IPayroll {
   employees?: IPayrollEmployee[];
   remittances?: Record<string, Record<string, IPayrollRemittance>>;
   hasProrates?: boolean;
-  totalCharge?: Record<string, IMoney>; // yes
-  totalBonus?: Record<string, IMoney>; // yes
-  totalUntaxedBonus?: Record<string, IMoney>; // yes
-  totalExtraMonthBonus?: Record<string, IMoney>; // yes
-  totalLeaveAllowance?: Record<string, IMoney>; // yes
-  totalBase: Record<string, IMoney>; // yes
-  totalStatutories: Record<string, Record<string, IMoney>>; // yes
+  totalCharge?: Record<string, IMoney>;
+  totalBonus?: Record<string, IMoney>;
+  totalUntaxedBonus?: Record<string, IMoney>;
+  totalExtraMonthBonus?: Record<string, IMoney>;
+  totalLeaveAllowance?: Record<string, IMoney>;
+  totalBase: Record<string, IMoney>;
+  totalStatutories: Record<string, Record<string, IMoney>>;
   totalPension?: Record<string, IMoney>;
 }
 
