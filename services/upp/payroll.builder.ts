@@ -112,12 +112,6 @@ export class PayrollBuilder implements IPayrollBuilder {
           currency,
         };
 
-        // get total base
-        this.payroll.totalBase[currency] = Money.add(
-          employee.base,
-          this.payroll.totalBase[currency] || {value: 0, currency}
-        );
-
         // employee processes goes here
         this.buildPartA(employee)
           .buildPartB(employee)
@@ -542,27 +536,45 @@ export class PayrollBuilder implements IPayrollBuilder {
     /************
      * Bonus    *
      ************/
+    [
+      ['totalBonus', employee.totalBonus],
+      ['totalUntaxedBonus', employee.totalUntaxedBonus],
+      ['totalLeaveAllowance', employee.totalLeaveAllowance],
+      ['totalExtraMonthBonus', employee.totalExtraMonthBonus],
+    ].forEach(([_name, amount]) => {
+      if (amount) {
+        const name = _name as 'totalBonus';
+        this.payroll[name] = this.payroll[name] || {};
+        (this.payroll[name] as Record<string, IMoney>)[currency] = Money.add(
+          (this.payroll[name] as Record<string, IMoney>)[currency] || zeroMoney,
+          amount as IMoney
+        );
+      }
+    });
     if (this.payroll.payItem.bonus) {
-      [
-        ['totalBonus', employee.totalBonus],
-        ['totalUntaxedBonus', employee.totalUntaxedBonus],
-        ['totalLeaveAllowance', employee.totalLeaveAllowance],
-        ['totalExtraMonthBonus', employee.totalExtraMonthBonus],
-      ].forEach(([_name, amount]) => {
-        if (amount) {
-          const name = _name as 'totalBonus';
-          this.payroll[name] = this.payroll[name] || {};
-          (this.payroll[name] as Record<string, IMoney>)[currency] = Money.add(
-            (this.payroll[name] as Record<string, IMoney>)[currency] ||
-              zeroMoney,
-            amount as IMoney
-          );
-        }
-      });
       this.payroll.totalCharge[currency] = Money.addMany(
         UtilService.cleanArray([
           this.payroll.totalCharge[currency],
           employee.sumOfBonus,
+        ])
+      );
+    }
+
+    /************
+     * Base    *
+     ************/
+    this.payroll.totalBase[currency] = Money.add(
+      employee.base,
+      this.payroll.totalBase[currency] || zeroMoney
+    );
+    if (this.payroll.payItem.base) {
+      this.payroll.totalCharge[currency] = Money.addMany(
+        UtilService.cleanArray([
+          Money.sub(
+            employee.netSalary as IMoney,
+            employee.sumOfBonus as IMoney
+          ),
+          this.payroll.totalCharge[currency],
         ])
       );
     }
@@ -577,18 +589,6 @@ export class PayrollBuilder implements IPayrollBuilder {
       this.payroll.totalCharge[currency] = Money.addMany(
         UtilService.cleanArray([
           pension.amount,
-          this.payroll.totalCharge[currency],
-        ])
-      );
-    }
-
-    if (this.payroll.payItem.base) {
-      this.payroll.totalCharge[currency] = Money.addMany(
-        UtilService.cleanArray([
-          Money.sub(
-            employee.netSalary as IMoney,
-            employee.sumOfBonus as IMoney
-          ),
           this.payroll.totalCharge[currency],
         ])
       );

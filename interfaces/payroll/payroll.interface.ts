@@ -33,7 +33,7 @@ export interface IPayroll {
   totalUntaxedBonus?: Record<string, IMoney>; // yes
   totalExtraMonthBonus?: Record<string, IMoney>; // yes
   totalLeaveAllowance?: Record<string, IMoney>; // yes
-  totalBase: Record<string, IMoney>;
+  totalBase: Record<string, IMoney>; // yes
   totalStatutories: Record<string, Record<string, IMoney>>;
   totalPension?: Record<string, IMoney>;
 }
