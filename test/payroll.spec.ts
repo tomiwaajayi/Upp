@@ -7,7 +7,7 @@ import {IEmployeeWithGroup} from '../interfaces/account/employee.interface';
 import {CountryStatutories} from '../interfaces/payroll/payroll.interface';
 import {IMoney} from '../interfaces/payment/money.interface';
 
-describe('Process Bonus (e2e)', () => {
+describe('Process Payroll (e2e)', () => {
   let data: BuilderPayload;
 
   beforeEach(async () => {
@@ -19,6 +19,103 @@ describe('Process Bonus (e2e)', () => {
       payrollInit: entities.data,
       organizationSettings: entities.orgSettings,
     };
+  });
+
+  it('should calculate payroll totals', () => {
+    const payroll = PayrollDirector.build(data);
+
+    expect(payroll.totalBase).toEqual({
+      NGN: {
+        value: 200000,
+        currency: 'NGN',
+      },
+      KES: {
+        value: 25000,
+        currency: 'KES',
+      },
+    });
+    expect(payroll.totalStatutories).toEqual({
+      ng: {
+        itf: {
+          value: 1000,
+          currency: 'NGN',
+        },
+        nhf: {
+          value: 60000,
+          currency: 'NGN',
+        },
+        nsitf: {
+          value: 1000,
+          currency: 'NGN',
+        },
+      },
+      ke: {
+        nhif: {
+          value: 850,
+          currency: 'KES',
+        },
+      },
+    });
+    expect(payroll.totalBonus).toEqual({
+      NGN: {
+        value: 2500,
+        currency: 'NGN',
+      },
+    });
+    expect(payroll.totalUntaxedBonus).toEqual({
+      NGN: {
+        value: 5500,
+        currency: 'NGN',
+      },
+    });
+    expect(payroll.totalExtraMonthBonus).toEqual({
+      NGN: {
+        value: 10000,
+        currency: 'NGN',
+      },
+    });
+    expect(payroll.totalLeaveAllowance).toEqual({
+      NGN: {
+        value: 7500,
+        currency: 'NGN',
+      },
+    });
+    expect(payroll.totalPension).toEqual({
+      NGN: {
+        value: 30000,
+        currency: 'NGN',
+      },
+    });
+    expect(payroll.totalCharge).toEqual({
+      NGN: {
+        value: 225500,
+        currency: 'NGN',
+      },
+      KES: {
+        value: 25000,
+        currency: 'KES',
+      },
+    });
+    expect(payroll.remittances).toEqual({
+      NGN: {
+        pension: {
+          amount: {
+            value: 12000,
+            currency: 'NGN',
+          },
+          name: 'pension',
+          employeeContribution: {
+            value: 0,
+            currency: 'NGN',
+          },
+          employerContribution: {
+            value: 12000,
+            currency: 'NGN',
+          },
+          remittanceEnabled: true,
+        },
+      },
+    });
   });
 
   it('Should test payroll bonuses', async () => {

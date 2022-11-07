@@ -85,7 +85,16 @@ export class PayrollBuilder implements IPayrollBuilder {
    */
   protected buildPartD(employee: IPayrollEmployee) {
     this.processTax(employee);
-    this.processNetSalaryAndTotalCharge(employee);
+    this.processNetSalary(employee);
+    return this;
+  }
+
+  /**
+   * This part calculates totals for payroll
+   * @returns
+   */
+  protected buildPartE(employee: IPayrollEmployee) {
+    this.processPayrollTotals(employee);
     return this;
   }
 
@@ -113,7 +122,8 @@ export class PayrollBuilder implements IPayrollBuilder {
         this.buildPartA(employee)
           .buildPartB(employee)
           .buildPartC(employee)
-          .buildPartD(employee);
+          .buildPartD(employee)
+          .buildPartE(employee);
       })
     );
 
@@ -501,12 +511,13 @@ export class PayrollBuilder implements IPayrollBuilder {
    * Should implement a factory design pattenr
    * https://sbcode.net/typescript/factory/
    */
-  processNetSalaryAndTotalCharge(employee: IPayrollEmployee): void {
+  processNetSalary(employee: IPayrollEmployee): void {
     const remittancesKeyedByName = keyBy(employee.remittances || [], 'name');
 
+    employee.remittancesKeyedByName = remittancesKeyedByName;
     employee.netSalary = cloneDeep(employee.base);
 
-    const bonus = Money.addMany(
+    employee.sumOfBonus = Money.addMany(
       UtilService.cleanArray([
         {value: 0, currency: employee.base.currency},
         employee.totalBonus,
@@ -517,14 +528,8 @@ export class PayrollBuilder implements IPayrollBuilder {
     );
 
     employee.netSalary = Money.addMany(
-      UtilService.cleanArray([employee.netSalary, bonus])
+      UtilService.cleanArray([employee.netSalary, employee.sumOfBonus])
     );
-
-    if (this.payroll.payItem.bonus) {
-      this.payroll.totalCharge = Money.addMany(
-        UtilService.cleanArray([this.payroll.totalCharge, bonus])
-      );
-    }
 
     if (employee.totalDeductions) {
       employee.netSalary = Money.sub(
@@ -540,19 +545,52 @@ export class PayrollBuilder implements IPayrollBuilder {
       pension.amount.value < employee.netSalary.value
     ) {
       employee.netSalary = Money.sub(employee.netSalary, pension.amount);
+    }
+  }
 
-      if (this.payroll.payItem.pension) {
-        this.payroll.totalCharge = Money.addMany(
-          UtilService.cleanArray([pension.amount, this.payroll.totalCharge])
-        );
-      }
+  /**
+   * Process all totals on payroll
+   * Should implement a factory design pattenr
+   * https://sbcode.net/typescript/factory/
+   */
+  processPayrollTotals(employee: IPayrollEmployee): void {
+    const remittancesKeyedByName = employee.remittancesKeyedByName || {};
+    const currency = employee.currency.toUpperCase();
+
+    this.payroll.totalCharge = this.payroll.totalCharge || {};
+
+    if (this.payroll.payItem.bonus) {
+      this.payroll.totalCharge[currency] = Money.addMany(
+        UtilService.cleanArray([
+          this.payroll.totalCharge[currency],
+          employee.sumOfBonus,
+        ])
+      );
+    }
+
+    const pension = remittancesKeyedByName['pension'];
+    if (
+      this.payroll.payItem.pension &&
+      pension &&
+      pension.remittanceEnabled &&
+      pension.amount.value < (employee.netSalary?.value || 0)
+    ) {
+      this.payroll.totalCharge[currency] = Money.addMany(
+        UtilService.cleanArray([
+          pension.amount,
+          this.payroll.totalCharge[currency],
+        ])
+      );
     }
 
     if (this.payroll.payItem.base) {
-      this.payroll.totalCharge = Money.addMany(
+      this.payroll.totalCharge[currency] = Money.addMany(
         UtilService.cleanArray([
-          Money.sub(employee.netSalary, bonus),
-          this.payroll.totalCharge,
+          Money.sub(
+            employee.netSalary as IMoney,
+            employee.sumOfBonus as IMoney
+          ),
+          this.payroll.totalCharge[currency],
         ])
       );
     }

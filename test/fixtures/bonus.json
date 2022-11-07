@@ -237,7 +237,9 @@
         "nhf": "unpaid",
         "nhif": "unpaid",
         "itf": "unpaid",
-        "nsitf": "unpaid"
+        "nsitf": "unpaid",
+        "base": "unpaid",
+        "bonus": "unpaid"
       },
       "deselected": [],
       "proRateMonth": "October",
@@ -252,7 +254,9 @@
         "nhf": "unpaid",
         "nhif": "unpaid",
         "itf": "unpaid",
-        "nsitf": "unpaid"
+        "nsitf": "unpaid",
+        "base": "unpaid",
+        "bonus": "unpaid"
       },
       "deselected": [],
       "createdBy": "633f4f707c6aa9362ca61f2a"
