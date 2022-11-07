@@ -1,3 +1,5 @@
+import {IRemitance} from './account/employee.interface';
+
 export class BaseSchemaInterface {
   id?: string;
 
@@ -30,3 +32,5 @@ export interface Country {
 }
 
 export type NestedRecord = Record<string, Record<string, unknown>>;
+
+export type NestedIRemittance = Record<string, IRemitance>;

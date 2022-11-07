@@ -7,7 +7,7 @@ export class NigeriaPensionService extends BaseCountryPensionService {
     super(PENSION.NIGERIA.EMPLOYEE_PERCENT, PENSION.NIGERIA.EMPLOYER_PERCENT);
   }
 
-  static country = 'Nigeria';
+  static country = 'NG';
 
   remitEnabled(payload: ProcessPensionPayload): boolean {
     const enabled = super.remitEnabled(payload);

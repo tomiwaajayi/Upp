@@ -4,6 +4,8 @@ exports.PayrollBuilder = void 0;
 const lodash_1 = require("lodash");
 const employee_interface_1 = require("../../interfaces/account/employee.interface");
 const money_interface_1 = require("../../interfaces/payment/money.interface");
+const payroll_interface_1 = require("../../interfaces/payroll/payroll.interface");
+const pesion_service_1 = require("./pension/pesion.service");
 /**
  * To improve the speed, this builder implements the Builder Design Pattern.
  * There are 4 ordinal build parts that must be called in order from the get method,
@@ -13,9 +15,12 @@ class PayrollBuilder {
     constructor(data) {
         this.employees = data.employees;
         this.organization = data.organization;
+        this.organizationSettings = data.organizationSettings;
         this.meta = data.meta;
         this.payroll = {
             ...data.payrollInit,
+            totalBase: {},
+            totalStatutories: {},
         };
     }
     /**
@@ -61,6 +66,14 @@ class PayrollBuilder {
      */
     get() {
         Promise.all(this.employees.map((employee) => {
+            const currency = employee.currency.toUpperCase();
+            // init employee base
+            employee.base = employee.base || {
+                value: employee.salary || 0,
+                currency,
+            };
+            // get total base
+            this.payroll.totalBase[currency] = money_interface_1.Money.add(employee.base, this.payroll.totalBase[currency] || { value: 0, currency });
             // employee processes goes here
             this.buildPartA(employee)
                 .buildPartB(employee)
@@ -86,24 +99,36 @@ class PayrollBuilder {
     processBonuses(employee) {
         if ((0, lodash_1.isEmpty)(employee.bonuses))
             return;
+        const currency = employee.base.currency.toUpperCase();
+        const sumBonus = (name, amount) => {
+            this.payroll[name] = this.payroll[name] || {};
+            this.payroll[name][currency] = money_interface_1.Money.add(amount, this.payroll[name][currency] || {
+                value: 0,
+                currency,
+            });
+        };
         const groupedBonuses = (0, lodash_1.groupBy)(employee.bonuses, 'mode');
         if (!(0, lodash_1.isEmpty)(groupedBonuses[employee_interface_1.BonusSalaryModeEnum.Quick])) {
             employee.bonuses = groupedBonuses[employee_interface_1.BonusSalaryModeEnum.Quick];
             employee.totalBonus = money_interface_1.Money.addMany(employee.bonuses, 'amount');
+            sumBonus('totalBonus', employee.totalBonus);
         }
         if (!(0, lodash_1.isEmpty)(groupedBonuses[employee_interface_1.BonusSalaryModeEnum.UnTaxed])) {
             employee.untaxedBonuses = groupedBonuses[employee_interface_1.BonusSalaryModeEnum.UnTaxed];
             employee.totalUntaxedBonus = money_interface_1.Money.addMany(employee.untaxedBonuses, 'amount');
+            sumBonus('totalUntaxedBonus', employee.totalUntaxedBonus);
         }
         if (!(0, lodash_1.isEmpty)(groupedBonuses[employee_interface_1.BonusSalaryModeEnum.ExtraMonth])) {
             employee.extraMonthBonus =
                 groupedBonuses[employee_interface_1.BonusSalaryModeEnum.ExtraMonth][0];
             employee.totalExtraMonthBonus = employee.extraMonthBonus.amount;
+            sumBonus('totalExtraMonthBonus', employee.totalExtraMonthBonus);
         }
         if (!(0, lodash_1.isEmpty)(groupedBonuses[employee_interface_1.BonusSalaryModeEnum.LeaveAllowance])) {
             employee.leaveAllowance =
                 groupedBonuses[employee_interface_1.BonusSalaryModeEnum.LeaveAllowance][0];
             employee.totalLeaveAllowance = employee.leaveAllowance.amount;
+            sumBonus('totalLeaveAllowance', employee.totalLeaveAllowance);
         }
     }
     /**
@@ -114,7 +139,202 @@ class PayrollBuilder {
      * https://sbcode.net/typescript/factory/
      */
     processCountryStatutory(employee) {
-        // code goes here
+        const group = employee.group;
+        const { base } = employee;
+        // ITF
+        const itfRecord = !(0, lodash_1.isEmpty)(group)
+            ? group.remittances && group.remittances[payroll_interface_1.CountryStatutories.ITF]
+            : this.organizationSettings.remittances[payroll_interface_1.CountryStatutories.ITF];
+        if (itfRecord && itfRecord.enabled && itfRecord.remit) {
+            let grossSalary = base;
+            if (this.organizationSettings.isTotalItfEnumeration) {
+                const { totalBonus, totalLeaveAllowance } = employee;
+                grossSalary = money_interface_1.Money.addMany([base, totalBonus, totalLeaveAllowance]);
+            }
+            const baseIncomeWithITF = money_interface_1.Money.mul(grossSalary, {
+                value: 0.01,
+                currency: base.currency,
+            });
+            const remittances = (employee === null || employee === void 0 ? void 0 : employee.remittances) || [];
+            remittances.push({
+                name: payroll_interface_1.CountryStatutories.ITF,
+                remittanceEnabled: itfRecord.remit,
+                amount: baseIncomeWithITF,
+            });
+            employee.remittances = remittances;
+            this.updatePayrollStatutoryTotal(payroll_interface_1.CountryISO.Nigeria, payroll_interface_1.CountryStatutories.ITF, baseIncomeWithITF);
+        }
+        // ->> end ITF
+        // NHF
+        const nhfRecord = !(0, lodash_1.isEmpty)(group)
+            ? group.remittances && group.remittances[payroll_interface_1.CountryStatutories.NHF]
+            : this.organizationSettings.remittances[payroll_interface_1.CountryStatutories.NHF];
+        if (!(0, lodash_1.isEmpty)(nhfRecord) && nhfRecord.enabled) {
+            let salaryBreakdown = group.salaryBreakdown;
+            if (group.useOrgSalaryBreakdown) {
+                salaryBreakdown = this.organizationSettings.salaryBreakdown;
+            }
+            const nhfContribution = this.calculateNHF(salaryBreakdown, base, {
+                value: 2.5,
+                currency: base.currency,
+            }, this.organizationSettings.enableConsolidatedGross);
+            if (nhfRecord.remit) {
+                const remittances = (employee === null || employee === void 0 ? void 0 : employee.remittances) || [];
+                remittances.push({
+                    name: payroll_interface_1.CountryStatutories.NHF,
+                    remittanceEnabled: nhfRecord.remit,
+                    amount: nhfContribution,
+                });
+                employee.remittances = remittances;
+                this.updatePayrollStatutoryTotal(payroll_interface_1.CountryISO.Nigeria, payroll_interface_1.CountryStatutories.NHF, nhfContribution);
+            }
+        }
+        // --> end NHF
+        // NSITF
+        const nsitfRecord = !(0, lodash_1.isEmpty)(group)
+            ? group.remittances && group.remittances[payroll_interface_1.CountryStatutories.NSITF]
+            : this.organizationSettings.remittances[payroll_interface_1.CountryStatutories.NSITF];
+        if (nsitfRecord && nsitfRecord.enabled) {
+            let grossSalary = base;
+            if (this.organizationSettings.isTotalNsitfEnumeration) {
+                const { totalBonus, totalLeaveAllowance } = employee;
+                grossSalary = money_interface_1.Money.addMany([base, totalBonus, totalLeaveAllowance]);
+            }
+            const nsitfContribution = money_interface_1.Money.mul(grossSalary, {
+                value: 0.01,
+                currency: grossSalary.currency,
+            });
+            if (nsitfRecord.remit) {
+                const remittances = (employee === null || employee === void 0 ? void 0 : employee.remittances) || [];
+                remittances.push({
+                    name: payroll_interface_1.CountryStatutories.NSITF,
+                    remittanceEnabled: nsitfRecord.remit,
+                    amount: nsitfContribution,
+                });
+                employee.remittances = remittances;
+                this.updatePayrollStatutoryTotal(payroll_interface_1.CountryISO.Nigeria, payroll_interface_1.CountryStatutories.NSITF, nsitfContribution);
+            }
+        }
+        // --> end NSITF
+        // NHIF
+        const nhifRecord = !(0, lodash_1.isEmpty)(group)
+            ? group.remittances && group.remittances[payroll_interface_1.CountryStatutories.NHIF]
+            : this.organizationSettings.remittances[payroll_interface_1.CountryStatutories.NHIF];
+        if (nhifRecord && nhifRecord.enabled) {
+            const defaultAmount = {
+                value: 0,
+                currency: base.currency,
+            };
+            const grossSalary = money_interface_1.Money.addMany([
+                base,
+                employee.totalBonus || defaultAmount,
+                employee.totalLeaveAllowance || defaultAmount,
+            ]);
+            const nhifContribution = this.calculateNHIF(grossSalary);
+            if (nhifRecord.remit) {
+                const remittances = (employee === null || employee === void 0 ? void 0 : employee.remittances) || [];
+                remittances.push({
+                    name: payroll_interface_1.CountryStatutories.NHIF,
+                    remittanceEnabled: nhifRecord.remit,
+                    amount: nhifContribution,
+                });
+                employee.remittances = remittances;
+                this.updatePayrollStatutoryTotal(payroll_interface_1.CountryISO.Kenya, payroll_interface_1.CountryStatutories.NHIF, nhifContribution);
+            }
+        }
+        // --> end NHIF
+    }
+    updatePayrollStatutoryTotal(country, statutory, currentIncome) {
+        if (this.payroll.totalStatutories[country]) {
+            const cloned = (0, lodash_1.cloneDeep)(this.payroll.totalStatutories[country]);
+            if (this.payroll.totalStatutories[country][statutory]) {
+                const total = money_interface_1.Money.add(currentIncome, this.payroll.totalStatutories[country][statutory]);
+                this.payroll.totalStatutories[country] = {
+                    ...cloned,
+                    [statutory]: total,
+                };
+            }
+            else {
+                this.payroll.totalStatutories[country] = {
+                    ...cloned,
+                    [statutory]: currentIncome,
+                };
+            }
+        }
+        else {
+            this.payroll.totalStatutories[country] = {
+                [statutory]: currentIncome,
+            };
+        }
+    }
+    calculateNHF(salaryBreakdown, grossMonthly, percentage, enableConsolidatedGross) {
+        const basicPercent = salaryBreakdown['basic'] || 0;
+        const housingPercent = salaryBreakdown['housing'] || 0;
+        const transportPercent = salaryBreakdown['transport'] || 0;
+        const basic = money_interface_1.Money.mul(grossMonthly, {
+            value: basicPercent,
+            currency: grossMonthly.currency,
+        });
+        if ((basicPercent === 0 && housingPercent === 0 && transportPercent === 0) ||
+            enableConsolidatedGross) {
+            return money_interface_1.Money.div(percentage, { value: 100, currency: percentage.currency });
+        }
+        return money_interface_1.Money.mul(basic, money_interface_1.Money.div(percentage, { value: 100, currency: percentage.currency }));
+    }
+    calculateNHIF(grossSalary) {
+        let value = 1700;
+        if (grossSalary.value <= 5999) {
+            value = 150;
+        }
+        else if (grossSalary.value <= 7999) {
+            value = 300;
+        }
+        else if (grossSalary.value <= 11999) {
+            value = 400;
+        }
+        else if (grossSalary.value <= 14999) {
+            value = 500;
+        }
+        else if (grossSalary.value <= 19999) {
+            value = 600;
+        }
+        else if (grossSalary.value <= 24999) {
+            value = 750;
+        }
+        else if (grossSalary.value <= 29999) {
+            value = 850;
+        }
+        else if (grossSalary.value <= 34999) {
+            value = 900;
+        }
+        else if (grossSalary.value <= 39999) {
+            value = 950;
+        }
+        else if (grossSalary.value <= 44999) {
+            value = 1000;
+        }
+        else if (grossSalary.value <= 49999) {
+            value = 1100;
+        }
+        else if (grossSalary.value <= 59999) {
+            value = 1200;
+        }
+        else if (grossSalary.value <= 69999) {
+            value = 1300;
+        }
+        else if (grossSalary.value <= 79999) {
+            value = 1400;
+        }
+        else if (grossSalary.value <= 89999) {
+            value = 1500;
+        }
+        else if (grossSalary.value <= 99999) {
+            value = 1600;
+        }
+        return {
+            value,
+            currency: grossSalary.currency,
+        };
     }
     /**
      * Process Tax for all countries
@@ -130,7 +350,17 @@ class PayrollBuilder {
      * https://sbcode.net/typescript/factory/
      */
     processPension(employee) {
-        // code goes here
+        const { group } = employee;
+        const remittances = group
+            ? group.remittances
+            : this.organizationSettings.remittances;
+        if (remittances && remittances.pension && remittances.pension.enabled) {
+            pesion_service_1.PensionService.process(employee.country.toUpperCase(), {
+                group,
+                organizationSettings: this.organizationSettings,
+                employee,
+            });
+        }
     }
 }
 exports.PayrollBuilder = PayrollBuilder;

@@ -20,6 +20,22 @@ export interface ICheckEmployeeResponse {
   employeeExist: boolean;
 }
 
+export interface IRemitance {
+  enabled: boolean;
+  remit: boolean;
+  useOrgsettings?: boolean;
+  type?: string;
+}
+
+export interface IGroup {
+  name?: string;
+  remittances?: Record<string, IRemitance>;
+  useOrgSalaryBreakdown?: boolean;
+  hasSalaryBreakdown?: boolean;
+  salaryBreakdown?: Record<string, number>;
+  id: string;
+}
+
 export interface Employee {
   id: string;
   country: string;
@@ -50,13 +66,10 @@ export interface Employee {
   walletAddress?: string;
   organization: Organization | string;
   invitationSent?: boolean;
-  salary?: IMoney;
-  // TODO: add Group Schema ID
-  group?: Group;
-  // TODO: add Tax State Schema ID
+  salary?: number;
+  group?: IGroup;
   taxState?: string;
   taxId?: string;
-  // TODO: add Pension Fund Admin Schema ID
   pensionFundAdmin?: string;
   pensionId?: string;
   pensionContributionEnabled?: boolean;
@@ -83,6 +96,10 @@ export interface Employee {
   proratedSalaries?: string[];
 }
 
+export interface IEmployeeWithGroup {
+  group: IGroup;
+}
+
 export interface EmployeeSalaryAddon {
   id: string;
   name: string;
@@ -98,17 +115,6 @@ export interface EmployeeSalaryAddon {
   createdBy: string;
   isDeleted?: boolean;
   deletedAt?: Date;
-}
-
-export interface Group {
-  id: string;
-  name: string;
-  organization: string | Organization;
-  useOrgSalaryBreakdown?: boolean;
-  isDeleted?: boolean;
-  hasSalaryBreakdown?: boolean;
-  salaryBreakdown?: Record<string, number>;
-  remittances?: Record<string, Record<string, unknown>>;
 }
 
 export enum SalaryAddonFrequencyEnum {

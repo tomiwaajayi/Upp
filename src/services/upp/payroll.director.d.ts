@@ -13,5 +13,11 @@ export declare class PayrollDirector {
         remittances?: import("../../interfaces/payroll/payroll.interface").IPayrollRemittance[] | undefined;
         hasProrates?: boolean | undefined;
         totalCharge?: import("../../interfaces/payment/money.interface").IMoney | undefined;
+        totalBonus?: Record<string, import("../../interfaces/payment/money.interface").IMoney> | undefined;
+        totalUntaxedBonus?: Record<string, import("../../interfaces/payment/money.interface").IMoney> | undefined;
+        totalExtraMonthBonus?: Record<string, import("../../interfaces/payment/money.interface").IMoney> | undefined;
+        totalLeaveAllowance?: Record<string, import("../../interfaces/payment/money.interface").IMoney> | undefined;
+        totalBase: Record<string, import("../../interfaces/payment/money.interface").IMoney>;
+        totalStatutories: Record<string, Record<string, import("../../interfaces/payment/money.interface").IMoney>>;
     };
 }

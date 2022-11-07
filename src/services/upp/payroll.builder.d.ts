@@ -1,6 +1,6 @@
 import { Organization } from '../../interfaces/account/organization.interface';
 import { IMoney } from '../../interfaces/payment/money.interface';
-import { IPayrollEmployee } from '../../interfaces/payroll/payroll.interface';
+import { CountryStatutories, IPayrollEmployee } from '../../interfaces/payroll/payroll.interface';
 import { BuilderPayload, IPayrollBuilder } from './builder.interface';
 /**
  * To improve the speed, this builder implements the Builder Design Pattern.
@@ -13,6 +13,7 @@ export declare class PayrollBuilder implements IPayrollBuilder {
     /** List of employees in payroll */
     private employees;
     private organization;
+    private organizationSettings;
     /**
      * This holds query data or data from backend that needs to be input in each processes
      */
@@ -56,6 +57,12 @@ export declare class PayrollBuilder implements IPayrollBuilder {
         remittances?: import("../../interfaces/payroll/payroll.interface").IPayrollRemittance[] | undefined;
         hasProrates?: boolean | undefined;
         totalCharge?: IMoney | undefined;
+        totalBonus?: Record<string, IMoney> | undefined;
+        totalUntaxedBonus?: Record<string, IMoney> | undefined;
+        totalExtraMonthBonus?: Record<string, IMoney> | undefined;
+        totalLeaveAllowance?: Record<string, IMoney> | undefined;
+        totalBase: Record<string, IMoney>;
+        totalStatutories: Record<string, Record<string, IMoney>>;
     };
     /**
      * Process single employee prorate
@@ -74,6 +81,9 @@ export declare class PayrollBuilder implements IPayrollBuilder {
      * https://sbcode.net/typescript/factory/
      */
     processCountryStatutory(employee: IPayrollEmployee): void;
+    protected updatePayrollStatutoryTotal(country: string, statutory: CountryStatutories, currentIncome: IMoney): void;
+    calculateNHF(salaryBreakdown: Record<string, number>, grossMonthly: IMoney, percentage: IMoney, enableConsolidatedGross?: boolean): IMoney;
+    calculateNHIF(grossSalary: IMoney): IMoney;
     /**
      * Process Tax for all countries
      * Should implement a factory design pattern check Pay v2 tax or pension setup and link

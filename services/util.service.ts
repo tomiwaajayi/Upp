@@ -187,7 +187,7 @@ export class UtilService {
       enforceRequestTimeout: true,
       clientId: configuration.kafka.clientId,
       sasl: configuration.kafka.ssl && {
-        mechanism: 'scram-sha-512',
+        mechanism: 'plain',
         username: configuration.kafka.username,
         password: configuration.kafka.password,
       },
@@ -196,5 +196,9 @@ export class UtilService {
       },
       ssl: configuration.kafka.ssl,
     };
+  }
+
+  static cleanArray<T>(arr: T[]) {
+    return arr.filter(item => Boolean(item));
   }
 }

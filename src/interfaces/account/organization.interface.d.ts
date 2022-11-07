@@ -4,7 +4,10 @@ export interface IOrganizationResponse {
     id: string;
 }
 export interface Organization {
-    country: string;
+    country: {
+        id: string;
+        name: string;
+    };
     email: string;
     name: string;
     logo?: string;

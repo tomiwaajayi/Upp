@@ -7,5 +7,6 @@ exports.AUTHENTICATION_EVENTS = {
     switchCurrentUserOrganization: `${services_constant_1.SERVICES.AUTHENTICATION_SERVICE}.user.switchCurrentUserOrganization`,
     createUserOrganization: `${services_constant_1.SERVICES.AUTHENTICATION_SERVICE}.user.createUserOrganization`,
     sendEmailValidationToken: `${services_constant_1.SERVICES.AUTHENTICATION_SERVICE}.user.sendEmailValidationToken`,
+    fetchCountries: `${services_constant_1.SERVICES.AUTHENTICATION_SERVICE}.fetchCountries`,
 };
 //# sourceMappingURL=authentication.events.js.map
