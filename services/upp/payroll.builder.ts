@@ -149,23 +149,6 @@ export class PayrollBuilder implements IPayrollBuilder {
     if (isEmpty(employee.bonuses)) return;
 
     const currency = employee.base.currency.toUpperCase();
-    const sumBonus = (
-      name:
-        | 'totalBonus'
-        | 'totalUntaxedBonus'
-        | 'totalExtraMonthBonus'
-        | 'totalLeaveAllowance',
-      amount: IMoney
-    ) => {
-      this.payroll[name] = this.payroll[name] || {};
-      (this.payroll[name] as Record<string, IMoney>)[currency] = Money.add(
-        (this.payroll[name] as Record<string, IMoney>)[currency] || {
-          value: 0,
-          currency,
-        },
-        amount
-      );
-    };
     const groupedBonuses = groupBy(employee.bonuses, bonus => {
       if (typeof bonus.amount === 'number') {
         bonus.amount = {value: bonus.amount, currency};
@@ -180,7 +163,6 @@ export class PayrollBuilder implements IPayrollBuilder {
         employee.bonuses as PayrollSalaryAddon[],
         'amount'
       );
-      sumBonus('totalBonus', employee.totalBonus);
     }
 
     if (!isEmpty(groupedBonuses[BonusSalaryModeEnum.UnTaxed])) {
@@ -190,7 +172,6 @@ export class PayrollBuilder implements IPayrollBuilder {
         employee.untaxedBonuses as PayrollSalaryAddon[],
         'amount'
       );
-      sumBonus('totalUntaxedBonus', employee.totalUntaxedBonus);
     }
 
     if (!isEmpty(groupedBonuses[BonusSalaryModeEnum.ExtraMonth])) {
@@ -198,7 +179,6 @@ export class PayrollBuilder implements IPayrollBuilder {
         groupedBonuses[BonusSalaryModeEnum.ExtraMonth][0];
 
       employee.totalExtraMonthBonus = employee.extraMonthBonus.amount;
-      sumBonus('totalExtraMonthBonus', employee.totalExtraMonthBonus);
     }
 
     if (!isEmpty(groupedBonuses[BonusSalaryModeEnum.LeaveAllowance])) {
@@ -206,7 +186,6 @@ export class PayrollBuilder implements IPayrollBuilder {
         groupedBonuses[BonusSalaryModeEnum.LeaveAllowance][0];
 
       employee.totalLeaveAllowance = employee.leaveAllowance.amount;
-      sumBonus('totalLeaveAllowance', employee.totalLeaveAllowance);
     }
   }
 
@@ -556,10 +535,30 @@ export class PayrollBuilder implements IPayrollBuilder {
   processPayrollTotals(employee: IPayrollEmployee): void {
     const remittancesKeyedByName = employee.remittancesKeyedByName || {};
     const currency = employee.currency.toUpperCase();
+    const zeroMoney = {value: 0, currency};
 
     this.payroll.totalCharge = this.payroll.totalCharge || {};
 
+    /************
+     * Bonus    *
+     ************/
     if (this.payroll.payItem.bonus) {
+      [
+        ['totalBonus', employee.totalBonus],
+        ['totalUntaxedBonus', employee.totalUntaxedBonus],
+        ['totalLeaveAllowance', employee.totalLeaveAllowance],
+        ['totalExtraMonthBonus', employee.totalExtraMonthBonus],
+      ].forEach(([_name, amount]) => {
+        if (amount) {
+          const name = _name as 'totalBonus';
+          this.payroll[name] = this.payroll[name] || {};
+          (this.payroll[name] as Record<string, IMoney>)[currency] = Money.add(
+            (this.payroll[name] as Record<string, IMoney>)[currency] ||
+              zeroMoney,
+            amount as IMoney
+          );
+        }
+      });
       this.payroll.totalCharge[currency] = Money.addMany(
         UtilService.cleanArray([
           this.payroll.totalCharge[currency],
