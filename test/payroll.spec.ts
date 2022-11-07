@@ -21,6 +21,52 @@ describe('Process Payroll (e2e)', () => {
     };
   });
 
+  it('should be able to handle employee updates', () => {
+    let builderInstance = PayrollDirector.getInstance(data);
+    let payroll = builderInstance.get();
+
+    expect(payroll.totalCharge).toEqual({
+      NGN: {
+        value: 225500,
+        currency: 'NGN',
+      },
+      KES: {
+        value: 25000,
+        currency: 'KES',
+      },
+    });
+    expect(payroll.employees[0].base).toEqual({
+      value: 100000,
+      currency: 'NGN',
+    });
+
+    const updatedEmployee = {
+      ...cloneDeep(data.employees[0]),
+      base: {value: 150000, currency: data.employees[0].base.currency},
+    };
+
+    builderInstance = PayrollDirector.updateEmployees(
+      builderInstance,
+      updatedEmployee
+    );
+    payroll = builderInstance.getTotals();
+
+    expect(payroll.totalCharge).toEqual({
+      NGN: {
+        value: 351000,
+        currency: 'NGN',
+      },
+      KES: {
+        value: 25000,
+        currency: 'KES',
+      },
+    });
+    expect(payroll.employees[0].base).toEqual({
+      value: 150000,
+      currency: 'NGN',
+    });
+  });
+
   it('should calculate payroll totals', () => {
     const payroll = PayrollDirector.build(data);
 

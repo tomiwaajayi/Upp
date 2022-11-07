@@ -33,8 +33,11 @@ export class PayrollBuilder implements IPayrollBuilder {
    * This holds query data or data from backend that needs to be input in each processes
    */
   private meta: IPayrollMeta;
+  private data: BuilderPayload;
+  private processedPayrollTotals = false;
 
   constructor(data: BuilderPayload) {
+    this.data = cloneDeep(data);
     this.employees = data.employees;
     this.organization = data.organization;
     this.organizationSettings = data.organizationSettings;
@@ -50,7 +53,7 @@ export class PayrollBuilder implements IPayrollBuilder {
    * This part consists of prorate  only
    * @returns
    */
-  protected buildPartA(employee: IPayrollEmployee) {
+  private buildPartA(employee: IPayrollEmployee) {
     this.processProRates(employee);
     return this;
   }
@@ -60,7 +63,7 @@ export class PayrollBuilder implements IPayrollBuilder {
    * @ bonus, untaxed bonus, extra month, leave allowance, bik, deductions and cdb loans
    * @returns
    */
-  protected buildPartB(employee: IPayrollEmployee) {
+  private buildPartB(employee: IPayrollEmployee) {
     this.processBonuses(employee);
     return this;
   }
@@ -70,7 +73,7 @@ export class PayrollBuilder implements IPayrollBuilder {
    * @ health access, nhif, nsitf, pension, itf, nhf
    * @returns
    */
-  protected buildPartC(employee: IPayrollEmployee) {
+  private buildPartC(employee: IPayrollEmployee) {
     this.processCountryStatutory(employee);
     this.processPension(employee);
     return this;
@@ -82,7 +85,7 @@ export class PayrollBuilder implements IPayrollBuilder {
    * @ tax, org deductions, pay frequency, commitments, employee addons, worksheet reset
    * @returns
    */
-  protected buildPartD(employee: IPayrollEmployee) {
+  private buildPartD(employee: IPayrollEmployee) {
     this.processTax(employee);
     this.processNetSalary(employee);
     return this;
@@ -92,9 +95,17 @@ export class PayrollBuilder implements IPayrollBuilder {
    * This part calculates totals for payroll
    * @returns
    */
-  protected buildPartE(employee: IPayrollEmployee) {
+  private buildPartE(employee: IPayrollEmployee) {
     this.processPayrollTotals(employee);
     return this;
+  }
+
+  private getResponse() {
+    return {
+      ...this.payroll,
+      organization: this.organization,
+      employees: this.employees,
+    };
   }
 
   /**
@@ -120,25 +131,39 @@ export class PayrollBuilder implements IPayrollBuilder {
       })
     );
 
-    return {
-      ...this.payroll,
-      organization: this.organization,
-      employees: this.employees,
-    };
+    return this.getResponse();
+  }
+
+  getData() {
+    return this.data;
+  }
+
+  getProcessedEmployees() {
+    return this.employees;
+  }
+
+  getTotals() {
+    if (!this.processedPayrollTotals) {
+      this.employees.map(employee => {
+        this.buildPartE(employee);
+      });
+    }
+
+    return this.getResponse();
   }
 
   /**
    * Process single employee prorate
    * note that there can only be a single prorate entry for an employee
    */
-  processProRates(employee: IPayrollEmployee): void {
+  private processProRates(employee: IPayrollEmployee): void {
     employee.totalProRate = {value: 5000, currency: 'NGN'};
   }
 
   /**
    * In a single loop processes single employee bonus, untaxed bonus, extra month, leave allowance, and deductions
    */
-  processBonuses(employee: IPayrollEmployee): void {
+  private processBonuses(employee: IPayrollEmployee): void {
     if (isEmpty(employee.bonuses)) return;
 
     const currency = employee.base.currency.toUpperCase();
@@ -189,7 +214,7 @@ export class PayrollBuilder implements IPayrollBuilder {
    * * Should implement a factory design pattern check Pay v2 tax or pension setup and link
    * https://sbcode.net/typescript/factory/
    */
-  processCountryStatutory(employee: IPayrollEmployee): void {
+  private processCountryStatutory(employee: IPayrollEmployee): void {
     const group = employee.group as IGroup;
     const {base} = employee;
 
@@ -325,7 +350,7 @@ export class PayrollBuilder implements IPayrollBuilder {
     // --> end NHIF
   }
 
-  protected updatePayrollStatutoryTotal(
+  private updatePayrollStatutoryTotal(
     country: string,
     statutory: CountryStatutories,
     currentIncome: IMoney
@@ -354,7 +379,7 @@ export class PayrollBuilder implements IPayrollBuilder {
     }
   }
 
-  calculateNHF(
+  private calculateNHF(
     salaryBreakdown: Record<string, number>,
     grossMonthly: IMoney,
     percentage: IMoney,
@@ -382,7 +407,7 @@ export class PayrollBuilder implements IPayrollBuilder {
     );
   }
 
-  calculateNHIF(grossSalary: IMoney): IMoney {
+  private calculateNHIF(grossSalary: IMoney): IMoney {
     let value = 1700;
 
     if (grossSalary.value <= 5999) {
@@ -430,7 +455,7 @@ export class PayrollBuilder implements IPayrollBuilder {
    * Should implement a factory design pattern check Pay v2 tax or pension setup and link
    * https://sbcode.net/typescript/factory/
    */
-  processTax(employee: IPayrollEmployee): void {
+  private processTax(employee: IPayrollEmployee): void {
     // code goes here
   }
 
@@ -439,7 +464,7 @@ export class PayrollBuilder implements IPayrollBuilder {
    * Should implement a factory design pattern check Pay v2 tax or pension setup and link
    * https://sbcode.net/typescript/factory/
    */
-  processPension(employee: IPayrollEmployee): void {
+  private processPension(employee: IPayrollEmployee): void {
     const {group} = employee;
     const remittances = group
       ? group.remittances
@@ -459,7 +484,7 @@ export class PayrollBuilder implements IPayrollBuilder {
    * Should implement a factory design pattenr
    * https://sbcode.net/typescript/factory/
    */
-  processNetSalary(employee: IPayrollEmployee): void {
+  private processNetSalary(employee: IPayrollEmployee): void {
     const remittancesKeyedByName = keyBy(employee.remittances || [], 'name');
 
     employee.remittancesKeyedByName = remittancesKeyedByName;
@@ -508,7 +533,7 @@ export class PayrollBuilder implements IPayrollBuilder {
    * Should implement a factory design pattenr
    * https://sbcode.net/typescript/factory/
    */
-  processPayrollTotals(employee: IPayrollEmployee): void {
+  private processPayrollTotals(employee: IPayrollEmployee): void {
     const remittancesKeyedByName = employee.remittancesKeyedByName || {};
     const currency = employee.currency.toUpperCase();
     const zeroMoney = {value: 0, currency};
@@ -553,8 +578,8 @@ export class PayrollBuilder implements IPayrollBuilder {
       this.payroll.totalCharge[currency] = Money.addMany(
         UtilService.cleanArray([
           Money.sub(
-            employee.netSalary as IMoney,
-            employee.sumOfBonus as IMoney
+            employee.netSalary || zeroMoney,
+            employee.sumOfBonus || zeroMoney
           ),
           this.payroll.totalCharge[currency],
         ])
@@ -627,5 +652,7 @@ export class PayrollBuilder implements IPayrollBuilder {
         }
       }
     }
+
+    this.processedPayrollTotals = true;
   }
 }
