@@ -487,7 +487,7 @@ export class PayrollBuilder implements IPayrollBuilder {
 
       if ((<NestedIRemittance>remittances).tax?.enabled) {
         TaxService.process(
-          this.organization.country.name,
+          employee.country.toUpperCase(),
           {
             organization: this.organization,
             settings: this.organizationSettings,

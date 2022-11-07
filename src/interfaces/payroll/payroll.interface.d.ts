@@ -10,6 +10,7 @@ export interface IPayrollDTO {
 }
 export interface IPayrollMeta {
     proRateMonth: string;
+    payItem: PayItem;
 }
 export interface IPayroll {
     payItem: PayItem;
@@ -18,7 +19,7 @@ export interface IPayroll {
     createdBy: string;
     organization?: Organization | string;
     employees?: IPayrollEmployee[];
-    remittances?: IPayrollRemittance[];
+    remittances?: Record<string, Record<string, IPayrollRemittance>>;
     hasProrates?: boolean;
     totalCharge?: IMoney;
     totalBonus?: Record<string, IMoney>;
@@ -27,11 +28,14 @@ export interface IPayroll {
     totalLeaveAllowance?: Record<string, IMoney>;
     totalBase: Record<string, IMoney>;
     totalStatutories: Record<string, Record<string, IMoney>>;
+    totalPension?: Record<string, IMoney>;
 }
 export interface IPayrollEmployee extends Employee {
-    remitanceEnabled?: true;
+    remitanceEnabled?: boolean;
     base: IMoney;
+    basePayable?: IMoney;
     bonuses?: EmployeeSalaryAddon[];
+    netSalary?: IMoney;
     totalBonus?: IMoney;
     untaxedBonuses?: EmployeeSalaryAddon[];
     totalUntaxedBonus?: IMoney;
@@ -42,6 +46,10 @@ export interface IPayrollEmployee extends Employee {
     deductions?: EmployeeSalaryAddon[];
     totalDeductions?: IMoney;
     totalProRate?: IMoney;
+    whtaxApplied?: boolean;
+    whtaxRate?: number;
+    netIncome?: IMoney;
+    zeroMoney?: IMoney;
     remittances?: (Record<string, unknown> & {
         name: string;
         remittanceEnabled: boolean;
@@ -70,6 +78,8 @@ export declare enum CountryStatutories {
     NSITF = "nsitf"
 }
 export interface PayItem {
+    base: PayItemStatus | string;
+    bonus: PayItemStatus | string;
     tax: PayItemStatus | string;
     pension: PayItemStatus | string;
     health: PayItemStatus | string;
@@ -93,6 +103,9 @@ export interface OrganizationSettings {
     excessPensionToTierThree?: boolean;
     medicalEnabled?: boolean;
     pensionDeductType?: string;
+    useGrossOnlyForMinimumWage?: boolean;
+    payFullTax: boolean;
+    useCRAGross: boolean;
 }
 export declare enum CountryISO {
     Nigeria = "ng",

@@ -5,7 +5,7 @@ import {BaseClass} from '@upp/tax/base.tax';
 import {ProcessTaxPayload} from '@upp/tax/tax.types';
 
 export class RwandaTax extends BaseClass {
-  static country = 'Rwanda';
+  static country = 'RW';
 
   protected taxSettings;
   constructor(context: ProcessTaxPayload) {

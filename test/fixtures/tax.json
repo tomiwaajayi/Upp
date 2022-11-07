@@ -27,7 +27,7 @@
     },
     "defaultEmps": [
       {
-        "salary": { "value": 100000, "currency": "NGN" },
+        "salary": 100000,
         "base": { "value": 100000, "currency": "NGN" },
         "workEmail": "zoltofulmo2@vusra.com",
         "firstName": "Sarah",
@@ -131,7 +131,7 @@
             "id": "6347ed2b4f8f252ac3cae1ec"
           }
         ],
-        "country": "60e7c3f3bf19830b5cf4e422",
+        "country": "ng",
         "organization": "63401825fb3550d8580f8530",
         "createdBy": "634018244ee4e237f9eb7ea1",
         "id": "6347ec944f8f252ac3cae1e4",
@@ -158,6 +158,7 @@
       }
     ],
     "orgSettings": {
+      "hasSalaryBreakdown": true,
       "useGrossOnlyForMinimumWage": true,
       "payFullTax": true,
       "useCRAGross": true,

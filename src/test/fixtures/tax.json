@@ -1,0 +1,268 @@
+{
+    "entities": {
+        "defaultOrg": {
+            "id": "633f4f707c6aa9362ca61f2a",
+            "country": {
+                "_id": "60e7c3f3bf19830b5cf4e422",
+                "id": "60e7c3f3bf19830b5cf4e422",
+                "name": "Nigeria",
+                "isoCode": "NG",
+                "iso2": "ng",
+                "dialCode": "234",
+                "code": "NGN",
+                "isDeleted": false,
+                "slug": "nigeria",
+                "createdAt": "2021-07-09T03:35:15.705Z",
+                "updatedAt": "2021-08-13T16:21:11.320Z",
+                "imageUrl": "https://www.countryflags.io/ng/flat/64.png",
+                "isActive": true,
+                "symbol": "₦"
+            },
+            "email": "koredujar@gmail.com",
+            "name": "Corestack NG",
+            "createdBy": "633f4f70a8483a76209ac2e7",
+            "isDeleted": false,
+            "createdAt": "2022-10-06T21:58:08.970Z",
+            "updatedAt": "2022-10-06T21:58:08.970Z"
+        },
+        "defaultEmps": [
+            {
+                "salary": 100000,
+                "base": { "value": 100000, "currency": "NGN" },
+                "workEmail": "zoltofulmo2@vusra.com",
+                "firstName": "Sarah",
+                "middleName": "Rose",
+                "lastName": "Mandem",
+                "phoneNumber": "2349019261257",
+                "department": "Enginerring",
+                "currency": "NGN",
+                "completionStatus": "Payment info pending",
+                "createdAt": "2022-10-13T10:46:44.827Z",
+                "bonuses": [
+                    {
+                        "name": "E dey mezebu",
+                        "employee": "6347ec944f8f252ac3cae1e4",
+                        "organization": "63401825fb3550d8580f8530",
+                        "amount": {
+                            "value": 2500,
+                            "currency": "NGN"
+                        },
+                        "frequency": "recurring",
+                        "type": "bonus",
+                        "mode": "quick",
+                        "status": "pending",
+                        "createdBy": "634018244ee4e237f9eb7ea1",
+                        "isDeleted": false,
+                        "createdAt": "2022-10-13T10:49:15.536Z",
+                        "updatedAt": "2022-10-13T10:49:15.536Z",
+                        "id": "6347ed2b4f8f252ac3cae1ed"
+                    },
+                    {
+                        "name": "Untaxed Bonus",
+                        "employee": "6347ec944f8f252ac3cae1e4",
+                        "organization": "63401825fb3550d8580f8530",
+                        "amount": {
+                            "value": 5500,
+                            "currency": "NGN"
+                        },
+                        "frequency": "recurring",
+                        "type": "bonus",
+                        "mode": "untaxed",
+                        "status": "pending",
+                        "createdBy": "634018244ee4e237f9eb7ea1",
+                        "isDeleted": false,
+                        "createdAt": "2022-10-13T10:49:15.536Z",
+                        "updatedAt": "2022-10-13T10:49:15.536Z",
+                        "id": "6347ed2b4f8f252ac3cae133"
+                    },
+                    {
+                        "name": "Leave Allowance",
+                        "employee": "6347ec944f8f252ac3cae1e4",
+                        "organization": "63401825fb3550d8580f8530",
+                        "amount": {
+                            "value": 7500,
+                            "currency": "NGN"
+                        },
+                        "frequency": "recurring",
+                        "type": "bonus",
+                        "mode": "leave-allowance",
+                        "status": "pending",
+                        "createdBy": "634018244ee4e237f9eb7ea1",
+                        "isDeleted": false,
+                        "createdAt": "2022-10-13T10:49:15.536Z",
+                        "updatedAt": "2022-10-13T10:49:15.536Z",
+                        "id": "6347ed2b4f8f252ac3cae133"
+                    },
+                    {
+                        "name": "Extra month",
+                        "employee": "6347ec944f8f252ac3cae1e4",
+                        "organization": "63401825fb3550d8580f8530",
+                        "amount": {
+                            "value": 10000,
+                            "currency": "NGN"
+                        },
+                        "frequency": "recurring",
+                        "type": "bonus",
+                        "mode": "extra-month",
+                        "status": "pending",
+                        "createdBy": "634018244ee4e237f9eb7ea1",
+                        "isDeleted": false,
+                        "createdAt": "2022-10-13T10:49:15.536Z",
+                        "updatedAt": "2022-10-13T10:49:15.536Z",
+                        "id": "6347ed2b4f8f252ac3cae133"
+                    }
+                ],
+                "deductions": [
+                    {
+                        "name": "E dey meant",
+                        "employee": "6347ec944f8f252ac3cae1e4",
+                        "organization": "63401825fb3550d8580f8530",
+                        "amount": {
+                            "value": 5000,
+                            "currency": "NGN"
+                        },
+                        "frequency": "once",
+                        "type": "deduction",
+                        "status": "pending",
+                        "createdBy": "634018244ee4e237f9eb7ea1",
+                        "isDeleted": false,
+                        "createdAt": "2022-10-13T10:49:15.535Z",
+                        "updatedAt": "2022-10-13T10:49:15.535Z",
+                        "id": "6347ed2b4f8f252ac3cae1ec"
+                    }
+                ],
+                "country": "60e7c3f3bf19830b5cf4e422",
+                "organization": "63401825fb3550d8580f8530",
+                "createdBy": "634018244ee4e237f9eb7ea1",
+                "id": "6347ec944f8f252ac3cae1e4",
+                "group": {
+                    "id": "63401825fb3550d8580f80000",
+                    "name": "User Grp",
+                    "organization": "63401825fb3550d8580f8530",
+                    "remittances": {
+                        "pension": {
+                            "enabled": false,
+                            "type": "deduct",
+                            "remit": false
+                        },
+                        "tax": {
+                            "enabled": true,
+                            "remit": true,
+                            "WHTaxRate": 0.05,
+                            "enabledWithHoldingTax": false,
+                            "useGrossOnlyForMinimumWage": false
+                        }
+                    },
+                    "isDeleted": false
+                }
+            }
+        ],
+        "orgSettings": {
+            "hasSalaryBreakdown": true,
+            "useGrossOnlyForMinimumWage": true,
+            "payFullTax": true,
+            "useCRAGross": true,
+            "remittances": {
+                "pension": {
+                    "enabled": false,
+                    "type": "deduct",
+                    "remit": false
+                },
+                "tax": {
+                    "enabled": true,
+                    "remit": true,
+                    "WHTaxRate": 5,
+                    "enabledWithHoldingTax": false,
+                    "useGrossOnlyForMinimumWage": false
+                }
+            }
+        },
+        "defaultMeta": {
+            "payItem": {
+                "base": "pending",
+                "bonus": "pending",
+                "tax": "pending",
+                "pension": "unpaid",
+                "health": "unpaid",
+                "nhf": "unpaid",
+                "nhif": "unpaid",
+                "itf": "unpaid",
+                "nsitf": "unpaid"
+            },
+            "deselected": [],
+            "proRateMonth": "October",
+            "createdBy": "60e7c3f3bf19830b5cf4e422"
+        },
+        "data": {
+            "proRateMonth": "October",
+            "payItem": {
+                "base": "pending",
+                "bonus": "pending",
+                "tax": "pending",
+                "pension": "unpaid",
+                "health": "unpaid",
+                "nhf": "unpaid",
+                "nhif": "unpaid",
+                "itf": "unpaid",
+                "nsitf": "unpaid"
+            },
+            "deselected": [],
+            "createdBy": "633f4f707c6aa9362ca61f2a"
+        },
+        "ghana": {
+            "id": "6079e7ef44fa123583c5bdca",
+            "name": "Ghana",
+            "iso2": "gh",
+            "dialCode": "233",
+            "priority": 0.0,
+            "symbol": "GH₵",
+            "code": "GHS",
+            "areaCodes": null,
+            "isDeleted": false,
+            "createdAt": "2021-04-16T19:39:27.578Z",
+            "updatedAt": "2021-04-16T19:39:27.578Z",
+            "imageUrl": "https://www.countryflags.io/gh/flat/64.png",
+            "isActive": true
+        },
+        "kenya": {
+            "id": "609a7da3206a9d06572f0ccd",
+            "isActive": true,
+            "name": "Kenya",
+            "iso2": "ke",
+            "dialCode": "254",
+            "priority": 0.0,
+            "areaCodes": null,
+            "symbol": "KSh",
+            "code": "KES",
+            "lastEditedBy": "5a0c7f11d098cf6333453d87",
+            "createdAt": "2021-05-09T12:28:31.393Z",
+            "updatedAt": "2021-05-09T12:28:31.393Z",
+            "__v": 0.0,
+            "imageUrl": "https://www.countryflags.io/ke/flat/64.png",
+            "isDeleted": false
+        },
+        "rwanda": {
+            "id": "609a7e2e206a9d06572f0cce",
+            "isActive": true,
+            "name": "Rwanda",
+            "iso2": "rw",
+            "dialCode": "250",
+            "priority": 0.0,
+            "areaCodes": null,
+            "symbol": "R₣",
+            "code": "RWF",
+            "lastEditedBy": "5a0c7f11d098cf6333453d87",
+            "createdAt": "2021-05-09T12:28:31.393Z",
+            "updatedAt": "2021-05-09T12:28:31.393Z",
+            "__v": 0.0,
+            "imageUrl": "https://www.countryflags.io/rw/flat/64.png",
+            "isDeleted": false
+        },
+        "salaryBreakdown": {
+            "basic": 20,
+            "housing": 20,
+            "transport": 20,
+            "salary": 40
+        }
+    }
+}

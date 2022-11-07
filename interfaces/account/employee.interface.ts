@@ -25,6 +25,9 @@ export interface IRemitance {
   remit: boolean;
   useOrgsettings?: boolean;
   type?: string;
+  enabledWithHoldingTax?: boolean;
+  WHTaxRate?: number;
+  useGrossOnlyForMinimumWage?: boolean;
 }
 
 export interface IGroup {

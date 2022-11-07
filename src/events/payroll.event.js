@@ -15,5 +15,6 @@ exports.PAYROLL_EVENTS = {
     updateOrganizationSetting: `${services_constant_1.SERVICES.PAYROLL_SERVICE}.${exports.ORGANIZATION}.updateSettings`,
     fetchOrgWalletAccount: `${services_constant_1.SERVICES.PAYROLL_SERVICE}.${exports.WALLET}.fetchOrgWalletAccount`,
     createOrgWalletAccount: `${services_constant_1.SERVICES.PAYROLL_SERVICE}.${exports.WALLET}.createOrgWalletAccount`,
+    createPayroll: `${services_constant_1.SERVICES.PAYROLL_SERVICE}.${exports.PAYROLL}.createPayroll`,
 };
 //# sourceMappingURL=payroll.event.js.map

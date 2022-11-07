@@ -5,7 +5,7 @@ import {BaseClass} from '@upp/tax/base.tax';
 import {ProcessTaxPayload} from '@upp/tax/tax.types';
 
 export class KenyaTax extends BaseClass {
-  static country = 'Kenya';
+  static country = 'KE';
 
   private taxSettings;
   constructor(context: ProcessTaxPayload) {

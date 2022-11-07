@@ -9,27 +9,44 @@ class BaseCountryPensionService {
     }
     process(context) {
         var _a;
-        const { group, organizationSettings, employee } = context;
+        const { group, organizationSettings, employee, payroll } = context;
         const pension = ((_a = (group ? group : organizationSettings).remittances) === null || _a === void 0 ? void 0 : _a.pension) || {};
         const pensionType = pension.type;
         const remittances = employee.remittances || [];
+        let remittance = null;
         if (pensionType === 'deduct') {
-            employee.remittances = [
-                ...remittances,
-                {
-                    ...this.processEmployeePensionDeduction(context),
-                    remittanceEnabled: this.remitEnabled(context),
-                },
-            ];
+            remittance = {
+                ...this.processEmployeePensionDeduction(context),
+                remittanceEnabled: this.remitEnabled(context),
+            };
+            employee.remittances = [...remittances, remittance];
         }
         if (pensionType === 'quote') {
-            employee.remittances = [
-                ...remittances,
-                {
-                    ...this.processEmployeePensionQuote(context),
-                    remittanceEnabled: this.remitEnabled(context),
-                },
-            ];
+            remittance = {
+                ...this.processEmployeePensionQuote(context),
+                remittanceEnabled: this.remitEnabled(context),
+            };
+        }
+        if (remittance) {
+            payroll.totalPension = payroll.totalPension || {};
+            payroll.totalPension[remittance.amount.currency] = money_interface_1.Money.add(remittance.amount, payroll.totalPension[remittance.amount.currency] || {
+                value: 0,
+                currency: remittance.amount.currency,
+            });
+            if (remittance === null || remittance === void 0 ? void 0 : remittance.remittanceEnabled) {
+                employee.remitanceEnabled = remittance.remittanceEnabled;
+                employee.remittances = [...remittances, remittance];
+                payroll.remittances = payroll.remittances || {};
+                payroll.remittances[employee.currency] =
+                    payroll.remittances[employee.currency] || {};
+                payroll.remittances[employee.currency][remittance.name] = payroll
+                    .remittances[employee.currency][remittance.name] || {
+                    ...remittance,
+                    amount: { value: 0, currency: employee.base.currency },
+                };
+                payroll.remittances[employee.currency][remittance.name].amount =
+                    money_interface_1.Money.add(payroll.remittances[employee.currency][remittance.name].amount, remittance.amount);
+            }
         }
     }
     calculatePension(breakdown, salary, percent) {

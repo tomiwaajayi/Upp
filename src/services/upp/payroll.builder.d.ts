@@ -14,6 +14,7 @@ export declare class PayrollBuilder implements IPayrollBuilder {
     private employees;
     private organization;
     private organizationSettings;
+    private organizationCountry;
     /**
      * This holds query data or data from backend that needs to be input in each processes
      */
@@ -54,7 +55,7 @@ export declare class PayrollBuilder implements IPayrollBuilder {
         deselected: string[];
         proRateMonth: string;
         createdBy: string;
-        remittances?: import("../../interfaces/payroll/payroll.interface").IPayrollRemittance[] | undefined;
+        remittances?: Record<string, Record<string, import("../../interfaces/payroll/payroll.interface").IPayrollRemittance>> | undefined;
         hasProrates?: boolean | undefined;
         totalCharge?: IMoney | undefined;
         totalBonus?: Record<string, IMoney> | undefined;
@@ -63,6 +64,7 @@ export declare class PayrollBuilder implements IPayrollBuilder {
         totalLeaveAllowance?: Record<string, IMoney> | undefined;
         totalBase: Record<string, IMoney>;
         totalStatutories: Record<string, Record<string, IMoney>>;
+        totalPension?: Record<string, IMoney> | undefined;
     };
     /**
      * Process single employee prorate
@@ -96,4 +98,10 @@ export declare class PayrollBuilder implements IPayrollBuilder {
      * https://sbcode.net/typescript/factory/
      */
     processPension(employee: IPayrollEmployee): void;
+    /**
+     * Process net salary for all countries
+     * Should implement a factory design pattenr
+     * https://sbcode.net/typescript/factory/
+     */
+    processNetSalaryAndTotalCharge(employee: IPayrollEmployee): void;
 }

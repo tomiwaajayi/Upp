@@ -5,7 +5,9 @@ const lodash_1 = require("lodash");
 const employee_interface_1 = require("../../interfaces/account/employee.interface");
 const money_interface_1 = require("../../interfaces/payment/money.interface");
 const payroll_interface_1 = require("../../interfaces/payroll/payroll.interface");
+const util_service_1 = require("../util.service");
 const pesion_service_1 = require("./pension/pesion.service");
+const tax_service_1 = require("./tax/tax.service");
 /**
  * To improve the speed, this builder implements the Builder Design Pattern.
  * There are 4 ordinal build parts that must be called in order from the get method,
@@ -16,7 +18,9 @@ class PayrollBuilder {
         this.employees = data.employees;
         this.organization = data.organization;
         this.organizationSettings = data.organizationSettings;
+        this.organizationCountry = this.organization.country;
         this.meta = data.meta;
+        this.meta.payItem = data.payrollInit.payItem;
         this.payroll = {
             ...data.payrollInit,
             totalBase: {},
@@ -58,6 +62,7 @@ class PayrollBuilder {
      */
     buildPartD(employee) {
         this.processTax(employee);
+        this.processNetSalaryAndTotalCharge(employee);
         return this;
     }
     /**
@@ -72,6 +77,7 @@ class PayrollBuilder {
                 value: employee.salary || 0,
                 currency,
             };
+            employee.zeroMoney = { value: 0, currency };
             // get total base
             this.payroll.totalBase[currency] = money_interface_1.Money.add(employee.base, this.payroll.totalBase[currency] || { value: 0, currency });
             // employee processes goes here
@@ -102,12 +108,17 @@ class PayrollBuilder {
         const currency = employee.base.currency.toUpperCase();
         const sumBonus = (name, amount) => {
             this.payroll[name] = this.payroll[name] || {};
-            this.payroll[name][currency] = money_interface_1.Money.add(amount, this.payroll[name][currency] || {
+            this.payroll[name][currency] = money_interface_1.Money.add(this.payroll[name][currency] || {
                 value: 0,
                 currency,
-            });
+            }, amount);
         };
-        const groupedBonuses = (0, lodash_1.groupBy)(employee.bonuses, 'mode');
+        const groupedBonuses = (0, lodash_1.groupBy)(employee.bonuses, bonus => {
+            if (typeof bonus.amount === 'number') {
+                bonus.amount = { value: bonus.amount, currency };
+            }
+            return bonus.mode;
+        });
         if (!(0, lodash_1.isEmpty)(groupedBonuses[employee_interface_1.BonusSalaryModeEnum.Quick])) {
             employee.bonuses = groupedBonuses[employee_interface_1.BonusSalaryModeEnum.Quick];
             employee.totalBonus = money_interface_1.Money.addMany(employee.bonuses, 'amount');
@@ -342,7 +353,23 @@ class PayrollBuilder {
      * https://sbcode.net/typescript/factory/
      */
     processTax(employee) {
-        // code goes here
+        var _a;
+        try {
+            const { group } = employee;
+            const remittances = group
+                ? group.remittances
+                : this.organizationSettings.remittances;
+            if ((_a = remittances.tax) === null || _a === void 0 ? void 0 : _a.enabled) {
+                tax_service_1.TaxService.process(this.organization.country.name, {
+                    organization: this.organization,
+                    settings: this.organizationSettings,
+                    meta: this.meta,
+                }, employee);
+            }
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
     /**
      * Process Pension for all countries
@@ -359,7 +386,46 @@ class PayrollBuilder {
                 group,
                 organizationSettings: this.organizationSettings,
                 employee,
+                payroll: this.payroll,
             });
+        }
+    }
+    /**
+     * Process net salary for all countries
+     * Should implement a factory design pattenr
+     * https://sbcode.net/typescript/factory/
+     */
+    processNetSalaryAndTotalCharge(employee) {
+        const remittancesKeyedByName = (0, lodash_1.keyBy)(employee.remittances || [], 'name');
+        employee.netSalary = (0, lodash_1.cloneDeep)(employee.base);
+        const bonus = money_interface_1.Money.addMany(util_service_1.UtilService.cleanArray([
+            { value: 0, currency: employee.base.currency },
+            employee.totalBonus,
+            employee.totalExtraMonthBonus,
+            employee.totalUntaxedBonus,
+            employee.totalLeaveAllowance,
+        ]));
+        employee.netSalary = money_interface_1.Money.addMany(util_service_1.UtilService.cleanArray([employee.netSalary, bonus]));
+        if (this.payroll.payItem.bonus) {
+            this.payroll.totalCharge = money_interface_1.Money.addMany(util_service_1.UtilService.cleanArray([this.payroll.totalCharge, bonus]));
+        }
+        if (employee.totalDeductions) {
+            employee.netSalary = money_interface_1.Money.sub(employee.netSalary, employee.totalDeductions);
+        }
+        const pension = remittancesKeyedByName['pension'];
+        if (pension &&
+            pension.remittanceEnabled &&
+            pension.amount.value < employee.netSalary.value) {
+            employee.netSalary = money_interface_1.Money.sub(employee.netSalary, pension.amount);
+            if (this.payroll.payItem.pension) {
+                this.payroll.totalCharge = money_interface_1.Money.addMany(util_service_1.UtilService.cleanArray([pension.amount, this.payroll.totalCharge]));
+            }
+        }
+        if (this.payroll.payItem.base) {
+            this.payroll.totalCharge = money_interface_1.Money.addMany(util_service_1.UtilService.cleanArray([
+                money_interface_1.Money.sub(employee.netSalary, bonus),
+                this.payroll.totalCharge,
+            ]));
         }
     }
 }

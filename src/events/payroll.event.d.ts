@@ -11,4 +11,5 @@ export declare const PAYROLL_EVENTS: {
     updateOrganizationSetting: string;
     fetchOrgWalletAccount: string;
     createOrgWalletAccount: string;
+    createPayroll: string;
 };

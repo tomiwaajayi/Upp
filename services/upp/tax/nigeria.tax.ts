@@ -1,12 +1,12 @@
 import {ProcessTaxPayload} from '@sh/services/upp/tax/tax.types';
-import {NestedRecord} from '@sh/interfaces/base.interface';
+import {NestedIRemittance} from '@sh/interfaces/base.interface';
 import {BaseClass} from '@upp/tax/base.tax';
 import {TAX} from '@sh/constants/tax.constants';
 import {IMoney, Money} from '@sh/interfaces/payment/money.interface';
 import {IPayrollEmployee} from '@sh/interfaces/payroll/payroll.interface';
 
 export class NigeriaTax extends BaseClass {
-  static country = 'Nigeria';
+  static country = 'NG';
 
   private taxSettings;
   constructor(context: ProcessTaxPayload) {
@@ -32,7 +32,7 @@ export class NigeriaTax extends BaseClass {
     const base = employee.basePayable || employee.base;
 
     let gross = Money.add(base, totalBonus || <IMoney>zeroMoney);
-    const taxSettings = (<NestedRecord>this.settings.remittances)?.tax;
+    const taxSettings = (<NestedIRemittance>this.settings.remittances)?.tax;
 
     if (taxSettings?.useGrossOnlyForMinimumWage) {
       gross = <IMoney>employee.base;

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SupportedCurrencyEnum = exports.SalaryTypeEnum = exports.GenderEnum = exports.EmployeeCompletionStatus = exports.SalaryAddonStatusEnum = exports.BonusSalaryModeEnum = exports.SalaryAddonTypeEnum = exports.SalaryAddonFrequencyEnum = exports.CheckEmployeeDTO = void 0;
+exports.SupportedCurrencyEnum = exports.EmploymentTypeEnum = exports.SalaryTypeEnum = exports.GenderEnum = exports.EmployeeCompletionStatus = exports.SalaryAddonStatusEnum = exports.BonusSalaryModeEnum = exports.SalaryAddonTypeEnum = exports.SalaryAddonFrequencyEnum = exports.CheckEmployeeDTO = void 0;
 class CheckEmployeeDTO {
 }
 exports.CheckEmployeeDTO = CheckEmployeeDTO;
@@ -45,6 +45,12 @@ var SalaryTypeEnum;
     SalaryTypeEnum["Net"] = "net";
     SalaryTypeEnum["Gross"] = "gross";
 })(SalaryTypeEnum = exports.SalaryTypeEnum || (exports.SalaryTypeEnum = {}));
+var EmploymentTypeEnum;
+(function (EmploymentTypeEnum) {
+    EmploymentTypeEnum["Permanent"] = "permanent";
+    EmploymentTypeEnum["FullTime"] = "full-time";
+    EmploymentTypeEnum["Casual"] = "casual";
+})(EmploymentTypeEnum = exports.EmploymentTypeEnum || (exports.EmploymentTypeEnum = {}));
 var SupportedCurrencyEnum;
 (function (SupportedCurrencyEnum) {
     SupportedCurrencyEnum["USD"] = "usd";

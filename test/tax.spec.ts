@@ -2,8 +2,8 @@ import {PayrollDirector} from '@upp/payroll.director';
 import fixture = require('@test/fixtures/tax.json');
 import {BuilderPayload} from '@upp/builder.interface';
 import {cloneDeep} from 'lodash';
-import {Group} from '@sh/interfaces/account/employee.interface';
-import {NestedRecord} from '@sh/interfaces/base.interface';
+import {IGroup} from '@sh/interfaces/account/employee.interface';
+import {NestedIRemittance} from '@sh/interfaces/base.interface';
 
 describe('Process Tax (e2e)', () => {
   describe('Nigeria Tax', () => {
@@ -48,9 +48,11 @@ describe('Process Tax (e2e)', () => {
     });
 
     it('Should not have tax remittance if disabled', async () => {
-      (<NestedRecord>data.organizationSettings.remittances).tax.remit = false;
-      (<NestedRecord>(<Group>data.employees[0].group).remittances).tax.remit =
+      (<NestedIRemittance>data.organizationSettings.remittances).tax.remit =
         false;
+      (<NestedIRemittance>(
+        (<IGroup>data.employees[0].group).remittances
+      )).tax.remit = false;
       const payroll = PayrollDirector.build(data);
 
       expect(payroll.employees[0].remittances).toBeDefined();
@@ -63,9 +65,11 @@ describe('Process Tax (e2e)', () => {
     });
 
     it('Should have tax disabled', async () => {
-      (<NestedRecord>data.organizationSettings.remittances).tax.remit = false;
-      (<NestedRecord>(<Group>data.employees[0].group).remittances).tax.enabled =
+      (<NestedIRemittance>data.organizationSettings.remittances).tax.remit =
         false;
+      (<NestedIRemittance>(
+        (<IGroup>data.employees[0].group).remittances
+      )).tax.enabled = false;
       const payroll = PayrollDirector.build(data);
 
       const tax = (payroll.employees[0].remittances || []).find(
@@ -75,8 +79,8 @@ describe('Process Tax (e2e)', () => {
     });
 
     it('Should have withholding tax', async () => {
-      (<NestedRecord>(
-        (<Group>data.employees[0].group).remittances
+      (<NestedIRemittance>(
+        (<IGroup>data.employees[0].group).remittances
       )).tax.enabledWithHoldingTax = true;
       const payroll = PayrollDirector.build(data);
 
@@ -91,8 +95,8 @@ describe('Process Tax (e2e)', () => {
     });
 
     it('Should calculate pension as a relief', async () => {
-      (<NestedRecord>(
-        (<Group>data.employees[0].group).remittances
+      (<NestedIRemittance>(
+        (<IGroup>data.employees[0].group).remittances
       )).pension.enabled = true;
       const payroll = PayrollDirector.build(data);
 
@@ -123,8 +127,8 @@ describe('Process Tax (e2e)', () => {
       data.organization.country = fixture.entities.ghana;
       data.employees[0].base = {value: 1000, currency: 'NGN'};
       data.employees[0].currency = 'GHS';
-      data.employees[0].country = fixture.entities.ghana.id;
-      (<Group>data.employees[0].group).salaryBreakdown =
+      data.employees[0].country = fixture.entities.ghana.iso2;
+      (<IGroup>data.employees[0].group).salaryBreakdown =
         fixture.entities.salaryBreakdown;
       delete data.employees[0].bonuses;
       delete data.employees[0].untaxedBonuses;
@@ -132,8 +136,8 @@ describe('Process Tax (e2e)', () => {
     });
 
     it('Should test payroll tax for ghana', async () => {
-      (<NestedRecord>(
-        (<Group>data.employees[0].group).remittances
+      (<NestedIRemittance>(
+        (<IGroup>data.employees[0].group).remittances
       )).pension.enabled = true;
 
       const payroll = PayrollDirector.build(data);
@@ -165,15 +169,15 @@ describe('Process Tax (e2e)', () => {
       data.organization.country = fixture.entities.kenya;
       data.employees[0].base = {value: 100000, currency: 'KES'};
       data.employees[0].currency = 'KES';
-      data.employees[0].country = fixture.entities.kenya.id;
+      data.employees[0].country = fixture.entities.kenya.iso2;
       delete data.employees[0].bonuses;
       delete data.employees[0].untaxedBonuses;
       delete data.employees[0].leaveAllowance;
     });
 
     it('Should test payroll tax for kenya', async () => {
-      (<NestedRecord>(
-        (<Group>data.employees[0].group).remittances
+      (<NestedIRemittance>(
+        (<IGroup>data.employees[0].group).remittances
       )).pension.enabled = true;
 
       const payroll = PayrollDirector.build(data);
@@ -205,15 +209,15 @@ describe('Process Tax (e2e)', () => {
       data.organization.country = fixture.entities.rwanda;
       data.employees[0].base = {value: 100000, currency: 'RWF'};
       data.employees[0].currency = 'RWF';
-      data.employees[0].country = fixture.entities.rwanda.id;
+      data.employees[0].country = fixture.entities.rwanda.iso2;
       delete data.employees[0].bonuses;
       delete data.employees[0].untaxedBonuses;
       delete data.employees[0].leaveAllowance;
     });
 
     it('Should test payroll tax for rwanda', async () => {
-      (<NestedRecord>(
-        (<Group>data.employees[0].group).remittances
+      (<NestedIRemittance>(
+        (<IGroup>data.employees[0].group).remittances
       )).pension.enabled = true;
 
       const payroll = PayrollDirector.build(data);

@@ -7,3 +7,9 @@ export declare const SERVICES: {
     INTEGRATION_SERVICE: string;
     PAYROLL_SERVICE: string;
 };
+export declare const COUNTRY: {
+    NGN: string;
+    GHS: string;
+    KES: string;
+    RWF: string;
+};

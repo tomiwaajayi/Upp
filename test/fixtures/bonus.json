@@ -36,7 +36,6 @@
     },
     "defaultEmps": [
       {
-        "salary": {"value": 100000, "currency": "NGN"},
         "base": {"value": 100000, "currency": "NGN"},
         "workEmail": "zoltofulmo2@vusra.com",
         "firstName": "Sarah",
@@ -207,6 +206,7 @@
         "bonuses": [],
         "deductions": [],
         "group": {
+          "id": "634018244ee4e237f9eb7ea4",
           "name": "Manager",
           "useOrgsettings": false,
           "useOrgSalaryBreakdown": false,

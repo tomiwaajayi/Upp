@@ -1,6 +1,6 @@
-import {Group} from '@sh/interfaces/account/employee.interface';
+import {IGroup} from '@sh/interfaces/account/employee.interface';
 import {Organization} from '@sh/interfaces/account/organization.interface';
-import {NestedRecord} from '@sh/interfaces/base.interface';
+import {NestedIRemittance} from '@sh/interfaces/base.interface';
 import {IMoney, Money} from '@sh/interfaces/payment/money.interface';
 import {
   IPayrollEmployee,
@@ -24,11 +24,13 @@ export class BaseClass implements CountryTaxService {
   process(employee: IPayrollEmployee): void {
     const {group} = employee;
 
-    const entity = <NestedRecord>(<Group>group || this.settings).remittances;
+    const entity = <NestedIRemittance>(
+      (<IGroup>group || this.settings).remittances
+    );
 
     const enabledTaxes = entity?.tax?.enabled;
 
-    const enabledWHT = (<Group>group)?.remittances?.tax?.enabledWithHoldingTax;
+    const enabledWHT = (<IGroup>group)?.remittances?.tax?.enabledWithHoldingTax;
 
     if (!enabledTaxes || this.exempt(employee)) {
       return;
@@ -72,7 +74,7 @@ export class BaseClass implements CountryTaxService {
 
   processEmployeeWHT(employee: IPayrollEmployee) {
     employee.whtaxApplied = true;
-    const groupTaxSettings = (employee.group as Group).remittances?.tax;
+    const groupTaxSettings = (employee.group as IGroup).remittances?.tax;
     const relief = this.calculateWithHoldingTaxRelief(employee);
     const tax = this.calculateWithHoldingTax(
       relief.taxableSalary,

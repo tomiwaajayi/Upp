@@ -5,7 +5,7 @@ import {BaseClass} from './base.tax';
 import {ProcessTaxPayload} from './tax.types';
 
 export class GhanaTax extends BaseClass {
-  static country = 'Ghana';
+  static country = 'GH';
 
   private taxSettings;
   constructor(context: ProcessTaxPayload) {
