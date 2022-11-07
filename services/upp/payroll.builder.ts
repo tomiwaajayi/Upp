@@ -220,12 +220,6 @@ export class PayrollBuilder implements IPayrollBuilder {
       });
 
       employee.remittances = remittances;
-
-      this.updatePayrollStatutoryTotal(
-        CountryISO.Nigeria,
-        CountryStatutories.ITF,
-        baseIncomeWithITF
-      );
     }
     // ->> end ITF
 
@@ -262,12 +256,6 @@ export class PayrollBuilder implements IPayrollBuilder {
         });
 
         employee.remittances = remittances;
-
-        this.updatePayrollStatutoryTotal(
-          CountryISO.Nigeria,
-          CountryStatutories.NHF,
-          nhfContribution
-        );
       }
     }
     // --> end NHF
@@ -300,12 +288,6 @@ export class PayrollBuilder implements IPayrollBuilder {
         });
 
         employee.remittances = remittances;
-
-        this.updatePayrollStatutoryTotal(
-          CountryISO.Nigeria,
-          CountryStatutories.NSITF,
-          nsitfContribution
-        );
       }
     }
     // --> end NSITF
@@ -339,12 +321,6 @@ export class PayrollBuilder implements IPayrollBuilder {
         });
 
         employee.remittances = remittances;
-
-        this.updatePayrollStatutoryTotal(
-          CountryISO.Kenya,
-          CountryStatutories.NHIF,
-          nhifContribution
-        );
       }
     }
     // --> end NHIF
@@ -511,6 +487,13 @@ export class PayrollBuilder implements IPayrollBuilder {
       );
     }
 
+    Object.values(CountryStatutories).forEach(countryStatutory => {
+      const statutory = remittancesKeyedByName[countryStatutory];
+      if (statutory && employee.netSalary) {
+        employee.netSalary = Money.sub(employee.netSalary, statutory.amount);
+      }
+    });
+
     const pension = remittancesKeyedByName['pension'];
     if (
       pension &&
@@ -578,6 +561,32 @@ export class PayrollBuilder implements IPayrollBuilder {
         ])
       );
     }
+
+    /****************
+     * Statutory    *
+     ****************/
+    Object.values(CountryStatutories).forEach(countryStatutory => {
+      const statutory = remittancesKeyedByName[countryStatutory];
+      if (statutory) {
+        this.updatePayrollStatutoryTotal(
+          employee.country,
+          countryStatutory,
+          statutory.amount
+        );
+
+        if (
+          this.payroll.payItem[countryStatutory] &&
+          this.payroll.totalCharge
+        ) {
+          this.payroll.totalCharge[currency] = Money.addMany(
+            UtilService.cleanArray([
+              statutory.amount,
+              this.payroll.totalCharge[currency],
+            ])
+          );
+        }
+      }
+    });
 
     const pension = remittancesKeyedByName['pension'];
     if (

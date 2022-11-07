@@ -34,7 +34,7 @@ export interface IPayroll {
   totalExtraMonthBonus?: Record<string, IMoney>; // yes
   totalLeaveAllowance?: Record<string, IMoney>; // yes
   totalBase: Record<string, IMoney>; // yes
-  totalStatutories: Record<string, Record<string, IMoney>>;
+  totalStatutories: Record<string, Record<string, IMoney>>; // yes
   totalPension?: Record<string, IMoney>;
 }
 
