@@ -14,4 +14,5 @@ export const PAYROLL_EVENTS = {
   fetchOrgWalletAccount: `${SERVICES.PAYROLL_SERVICE}.${WALLET}.fetchOrgWalletAccount`,
   createOrgWalletAccount: `${SERVICES.PAYROLL_SERVICE}.${WALLET}.createOrgWalletAccount`,
   createPayroll: `${SERVICES.PAYROLL_SERVICE}.${PAYROLL}.createPayroll`,
+  getUPPInitData: `${SERVICES.PAYROLL_SERVICE}.${PAYROLL}.getUPPInitData`,
 };
