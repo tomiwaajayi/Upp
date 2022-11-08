@@ -18,4 +18,6 @@ export const PAYROLL_EVENTS = {
   getPayrolls: `${SERVICES.PAYROLL_SERVICE}.${PAYROLL}.getPayrolls`,
   getEmployeePayrolls: `${SERVICES.PAYROLL_SERVICE}.${PAYROLL}.getEmployeePayrolls`,
   getUPPInitData: `${SERVICES.PAYROLL_SERVICE}.${PAYROLL}.getUPPInitData`,
+  addPayrollApprover: `${SERVICES.PAYROLL_SERVICE}.${PAYROLL}.addPayrollApprover`,
+  removePayrollApprover: `${SERVICES.PAYROLL_SERVICE}.${PAYROLL}.removePayrollApprover`,
 };

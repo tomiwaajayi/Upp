@@ -15,4 +15,7 @@ export declare const PAYROLL_EVENTS: {
     editPayroll: string;
     getPayrolls: string;
     getEmployeePayrolls: string;
+    getUPPInitData: string;
+    addPayrollApprover: string;
+    removePayrollApprover: string;
 };

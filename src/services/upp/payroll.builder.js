@@ -15,6 +15,8 @@ const tax_service_1 = require("./tax/tax.service");
  */
 class PayrollBuilder {
     constructor(data) {
+        this.processedPayrollTotals = false;
+        this.data = (0, lodash_1.cloneDeep)(data);
         this.employees = data.employees;
         this.organization = data.organization;
         this.organizationSettings = data.organizationSettings;
@@ -62,8 +64,23 @@ class PayrollBuilder {
      */
     buildPartD(employee) {
         this.processTax(employee);
-        this.processNetSalaryAndTotalCharge(employee);
+        this.processNetSalary(employee);
         return this;
+    }
+    /**
+     * This part calculates totals for payroll
+     * @returns
+     */
+    buildPartE(employee) {
+        this.processPayrollTotals(employee);
+        return this;
+    }
+    getResponse() {
+        return {
+            ...this.payroll,
+            organization: this.organization,
+            employees: this.employees,
+        };
     }
     /**
      * You must call this method to return the payroll object
@@ -78,19 +95,28 @@ class PayrollBuilder {
                 currency,
             };
             employee.zeroMoney = { value: 0, currency };
-            // get total base
-            this.payroll.totalBase[currency] = money_interface_1.Money.add(employee.base, this.payroll.totalBase[currency] || { value: 0, currency });
             // employee processes goes here
             this.buildPartA(employee)
                 .buildPartB(employee)
                 .buildPartC(employee)
-                .buildPartD(employee);
+                .buildPartD(employee)
+                .buildPartE(employee);
         }));
-        return {
-            ...this.payroll,
-            organization: this.organization,
-            employees: this.employees,
-        };
+        return this.getResponse();
+    }
+    getData() {
+        return this.data;
+    }
+    getProcessedEmployees() {
+        return this.employees;
+    }
+    getTotals() {
+        if (!this.processedPayrollTotals) {
+            this.employees.map(employee => {
+                this.buildPartE(employee);
+            });
+        }
+        return this.getResponse();
     }
     /**
      * Process single employee prorate
@@ -106,13 +132,6 @@ class PayrollBuilder {
         if ((0, lodash_1.isEmpty)(employee.bonuses))
             return;
         const currency = employee.base.currency.toUpperCase();
-        const sumBonus = (name, amount) => {
-            this.payroll[name] = this.payroll[name] || {};
-            this.payroll[name][currency] = money_interface_1.Money.add(this.payroll[name][currency] || {
-                value: 0,
-                currency,
-            }, amount);
-        };
         const groupedBonuses = (0, lodash_1.groupBy)(employee.bonuses, bonus => {
             if (typeof bonus.amount === 'number') {
                 bonus.amount = { value: bonus.amount, currency };
@@ -122,24 +141,20 @@ class PayrollBuilder {
         if (!(0, lodash_1.isEmpty)(groupedBonuses[employee_interface_1.BonusSalaryModeEnum.Quick])) {
             employee.bonuses = groupedBonuses[employee_interface_1.BonusSalaryModeEnum.Quick];
             employee.totalBonus = money_interface_1.Money.addMany(employee.bonuses, 'amount');
-            sumBonus('totalBonus', employee.totalBonus);
         }
         if (!(0, lodash_1.isEmpty)(groupedBonuses[employee_interface_1.BonusSalaryModeEnum.UnTaxed])) {
             employee.untaxedBonuses = groupedBonuses[employee_interface_1.BonusSalaryModeEnum.UnTaxed];
             employee.totalUntaxedBonus = money_interface_1.Money.addMany(employee.untaxedBonuses, 'amount');
-            sumBonus('totalUntaxedBonus', employee.totalUntaxedBonus);
         }
         if (!(0, lodash_1.isEmpty)(groupedBonuses[employee_interface_1.BonusSalaryModeEnum.ExtraMonth])) {
             employee.extraMonthBonus =
                 groupedBonuses[employee_interface_1.BonusSalaryModeEnum.ExtraMonth][0];
             employee.totalExtraMonthBonus = employee.extraMonthBonus.amount;
-            sumBonus('totalExtraMonthBonus', employee.totalExtraMonthBonus);
         }
         if (!(0, lodash_1.isEmpty)(groupedBonuses[employee_interface_1.BonusSalaryModeEnum.LeaveAllowance])) {
             employee.leaveAllowance =
                 groupedBonuses[employee_interface_1.BonusSalaryModeEnum.LeaveAllowance][0];
             employee.totalLeaveAllowance = employee.leaveAllowance.amount;
-            sumBonus('totalLeaveAllowance', employee.totalLeaveAllowance);
         }
     }
     /**
@@ -173,7 +188,6 @@ class PayrollBuilder {
                 amount: baseIncomeWithITF,
             });
             employee.remittances = remittances;
-            this.updatePayrollStatutoryTotal(payroll_interface_1.CountryISO.Nigeria, payroll_interface_1.CountryStatutories.ITF, baseIncomeWithITF);
         }
         // ->> end ITF
         // NHF
@@ -197,7 +211,6 @@ class PayrollBuilder {
                     amount: nhfContribution,
                 });
                 employee.remittances = remittances;
-                this.updatePayrollStatutoryTotal(payroll_interface_1.CountryISO.Nigeria, payroll_interface_1.CountryStatutories.NHF, nhfContribution);
             }
         }
         // --> end NHF
@@ -223,7 +236,6 @@ class PayrollBuilder {
                     amount: nsitfContribution,
                 });
                 employee.remittances = remittances;
-                this.updatePayrollStatutoryTotal(payroll_interface_1.CountryISO.Nigeria, payroll_interface_1.CountryStatutories.NSITF, nsitfContribution);
             }
         }
         // --> end NSITF
@@ -250,7 +262,6 @@ class PayrollBuilder {
                     amount: nhifContribution,
                 });
                 employee.remittances = remittances;
-                this.updatePayrollStatutoryTotal(payroll_interface_1.CountryISO.Kenya, payroll_interface_1.CountryStatutories.NHIF, nhifContribution);
             }
         }
         // --> end NHIF
@@ -395,38 +406,122 @@ class PayrollBuilder {
      * Should implement a factory design pattenr
      * https://sbcode.net/typescript/factory/
      */
-    processNetSalaryAndTotalCharge(employee) {
+    processNetSalary(employee) {
         const remittancesKeyedByName = (0, lodash_1.keyBy)(employee.remittances || [], 'name');
+        employee.remittancesKeyedByName = remittancesKeyedByName;
         employee.netSalary = (0, lodash_1.cloneDeep)(employee.base);
-        const bonus = money_interface_1.Money.addMany(util_service_1.UtilService.cleanArray([
+        employee.sumOfBonus = money_interface_1.Money.addMany(util_service_1.UtilService.cleanArray([
             { value: 0, currency: employee.base.currency },
             employee.totalBonus,
             employee.totalExtraMonthBonus,
             employee.totalUntaxedBonus,
             employee.totalLeaveAllowance,
         ]));
-        employee.netSalary = money_interface_1.Money.addMany(util_service_1.UtilService.cleanArray([employee.netSalary, bonus]));
-        if (this.payroll.payItem.bonus) {
-            this.payroll.totalCharge = money_interface_1.Money.addMany(util_service_1.UtilService.cleanArray([this.payroll.totalCharge, bonus]));
-        }
+        employee.netSalary = money_interface_1.Money.addMany(util_service_1.UtilService.cleanArray([employee.netSalary, employee.sumOfBonus]));
         if (employee.totalDeductions) {
             employee.netSalary = money_interface_1.Money.sub(employee.netSalary, employee.totalDeductions);
         }
+        Object.values(payroll_interface_1.CountryStatutories).forEach(countryStatutory => {
+            const statutory = remittancesKeyedByName[countryStatutory];
+            if (statutory && employee.netSalary) {
+                employee.netSalary = money_interface_1.Money.sub(employee.netSalary, statutory.amount);
+            }
+        });
         const pension = remittancesKeyedByName['pension'];
         if (pension &&
             pension.remittanceEnabled &&
             pension.amount.value < employee.netSalary.value) {
             employee.netSalary = money_interface_1.Money.sub(employee.netSalary, pension.amount);
-            if (this.payroll.payItem.pension) {
-                this.payroll.totalCharge = money_interface_1.Money.addMany(util_service_1.UtilService.cleanArray([pension.amount, this.payroll.totalCharge]));
-            }
         }
-        if (this.payroll.payItem.base) {
-            this.payroll.totalCharge = money_interface_1.Money.addMany(util_service_1.UtilService.cleanArray([
-                money_interface_1.Money.sub(employee.netSalary, bonus),
-                this.payroll.totalCharge,
+    }
+    /**
+     * Process all totals on payroll
+     * Should implement a factory design pattenr
+     * https://sbcode.net/typescript/factory/
+     */
+    processPayrollTotals(employee) {
+        var _a;
+        const remittancesKeyedByName = employee.remittancesKeyedByName || {};
+        const currency = employee.currency.toUpperCase();
+        const zeroMoney = { value: 0, currency };
+        this.payroll.totalCharge = this.payroll.totalCharge || {};
+        /************
+         * Bonus    *
+         ************/
+        [
+            ['totalBonus', employee.totalBonus],
+            ['totalUntaxedBonus', employee.totalUntaxedBonus],
+            ['totalLeaveAllowance', employee.totalLeaveAllowance],
+            ['totalExtraMonthBonus', employee.totalExtraMonthBonus],
+        ].forEach(([_name, amount]) => {
+            if (amount) {
+                const name = _name;
+                this.payroll[name] = this.payroll[name] || {};
+                this.payroll[name][currency] = money_interface_1.Money.add(this.payroll[name][currency] || zeroMoney, amount);
+            }
+        });
+        if (this.payroll.payItem.bonus) {
+            this.payroll.totalCharge[currency] = money_interface_1.Money.addMany(util_service_1.UtilService.cleanArray([
+                this.payroll.totalCharge[currency],
+                employee.sumOfBonus,
             ]));
         }
+        /************
+         * Base     *
+         ************/
+        this.payroll.totalBase[currency] = money_interface_1.Money.add(employee.base, this.payroll.totalBase[currency] || zeroMoney);
+        if (this.payroll.payItem.base) {
+            this.payroll.totalCharge[currency] = money_interface_1.Money.addMany(util_service_1.UtilService.cleanArray([
+                money_interface_1.Money.sub(employee.netSalary || zeroMoney, employee.sumOfBonus || zeroMoney),
+                this.payroll.totalCharge[currency],
+            ]));
+        }
+        /****************
+         * Statutory    *
+         ****************/
+        const addRemittance = (name, amount) => {
+            this.payroll.remittances = this.payroll.remittances || {};
+            this.payroll.remittances[currency] =
+                this.payroll.remittances[currency] || {};
+            this.payroll.remittances[currency][name] = this.payroll.remittances[currency][name] || {
+                name,
+                remittanceEnabled: true,
+                amount: zeroMoney,
+            };
+            this.payroll.remittances[currency][name].amount = money_interface_1.Money.add(amount, this.payroll.remittances[currency][name].amount);
+        };
+        Object.values(payroll_interface_1.CountryStatutories).forEach(countryStatutory => {
+            const statutory = remittancesKeyedByName[countryStatutory];
+            if (statutory) {
+                this.updatePayrollStatutoryTotal(currency, countryStatutory, statutory.amount);
+                addRemittance(countryStatutory, statutory.amount);
+                if (this.payroll.payItem[countryStatutory] &&
+                    this.payroll.totalCharge) {
+                    this.payroll.totalCharge[currency] = money_interface_1.Money.addMany(util_service_1.UtilService.cleanArray([
+                        statutory.amount,
+                        this.payroll.totalCharge[currency],
+                    ]));
+                }
+            }
+        });
+        /***************
+         * Pension     *
+         ***************/
+        const pension = remittancesKeyedByName['pension'];
+        if (pension && pension.amount.value < (((_a = employee.netSalary) === null || _a === void 0 ? void 0 : _a.value) || 0)) {
+            this.payroll.totalPension = this.payroll.totalPension || {};
+            this.payroll.totalPension[currency] = money_interface_1.Money.add(pension.amount, this.payroll.totalPension[currency] || zeroMoney);
+            if (pension.remittanceEnabled) {
+                addRemittance(pension.name, pension.amount);
+                if (this.payroll.payItem.pension) {
+                    this.payroll.totalCharge[currency] = money_interface_1.Money.addMany(util_service_1.UtilService.cleanArray([
+                        pension.amount,
+                        this.payroll.totalCharge[currency],
+                    ]));
+                }
+            }
+        }
+        this.processedPayrollTotals = true;
     }
 }
 exports.PayrollBuilder = PayrollBuilder;

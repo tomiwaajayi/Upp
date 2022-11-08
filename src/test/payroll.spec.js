@@ -4,7 +4,7 @@ const payroll_director_1 = require("../services/upp/payroll.director");
 const fixture = require("./fixtures/bonus.json");
 const lodash_1 = require("lodash");
 const payroll_interface_1 = require("../interfaces/payroll/payroll.interface");
-describe('Process Bonus (e2e)', () => {
+describe('Process Payroll (e2e)', () => {
     let data;
     beforeEach(async () => {
         const { entities } = (0, lodash_1.cloneDeep)(fixture);
@@ -15,6 +15,165 @@ describe('Process Bonus (e2e)', () => {
             meta: entities.defaultMeta,
             payrollInit: entities.data,
         };
+    });
+    it('should be able to handle employee updates', () => {
+        let builderInstance = payroll_director_1.PayrollDirector.getInstance(data);
+        let payroll = builderInstance.get();
+        expect(payroll.totalCharge).toEqual({
+            NGN: {
+                value: 225500,
+                currency: 'NGN',
+            },
+            KES: {
+                value: 25000,
+                currency: 'KES',
+            },
+        });
+        expect(payroll.employees[0].base).toEqual({
+            value: 100000,
+            currency: 'NGN',
+        });
+        const updatedEmployee = {
+            ...(0, lodash_1.cloneDeep)(data.employees[0]),
+            base: { value: 150000, currency: data.employees[0].base.currency },
+        };
+        builderInstance = payroll_director_1.PayrollDirector.updateEmployees(builderInstance, updatedEmployee);
+        payroll = builderInstance.getTotals();
+        expect(payroll.totalCharge).toEqual({
+            NGN: {
+                value: 351000,
+                currency: 'NGN',
+            },
+            KES: {
+                value: 25000,
+                currency: 'KES',
+            },
+        });
+        expect(payroll.employees[0].base).toEqual({
+            value: 150000,
+            currency: 'NGN',
+        });
+    });
+    it('should calculate payroll totals', () => {
+        const payroll = payroll_director_1.PayrollDirector.build(data);
+        expect(payroll.totalBase).toEqual({
+            NGN: {
+                value: 200000,
+                currency: 'NGN',
+            },
+            KES: {
+                value: 25000,
+                currency: 'KES',
+            },
+        });
+        expect(payroll.totalStatutories).toEqual({
+            NGN: {
+                itf: {
+                    value: 1000,
+                    currency: 'NGN',
+                },
+                nhf: {
+                    value: 50000,
+                    currency: 'NGN',
+                },
+                nsitf: {
+                    value: 1000,
+                    currency: 'NGN',
+                },
+            },
+            KES: {
+                nhif: {
+                    value: 850,
+                    currency: 'KES',
+                },
+            },
+        });
+        expect(payroll.totalBonus).toEqual({
+            NGN: {
+                value: 2500,
+                currency: 'NGN',
+            },
+        });
+        expect(payroll.totalUntaxedBonus).toEqual({
+            NGN: {
+                value: 5500,
+                currency: 'NGN',
+            },
+        });
+        expect(payroll.totalExtraMonthBonus).toEqual({
+            NGN: {
+                value: 10000,
+                currency: 'NGN',
+            },
+        });
+        expect(payroll.totalLeaveAllowance).toEqual({
+            NGN: {
+                value: 7500,
+                currency: 'NGN',
+            },
+        });
+        expect(payroll.totalPension).toEqual({
+            NGN: {
+                value: 30000,
+                currency: 'NGN',
+            },
+        });
+        expect(payroll.totalCharge).toEqual({
+            NGN: {
+                value: 225500,
+                currency: 'NGN',
+            },
+            KES: {
+                value: 25000,
+                currency: 'KES',
+            },
+        });
+        expect(payroll.remittances).toEqual({
+            NGN: {
+                itf: {
+                    name: 'itf',
+                    remittanceEnabled: true,
+                    amount: {
+                        value: 1000,
+                        currency: 'NGN',
+                    },
+                },
+                nhf: {
+                    name: 'nhf',
+                    remittanceEnabled: true,
+                    amount: {
+                        value: 50000,
+                        currency: 'NGN',
+                    },
+                },
+                nsitf: {
+                    name: 'nsitf',
+                    remittanceEnabled: true,
+                    amount: {
+                        value: 1000,
+                        currency: 'NGN',
+                    },
+                },
+                pension: {
+                    name: 'pension',
+                    remittanceEnabled: true,
+                    amount: {
+                        value: 12000,
+                        currency: 'NGN',
+                    },
+                },
+            },
+            KES: {
+                nhif: {
+                    name: 'nhif',
+                    remittanceEnabled: true,
+                    amount: {
+                        value: 850,
+                        currency: 'KES',
+                    },
+                },
+            },
+        });
     });
     it('Should test payroll bonuses', async () => {
         var _a, _b, _c;
@@ -50,7 +209,7 @@ describe('Process Bonus (e2e)', () => {
         expect(empOneNHFRecord).toBeUndefined();
         const empTwoNHFRecord = (_c = payroll.employees[1].remittances) === null || _c === void 0 ? void 0 : _c.find(record => record.name === payroll_interface_1.CountryStatutories.NHF);
         expect(empTwoNHFRecord === null || empTwoNHFRecord === void 0 ? void 0 : empTwoNHFRecord.remittanceEnabled).toBe(true);
-        expect(empTwoNHFRecord === null || empTwoNHFRecord === void 0 ? void 0 : empTwoNHFRecord.amount.value).toBe(60000);
+        expect(empTwoNHFRecord === null || empTwoNHFRecord === void 0 ? void 0 : empTwoNHFRecord.amount.value).toBe(50000);
     });
     it('Should ensure employee with nhif is defined and successfully added to remittances', async () => {
         var _a, _b, _c;

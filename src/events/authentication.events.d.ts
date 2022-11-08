@@ -4,4 +4,5 @@ export declare const AUTHENTICATION_EVENTS: {
     createUserOrganization: string;
     sendEmailValidationToken: string;
     fetchCountries: string;
+    getUserOrganization: string;
 };

@@ -27,26 +27,9 @@ class BaseCountryPensionService {
                 remittanceEnabled: this.remitEnabled(context),
             };
         }
-        if (remittance) {
-            payroll.totalPension = payroll.totalPension || {};
-            payroll.totalPension[remittance.amount.currency] = money_interface_1.Money.add(remittance.amount, payroll.totalPension[remittance.amount.currency] || {
-                value: 0,
-                currency: remittance.amount.currency,
-            });
-            if (remittance === null || remittance === void 0 ? void 0 : remittance.remittanceEnabled) {
-                employee.remitanceEnabled = remittance.remittanceEnabled;
-                employee.remittances = [...remittances, remittance];
-                payroll.remittances = payroll.remittances || {};
-                payroll.remittances[employee.currency] =
-                    payroll.remittances[employee.currency] || {};
-                payroll.remittances[employee.currency][remittance.name] = payroll
-                    .remittances[employee.currency][remittance.name] || {
-                    ...remittance,
-                    amount: { value: 0, currency: employee.base.currency },
-                };
-                payroll.remittances[employee.currency][remittance.name].amount =
-                    money_interface_1.Money.add(payroll.remittances[employee.currency][remittance.name].amount, remittance.amount);
-            }
+        if (remittance && (remittance === null || remittance === void 0 ? void 0 : remittance.remittanceEnabled)) {
+            employee.remitanceEnabled = remittance.remittanceEnabled;
+            employee.remittances = [...remittances, remittance];
         }
     }
     calculatePension(breakdown, salary, percent) {
