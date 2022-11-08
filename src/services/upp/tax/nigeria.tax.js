@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NigeriaTax = void 0;
-const base_tax_1 = require("@upp/tax/base.tax");
-const tax_constants_1 = require("@sh/constants/tax.constants");
-const money_interface_1 = require("@sh/interfaces/payment/money.interface");
+const tax_constants_1 = require("../../../constants/tax.constants");
+const money_interface_1 = require("../../../interfaces/payment/money.interface");
+const base_tax_1 = require("./base.tax");
 class NigeriaTax extends base_tax_1.BaseClass {
     constructor(context) {
         super(context);

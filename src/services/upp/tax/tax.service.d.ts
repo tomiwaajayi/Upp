@@ -1,5 +1,5 @@
-import { IPayrollEmployee } from '@sh/interfaces/payroll/payroll.interface';
-import { CountryTaxService, ProcessTaxPayload } from '@upp/tax/tax.types';
+import { IPayrollEmployee } from 'interfaces/payroll/payroll.interface';
+import { CountryTaxService, ProcessTaxPayload } from './tax.types';
 export declare class TaxService {
     private static countryTaxServices;
     private static registered;

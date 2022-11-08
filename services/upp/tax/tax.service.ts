@@ -1,9 +1,9 @@
-import {IPayrollEmployee} from '@sh/interfaces/payroll/payroll.interface';
-import {GhanaTax} from '@upp/tax/ghana.tax';
-import {KenyaTax} from '@upp/tax/kenya.tax';
-import {NigeriaTax} from '@upp/tax/nigeria.tax';
-import {RwandaTax} from '@upp/tax/rwanda.tax';
-import {CountryTaxService, ProcessTaxPayload} from '@upp/tax/tax.types';
+import {IPayrollEmployee} from 'interfaces/payroll/payroll.interface';
+import {GhanaTax} from './ghana.tax';
+import {KenyaTax} from './kenya.tax';
+import {NigeriaTax} from './nigeria.tax';
+import {RwandaTax} from './rwanda.tax';
+import {CountryTaxService, ProcessTaxPayload} from './tax.types';
 
 export class TaxService {
   private static countryTaxServices: Record<string, CountryTaxService> = {};
