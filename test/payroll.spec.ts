@@ -7,7 +7,7 @@ import {IEmployeeWithGroup} from '../interfaces/account/employee.interface';
 import {CountryStatutories} from '../interfaces/payroll/payroll.interface';
 import {IMoney} from '../interfaces/payment/money.interface';
 
-describe('Process Bonus (e2e)', () => {
+describe('Process Payroll (e2e)', () => {
   let data: BuilderPayload;
 
   beforeEach(async () => {
@@ -19,6 +19,175 @@ describe('Process Bonus (e2e)', () => {
       meta: entities.defaultMeta,
       payrollInit: entities.data,
     };
+  });
+
+  it('should be able to handle employee updates', () => {
+    let builderInstance = PayrollDirector.getInstance(data);
+    let payroll = builderInstance.get();
+
+    expect(payroll.totalCharge).toEqual({
+      NGN: {
+        value: 225500,
+        currency: 'NGN',
+      },
+      KES: {
+        value: 25000,
+        currency: 'KES',
+      },
+    });
+    expect(payroll.employees[0].base).toEqual({
+      value: 100000,
+      currency: 'NGN',
+    });
+
+    const updatedEmployee = {
+      ...cloneDeep(data.employees[0]),
+      base: {value: 150000, currency: data.employees[0].base.currency},
+    };
+
+    builderInstance = PayrollDirector.updateEmployees(
+      builderInstance,
+      updatedEmployee
+    );
+    payroll = builderInstance.getTotals();
+
+    expect(payroll.totalCharge).toEqual({
+      NGN: {
+        value: 351000,
+        currency: 'NGN',
+      },
+      KES: {
+        value: 25000,
+        currency: 'KES',
+      },
+    });
+    expect(payroll.employees[0].base).toEqual({
+      value: 150000,
+      currency: 'NGN',
+    });
+  });
+
+  it('should calculate payroll totals', () => {
+    const payroll = PayrollDirector.build(data);
+
+    expect(payroll.totalBase).toEqual({
+      NGN: {
+        value: 200000,
+        currency: 'NGN',
+      },
+      KES: {
+        value: 25000,
+        currency: 'KES',
+      },
+    });
+    expect(payroll.totalStatutories).toEqual({
+      NGN: {
+        itf: {
+          value: 1000,
+          currency: 'NGN',
+        },
+        nhf: {
+          value: 60000,
+          currency: 'NGN',
+        },
+        nsitf: {
+          value: 1000,
+          currency: 'NGN',
+        },
+      },
+      KES: {
+        nhif: {
+          value: 850,
+          currency: 'KES',
+        },
+      },
+    });
+    expect(payroll.totalBonus).toEqual({
+      NGN: {
+        value: 2500,
+        currency: 'NGN',
+      },
+    });
+    expect(payroll.totalUntaxedBonus).toEqual({
+      NGN: {
+        value: 5500,
+        currency: 'NGN',
+      },
+    });
+    expect(payroll.totalExtraMonthBonus).toEqual({
+      NGN: {
+        value: 10000,
+        currency: 'NGN',
+      },
+    });
+    expect(payroll.totalLeaveAllowance).toEqual({
+      NGN: {
+        value: 7500,
+        currency: 'NGN',
+      },
+    });
+    expect(payroll.totalPension).toEqual({
+      NGN: {
+        value: 30000,
+        currency: 'NGN',
+      },
+    });
+    expect(payroll.totalCharge).toEqual({
+      NGN: {
+        value: 225500,
+        currency: 'NGN',
+      },
+      KES: {
+        value: 25000,
+        currency: 'KES',
+      },
+    });
+    expect(payroll.remittances).toEqual({
+      NGN: {
+        itf: {
+          name: 'itf',
+          remittanceEnabled: true,
+          amount: {
+            value: 1000,
+            currency: 'NGN',
+          },
+        },
+        nhf: {
+          name: 'nhf',
+          remittanceEnabled: true,
+          amount: {
+            value: 60000,
+            currency: 'NGN',
+          },
+        },
+        nsitf: {
+          name: 'nsitf',
+          remittanceEnabled: true,
+          amount: {
+            value: 1000,
+            currency: 'NGN',
+          },
+        },
+        pension: {
+          name: 'pension',
+          remittanceEnabled: true,
+          amount: {
+            value: 12000,
+            currency: 'NGN',
+          },
+        },
+      },
+      KES: {
+        nhif: {
+          name: 'nhif',
+          remittanceEnabled: true,
+          amount: {
+            value: 850,
+            currency: 'KES',
+          },
+        },
+      },
+    });
   });
 
   it('Should test payroll bonuses', async () => {

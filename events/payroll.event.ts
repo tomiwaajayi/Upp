@@ -17,4 +17,5 @@ export const PAYROLL_EVENTS = {
   editPayroll: `${SERVICES.PAYROLL_SERVICE}.${PAYROLL}.editPayroll`,
   getPayrolls: `${SERVICES.PAYROLL_SERVICE}.${PAYROLL}.getPayrolls`,
   getEmployeePayrolls: `${SERVICES.PAYROLL_SERVICE}.${PAYROLL}.getEmployeePayrolls`,
+  getUPPInitData: `${SERVICES.PAYROLL_SERVICE}.${PAYROLL}.getUPPInitData`,
 };

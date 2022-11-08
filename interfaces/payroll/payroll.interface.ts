@@ -1,3 +1,4 @@
+import {Dictionary} from 'lodash';
 import {
   Employee,
   EmployeeSalaryAddon,
@@ -28,7 +29,7 @@ export interface IPayroll {
   employees?: IPayrollEmployee[];
   remittances?: Record<string, Record<string, IPayrollRemittance>>;
   hasProrates?: boolean;
-  totalCharge?: IMoney;
+  totalCharge?: Record<string, IMoney>;
   totalBonus?: Record<string, IMoney>;
   totalUntaxedBonus?: Record<string, IMoney>;
   totalExtraMonthBonus?: Record<string, IMoney>;
@@ -64,6 +65,14 @@ export interface IPayrollEmployee extends Employee {
     remittanceEnabled: boolean;
     amount: IMoney;
   })[];
+  remittancesKeyedByName?: Dictionary<
+    Record<string, unknown> & {
+      name: string;
+      remittanceEnabled: boolean;
+      amount: IMoney;
+    }
+  >;
+  sumOfBonus?: IMoney;
 }
 
 export interface IPayrollRemittance {
