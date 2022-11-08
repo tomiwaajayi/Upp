@@ -73,7 +73,7 @@ describe('Process Payroll (e2e)', () => {
                     currency: 'NGN',
                 },
                 nhf: {
-                    value: 60000,
+                    value: 50000,
                     currency: 'NGN',
                 },
                 nsitf: {
@@ -142,7 +142,7 @@ describe('Process Payroll (e2e)', () => {
                     name: 'nhf',
                     remittanceEnabled: true,
                     amount: {
-                        value: 60000,
+                        value: 50000,
                         currency: 'NGN',
                     },
                 },
@@ -209,7 +209,7 @@ describe('Process Payroll (e2e)', () => {
         expect(empOneNHFRecord).toBeUndefined();
         const empTwoNHFRecord = (_c = payroll.employees[1].remittances) === null || _c === void 0 ? void 0 : _c.find(record => record.name === payroll_interface_1.CountryStatutories.NHF);
         expect(empTwoNHFRecord === null || empTwoNHFRecord === void 0 ? void 0 : empTwoNHFRecord.remittanceEnabled).toBe(true);
-        expect(empTwoNHFRecord === null || empTwoNHFRecord === void 0 ? void 0 : empTwoNHFRecord.amount.value).toBe(60000);
+        expect(empTwoNHFRecord === null || empTwoNHFRecord === void 0 ? void 0 : empTwoNHFRecord.amount.value).toBe(50000);
     });
     it('Should ensure employee with nhif is defined and successfully added to remittances', async () => {
         var _a, _b, _c;
