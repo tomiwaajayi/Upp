@@ -9,6 +9,6 @@ exports.INTEGRATION_EVENTS = {
     deleteEmployeeOnPeople: `${services_constant_1.SERVICES.INTEGRATION_SERVICE}.${exports.PEOPLE}.deleteEmployee`,
     terminateEmployeeOnCDB: `${services_constant_1.SERVICES.INTEGRATION_SERVICE}.${exports.CDB}.terminateEmployee`,
     restoreEmployeeOnPeople: `${services_constant_1.SERVICES.INTEGRATION_SERVICE}.${exports.PEOPLE}.restoreEmployee`,
-    productProxyRelayer: `${services_constant_1.SERVICES.INTEGRATION_SERVICE}.${exports.PRODUCT}.proxyRelayer`
+    productProxyRelayer: `${services_constant_1.SERVICES.INTEGRATION_SERVICE}.${exports.PRODUCT}.proxyRelayer`,
 };
 //# sourceMappingURL=integration.event.js.map
