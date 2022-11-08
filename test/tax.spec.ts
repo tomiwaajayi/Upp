@@ -1,9 +1,9 @@
-import {PayrollDirector} from '@upp/payroll.director';
-import fixture = require('@test/fixtures/tax.json');
-import {BuilderPayload} from '@upp/builder.interface';
+import fixture = require('./fixtures/tax.json');
 import {cloneDeep} from 'lodash';
-import {IGroup} from '@sh/interfaces/account/employee.interface';
-import {NestedIRemittance} from '@sh/interfaces/base.interface';
+import {BuilderPayload} from '../services/upp/builder.interface';
+import {PayrollDirector} from '../services/upp/payroll.director';
+import {NestedIRemittance} from '../interfaces/base.interface';
+import {IGroup} from '../interfaces/account/employee.interface';
 
 describe('Process Tax (e2e)', () => {
   describe('Nigeria Tax', () => {

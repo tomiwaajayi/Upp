@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const payroll_director_1 = require("@upp/payroll.director");
-const fixture = require("@test/fixtures/tax.json");
+const fixture = require("./fixtures/tax.json");
 const lodash_1 = require("lodash");
+const payroll_director_1 = require("../services/upp/payroll.director");
 describe('Process Tax (e2e)', () => {
     describe('Nigeria Tax', () => {
         let data;

@@ -1,11 +1,11 @@
-import {Employee} from '@sh/interfaces/account/employee.interface';
-import {Organization} from '@sh/interfaces/account/organization.interface';
-import {IMoney} from '@sh/interfaces/payment/money.interface';
+import {Employee} from 'interfaces/account/employee.interface';
+import {Organization} from 'interfaces/account/organization.interface';
+import {IMoney} from 'interfaces/payment/money.interface';
 import {
   IPayrollEmployee,
   IPayrollMeta,
   OrganizationSettings,
-} from '@sh/interfaces/payroll/payroll.interface';
+} from 'interfaces/payroll/payroll.interface';
 
 export type ProcessTaxPayload = {
   organization: Organization;
