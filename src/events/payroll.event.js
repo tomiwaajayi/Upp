@@ -20,5 +20,7 @@ exports.PAYROLL_EVENTS = {
     getPayrolls: `${services_constant_1.SERVICES.PAYROLL_SERVICE}.${exports.PAYROLL}.getPayrolls`,
     getEmployeePayrolls: `${services_constant_1.SERVICES.PAYROLL_SERVICE}.${exports.PAYROLL}.getEmployeePayrolls`,
     getUPPInitData: `${services_constant_1.SERVICES.PAYROLL_SERVICE}.${exports.PAYROLL}.getUPPInitData`,
+    addPayrollApprover: `${services_constant_1.SERVICES.PAYROLL_SERVICE}.${exports.PAYROLL}.addPayrollApprover`,
+    removePayrollApprover: `${services_constant_1.SERVICES.PAYROLL_SERVICE}.${exports.PAYROLL}.removePayrollApprover`,
 };
 //# sourceMappingURL=payroll.event.js.map

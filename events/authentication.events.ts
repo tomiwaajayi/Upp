@@ -6,4 +6,6 @@ export const AUTHENTICATION_EVENTS = {
   createUserOrganization: `${SERVICES.AUTHENTICATION_SERVICE}.user.createUserOrganization`,
   sendEmailValidationToken: `${SERVICES.AUTHENTICATION_SERVICE}.user.sendEmailValidationToken`,
   fetchCountries: `${SERVICES.AUTHENTICATION_SERVICE}.fetchCountries`,
+  getUserOrganization: `${SERVICES.AUTHENTICATION_SERVICE}.getUserOrganization`,
+  getUsersByUserOrgIds: `${SERVICES.AUTHENTICATION_SERVICE}.getUsersByUserOrgIds`,
 };
