@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TaxService = void 0;
-const kenya_tax_1 = require("@sh/services/upp/tax/kenya.tax");
-const ghana_tax_1 = require("@sh/services/upp/tax/ghana.tax");
-const nigeria_tax_1 = require("@upp/tax/nigeria.tax");
-const rwanda_tax_1 = require("@upp/tax/rwanda.tax");
+const ghana_tax_1 = require("./ghana.tax");
+const kenya_tax_1 = require("./kenya.tax");
+const nigeria_tax_1 = require("./nigeria.tax");
+const rwanda_tax_1 = require("./rwanda.tax");
 class TaxService {
     static registerServices(context) {
         if (this.registered) {

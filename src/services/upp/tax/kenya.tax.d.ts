@@ -1,7 +1,7 @@
-import { IMoney } from '@sh/interfaces/payment/money.interface';
-import { IPayrollEmployee } from '@sh/interfaces/payroll/payroll.interface';
-import { BaseClass } from '@upp/tax/base.tax';
-import { ProcessTaxPayload } from '@upp/tax/tax.types';
+import { IMoney } from '../../../interfaces/payment/money.interface';
+import { IPayrollEmployee } from '../../../interfaces/payroll/payroll.interface';
+import { BaseClass } from './base.tax';
+import { ProcessTaxPayload } from './tax.types';
 export declare class KenyaTax extends BaseClass {
     static country: string;
     private taxSettings;

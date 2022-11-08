@@ -18,7 +18,7 @@
   "scripts": {
     "lint": "gts lint",
     "clean": "gts clean",
-    "compile": "tsc --project tsconfig.json && tscpaths -p tsconfig.json -s . -o ./src",
+    "compile": "tsc",
     "fix": "gts fix",
     "prepare": "yarn run compile",
     "posttest": "yarn run lint",

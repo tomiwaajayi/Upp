@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BaseClass = void 0;
-const money_interface_1 = require("@sh/interfaces/payment/money.interface");
+const money_interface_1 = require("../../../interfaces/payment/money.interface");
 class BaseClass {
     constructor(context) {
         const { organization, settings, meta } = context;
