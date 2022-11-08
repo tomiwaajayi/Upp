@@ -151,5 +151,5 @@ class NigeriaTax extends base_tax_1.BaseClass {
     }
 }
 exports.NigeriaTax = NigeriaTax;
-NigeriaTax.country = 'Nigeria';
+NigeriaTax.country = 'NG';
 //# sourceMappingURL=nigeria.tax.js.map

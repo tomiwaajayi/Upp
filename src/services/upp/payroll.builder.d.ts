@@ -51,7 +51,7 @@ export declare class PayrollBuilder implements IPayrollBuilder {
     get(): {
         organization: Organization;
         employees: IPayrollEmployee[];
-        payItem: import("../../interfaces/payroll/payroll.interface").PayItem;
+        payItem: Record<string, string>;
         deselected: string[];
         proRateMonth: string;
         createdBy: string;

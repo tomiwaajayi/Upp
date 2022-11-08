@@ -119,5 +119,5 @@ class GhanaTax extends base_tax_1.BaseClass {
     }
 }
 exports.GhanaTax = GhanaTax;
-GhanaTax.country = 'Ghana';
+GhanaTax.country = 'GH';
 //# sourceMappingURL=ghana.tax.js.map

@@ -84,7 +84,7 @@ describe('Process Tax (e2e)', () => {
             data.organization.country = fixture.entities.ghana;
             data.employees[0].base = { value: 1000, currency: 'NGN' };
             data.employees[0].currency = 'GHS';
-            data.employees[0].country = fixture.entities.ghana.id;
+            data.employees[0].country = fixture.entities.ghana.iso2;
             data.employees[0].group.salaryBreakdown =
                 fixture.entities.salaryBreakdown;
             delete data.employees[0].bonuses;
@@ -115,7 +115,7 @@ describe('Process Tax (e2e)', () => {
             data.organization.country = fixture.entities.kenya;
             data.employees[0].base = { value: 100000, currency: 'KES' };
             data.employees[0].currency = 'KES';
-            data.employees[0].country = fixture.entities.kenya.id;
+            data.employees[0].country = fixture.entities.kenya.iso2;
             delete data.employees[0].bonuses;
             delete data.employees[0].untaxedBonuses;
             delete data.employees[0].leaveAllowance;
@@ -144,7 +144,7 @@ describe('Process Tax (e2e)', () => {
             data.organization.country = fixture.entities.rwanda;
             data.employees[0].base = { value: 100000, currency: 'RWF' };
             data.employees[0].currency = 'RWF';
-            data.employees[0].country = fixture.entities.rwanda.id;
+            data.employees[0].country = fixture.entities.rwanda.iso2;
             delete data.employees[0].bonuses;
             delete data.employees[0].untaxedBonuses;
             delete data.employees[0].leaveAllowance;

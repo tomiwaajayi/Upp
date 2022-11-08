@@ -16,5 +16,8 @@ exports.PAYROLL_EVENTS = {
     fetchOrgWalletAccount: `${services_constant_1.SERVICES.PAYROLL_SERVICE}.${exports.WALLET}.fetchOrgWalletAccount`,
     createOrgWalletAccount: `${services_constant_1.SERVICES.PAYROLL_SERVICE}.${exports.WALLET}.createOrgWalletAccount`,
     createPayroll: `${services_constant_1.SERVICES.PAYROLL_SERVICE}.${exports.PAYROLL}.createPayroll`,
+    editPayroll: `${services_constant_1.SERVICES.PAYROLL_SERVICE}.${exports.PAYROLL}.editPayroll`,
+    getPayrolls: `${services_constant_1.SERVICES.PAYROLL_SERVICE}.${exports.PAYROLL}.getPayrolls`,
+    getEmployeePayrolls: `${services_constant_1.SERVICES.PAYROLL_SERVICE}.${exports.PAYROLL}.getEmployeePayrolls`,
 };
 //# sourceMappingURL=payroll.event.js.map

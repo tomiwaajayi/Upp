@@ -69,5 +69,5 @@ class RwandaTax extends base_tax_1.BaseClass {
     }
 }
 exports.RwandaTax = RwandaTax;
-RwandaTax.country = 'Rwanda';
+RwandaTax.country = 'RW';
 //# sourceMappingURL=rwanda.tax.js.map

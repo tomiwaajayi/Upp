@@ -6,7 +6,7 @@ export declare class PayrollDirector {
     static build(data: BuilderPayload): {
         organization: import("../../interfaces/account/organization.interface").Organization;
         employees: import("../../interfaces/payroll/payroll.interface").IPayrollEmployee[];
-        payItem: import("../../interfaces/payroll/payroll.interface").PayItem;
+        payItem: Record<string, string>;
         deselected: string[];
         proRateMonth: string;
         createdBy: string;

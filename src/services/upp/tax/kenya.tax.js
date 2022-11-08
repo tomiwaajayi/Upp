@@ -103,5 +103,5 @@ class KenyaTax extends base_tax_1.BaseClass {
     }
 }
 exports.KenyaTax = KenyaTax;
-KenyaTax.country = 'Kenya';
+KenyaTax.country = 'KE';
 //# sourceMappingURL=kenya.tax.js.map

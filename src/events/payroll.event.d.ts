@@ -12,4 +12,7 @@ export declare const PAYROLL_EVENTS: {
     fetchOrgWalletAccount: string;
     createOrgWalletAccount: string;
     createPayroll: string;
+    editPayroll: string;
+    getPayrolls: string;
+    getEmployeePayrolls: string;
 };

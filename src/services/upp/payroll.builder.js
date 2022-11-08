@@ -360,7 +360,7 @@ class PayrollBuilder {
                 ? group.remittances
                 : this.organizationSettings.remittances;
             if ((_a = remittances.tax) === null || _a === void 0 ? void 0 : _a.enabled) {
-                tax_service_1.TaxService.process(this.organization.country.name, {
+                tax_service_1.TaxService.process(employee.country.toUpperCase(), {
                     organization: this.organization,
                     settings: this.organizationSettings,
                     meta: this.meta,

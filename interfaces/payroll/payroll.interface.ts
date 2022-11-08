@@ -8,7 +8,7 @@ import {Country} from '../base.interface';
 import {IMoney} from '../payment/money.interface';
 
 export interface IPayrollDTO {
-  payItem: PayItem;
+  payItem: Record<PayItems, PayItemsStatus>;
   deselected: string[];
   proRateMonth: string;
   createdBy: string;
@@ -16,11 +16,11 @@ export interface IPayrollDTO {
 
 export interface IPayrollMeta {
   proRateMonth: string;
-  payItem: PayItem;
+  payItem: Record<PayItems, PayItemsStatus>;
 }
 
 export interface IPayroll {
-  payItem: PayItem;
+  payItem: Record<PayItems, PayItemsStatus>;
   deselected: string[];
   proRateMonth: string;
   createdBy: string;
@@ -90,17 +90,24 @@ export enum CountryStatutories {
   NSITF = 'nsitf',
 }
 
-export interface PayItem {
-  base: PayItemStatus | string;
-  bonus: PayItemStatus | string;
-  tax: PayItemStatus | string;
-  pension: PayItemStatus | string;
-  health: PayItemStatus | string;
-  nhf: PayItemStatus | string;
-  nhif: PayItemStatus | string;
-  itf: PayItemStatus | string;
-  nsitf: PayItemStatus | string;
-}
+export type PayItems =
+  | string
+  | 'tax'
+  | 'pension'
+  | 'health'
+  | 'base'
+  | 'bonus'
+  | 'nhf'
+  | 'nhif'
+  | 'nsitf'
+  | 'itf';
+
+export type PayItemsStatus =
+  | string
+  | 'unpaid'
+  | 'processing'
+  | 'paid'
+  | 'pending';
 
 export interface PayrollSalaryAddon {
   id: string;
