@@ -21,6 +21,52 @@ describe('Process Payroll (e2e)', () => {
     };
   });
 
+  it('should be able to handle employee updates', () => {
+    let builderInstance = PayrollDirector.getInstance(data);
+    let payroll = builderInstance.get();
+
+    expect(payroll.totalCharge).toEqual({
+      NGN: {
+        value: 225500,
+        currency: 'NGN',
+      },
+      KES: {
+        value: 25000,
+        currency: 'KES',
+      },
+    });
+    expect(payroll.employees[0].base).toEqual({
+      value: 100000,
+      currency: 'NGN',
+    });
+
+    const updatedEmployee = {
+      ...cloneDeep(data.employees[0]),
+      base: {value: 150000, currency: data.employees[0].base.currency},
+    };
+
+    builderInstance = PayrollDirector.updateEmployees(
+      builderInstance,
+      updatedEmployee
+    );
+    payroll = builderInstance.getTotals();
+
+    expect(payroll.totalCharge).toEqual({
+      NGN: {
+        value: 351000,
+        currency: 'NGN',
+      },
+      KES: {
+        value: 25000,
+        currency: 'KES',
+      },
+    });
+    expect(payroll.employees[0].base).toEqual({
+      value: 150000,
+      currency: 'NGN',
+    });
+  });
+
   it('should calculate payroll totals', () => {
     const payroll = PayrollDirector.build(data);
 
@@ -35,7 +81,7 @@ describe('Process Payroll (e2e)', () => {
       },
     });
     expect(payroll.totalStatutories).toEqual({
-      ng: {
+      NGN: {
         itf: {
           value: 1000,
           currency: 'NGN',
@@ -49,7 +95,7 @@ describe('Process Payroll (e2e)', () => {
           currency: 'NGN',
         },
       },
-      ke: {
+      KES: {
         nhif: {
           value: 850,
           currency: 'KES',
@@ -98,21 +144,47 @@ describe('Process Payroll (e2e)', () => {
     });
     expect(payroll.remittances).toEqual({
       NGN: {
+        itf: {
+          name: 'itf',
+          remittanceEnabled: true,
+          amount: {
+            value: 1000,
+            currency: 'NGN',
+          },
+        },
+        nhf: {
+          name: 'nhf',
+          remittanceEnabled: true,
+          amount: {
+            value: 60000,
+            currency: 'NGN',
+          },
+        },
+        nsitf: {
+          name: 'nsitf',
+          remittanceEnabled: true,
+          amount: {
+            value: 1000,
+            currency: 'NGN',
+          },
+        },
         pension: {
+          name: 'pension',
+          remittanceEnabled: true,
           amount: {
             value: 12000,
             currency: 'NGN',
           },
-          name: 'pension',
-          employeeContribution: {
-            value: 0,
-            currency: 'NGN',
-          },
-          employerContribution: {
-            value: 12000,
-            currency: 'NGN',
-          },
+        },
+      },
+      KES: {
+        nhif: {
+          name: 'nhif',
           remittanceEnabled: true,
+          amount: {
+            value: 850,
+            currency: 'KES',
+          },
         },
       },
     });

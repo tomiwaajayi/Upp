@@ -28,7 +28,7 @@ export interface IPayroll {
   employees?: IPayrollEmployee[];
   remittances?: Record<string, Record<string, IPayrollRemittance>>;
   hasProrates?: boolean;
-  totalCharge?: Record<string, IMoney>; // yes
+  totalCharge?: Record<string, IMoney>;
   totalBonus?: Record<string, IMoney>;
   totalUntaxedBonus?: Record<string, IMoney>;
   totalExtraMonthBonus?: Record<string, IMoney>;
