@@ -6,11 +6,11 @@ export declare class PayrollDirector {
     static build(data: BuilderPayload): {
         organization: import("../../interfaces/account/organization.interface").Organization;
         employees: import("../../interfaces/payroll/payroll.interface").IPayrollEmployee[];
-        payItem: import("../../interfaces/payroll/payroll.interface").PayItem;
+        payItem: Record<string, string>;
         deselected: string[];
         proRateMonth: string;
         createdBy: string;
-        remittances?: import("../../interfaces/payroll/payroll.interface").IPayrollRemittance[] | undefined;
+        remittances?: Record<string, Record<string, import("../../interfaces/payroll/payroll.interface").IPayrollRemittance>> | undefined;
         hasProrates?: boolean | undefined;
         totalCharge?: import("../../interfaces/payment/money.interface").IMoney | undefined;
         totalBonus?: Record<string, import("../../interfaces/payment/money.interface").IMoney> | undefined;
@@ -19,5 +19,6 @@ export declare class PayrollDirector {
         totalLeaveAllowance?: Record<string, import("../../interfaces/payment/money.interface").IMoney> | undefined;
         totalBase: Record<string, import("../../interfaces/payment/money.interface").IMoney>;
         totalStatutories: Record<string, Record<string, import("../../interfaces/payment/money.interface").IMoney>>;
+        totalPension?: Record<string, import("../../interfaces/payment/money.interface").IMoney> | undefined;
     };
 }

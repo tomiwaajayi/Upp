@@ -1,3 +1,5 @@
+import {IRemitance} from './account/employee.interface';
+
 export class BaseSchemaInterface {
   id?: string;
 
@@ -7,23 +9,28 @@ export class BaseSchemaInterface {
 }
 
 export interface Country {
-  _id: string;
+  _id?: string;
+  id: string;
   name: string;
-  isoCode: string;
+  isoCode?: string;
   iso2: string;
   dialCode: string;
-  lat: number;
-  long: number;
-  location: {
-    type: string;
-    coordinates: number[];
-  };
   code: string;
   isDeleted: boolean;
-  slug: string;
+  slug?: string;
   createdAt: string;
   updatedAt: string;
   imageUrl: string;
   isActive: boolean;
   symbol: string;
+  lat?: number;
+  long?: number;
+  location?: {
+    type: string;
+    coordinates: number[];
+  };
 }
+
+export type NestedRecord = Record<string, Record<string, unknown>>;
+
+export type NestedIRemittance = Record<string, IRemitance>;

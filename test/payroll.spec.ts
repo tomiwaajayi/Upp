@@ -14,10 +14,10 @@ describe('Process Payroll (e2e)', () => {
     const {entities} = cloneDeep(fixture);
     data = {
       organization: entities.defaultOrg,
+      organizationSettings: entities.orgSettings,
       employees: entities.defaultEmps,
       meta: entities.defaultMeta,
       payrollInit: entities.data,
-      organizationSettings: entities.orgSettings,
     };
   });
 
@@ -87,7 +87,7 @@ describe('Process Payroll (e2e)', () => {
           currency: 'NGN',
         },
         nhf: {
-          value: 60000,
+          value: 50000,
           currency: 'NGN',
         },
         nsitf: {
@@ -156,7 +156,7 @@ describe('Process Payroll (e2e)', () => {
           name: 'nhf',
           remittanceEnabled: true,
           amount: {
-            value: 60000,
+            value: 50000,
             currency: 'NGN',
           },
         },
@@ -251,7 +251,7 @@ describe('Process Payroll (e2e)', () => {
     );
 
     expect(empTwoNHFRecord?.remittanceEnabled).toBe(true);
-    expect(empTwoNHFRecord?.amount.value).toBe(60000);
+    expect(empTwoNHFRecord?.amount.value).toBe(50000);
   });
 
   it('Should ensure employee with nhif is defined and successfully added to remittances', async () => {

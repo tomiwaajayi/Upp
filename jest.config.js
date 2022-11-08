@@ -10,4 +10,9 @@ module.exports = {
   coverageDirectory: './coverage/jest',
   testEnvironment: 'node',
   modulePathIgnorePatterns: ['<rootDir>/src/'],
+  moduleNameMapper: {
+    '@sh/(.*)': '<rootDir>/$1',
+    '@upp/(.*)': '<rootDir>/services/upp/$1',
+    '@test/(.*)': '<rootDir>/test/$1',
+  },
 };

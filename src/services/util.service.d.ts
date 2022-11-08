@@ -12,4 +12,5 @@ export declare class UtilService {
     static formatPhoneNumber(phoneNumber: string, countryCode: string): string;
     static generateRandom(length: number, chars?: string, isOTP?: boolean): string;
     static getKafkaConfig(configuration: any): any;
+    static cleanArray<T>(arr: T[]): T[];
 }

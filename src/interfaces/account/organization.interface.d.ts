@@ -1,13 +1,11 @@
+import { Country } from '../base.interface';
 export interface IOrganizationResponse {
     name: string;
     email: string;
     id: string;
 }
 export interface Organization {
-    country: {
-        id: string;
-        name: string;
-    };
+    country: Country;
     email: string;
     name: string;
     logo?: string;

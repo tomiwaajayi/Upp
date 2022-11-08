@@ -69,9 +69,12 @@ export class GahanaPensionService extends BaseCountryPensionService {
       value: 5.5 / 18.5,
       currency,
     });
-    const tierThree = {value: employee.pensionContribution || 0, currency};
+    const tierThree = {
+      value: employee.voluntaryPensionContribution || 0,
+      currency,
+    };
     const employerTierThree = {
-      value: employee.employerPensionContribution || 0,
+      value: employee.voluntaryPensionContributionEmployer || 0,
       currency,
     };
 

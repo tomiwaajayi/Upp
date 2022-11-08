@@ -25,6 +25,9 @@ export interface IRemitance {
   remit: boolean;
   useOrgsettings?: boolean;
   type?: string;
+  enabledWithHoldingTax?: boolean;
+  WHTaxRate?: number;
+  useGrossOnlyForMinimumWage?: boolean;
 }
 
 export interface IGroup {
@@ -33,6 +36,7 @@ export interface IGroup {
   useOrgSalaryBreakdown?: boolean;
   hasSalaryBreakdown?: boolean;
   salaryBreakdown?: Record<string, number>;
+  id: string;
 }
 
 export interface Employee {
@@ -48,6 +52,7 @@ export interface Employee {
   bankId?: string;
   accountNumber?: string;
   salaryType?: SalaryTypeEnum | string;
+  employmentType?: EmploymentTypeEnum | string;
   ibanAccountNumber?: string;
   swiftBIC?: string;
   bankAddress?: string;
@@ -73,6 +78,8 @@ export interface Employee {
   pensionContributionEnabled?: boolean;
   pensionContribution?: number;
   employerPensionContribution?: number;
+  voluntaryPensionContribution?: number;
+  voluntaryPensionContributionEmployer?: number;
   nhfId?: string;
   itfId?: string;
   nsitfId?: string;
@@ -80,6 +87,7 @@ export interface Employee {
   hasHealthAccessEnabled?: boolean;
   hasHealthAccessRemit?: boolean;
   healthReliefAmount?: number;
+  healthAccessAmount?: number;
   hasHealthReliefEnabled?: boolean;
   hasSalaryBreakdown?: boolean;
   salaryBreakdown?: Record<string, number>;
@@ -151,6 +159,12 @@ export enum GenderEnum {
 export enum SalaryTypeEnum {
   Net = 'net',
   Gross = 'gross',
+}
+
+export enum EmploymentTypeEnum {
+  Permanent = 'permanent',
+  FullTime = 'full-time',
+  Casual = 'casual',
 }
 
 export enum SupportedCurrencyEnum {

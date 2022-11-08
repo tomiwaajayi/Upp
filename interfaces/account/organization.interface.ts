@@ -1,4 +1,4 @@
-import {IRemitance} from './employee.interface';
+import {Country} from '../base.interface';
 
 export interface IOrganizationResponse {
   name: string;
@@ -7,7 +7,7 @@ export interface IOrganizationResponse {
 }
 
 export interface Organization {
-  country: {id: string; name: string};
+  country: Country;
   email: string;
   name: string;
   logo?: string;

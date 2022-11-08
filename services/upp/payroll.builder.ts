@@ -4,6 +4,7 @@ import {
   IGroup,
 } from '../../interfaces/account/employee.interface';
 import {Organization} from '../../interfaces/account/organization.interface';
+import {Country, NestedIRemittance} from '../../interfaces/base.interface';
 import {IMoney, Money} from '../../interfaces/payment/money.interface';
 import {
   CountryStatutories,
@@ -16,6 +17,7 @@ import {
 import {UtilService} from '../util.service';
 import {BuilderPayload, IPayrollBuilder} from './builder.interface';
 import {PensionService} from './pension/pesion.service';
+import {TaxService} from './tax/tax.service';
 
 /**
  * To improve the speed, this builder implements the Builder Design Pattern.
@@ -29,6 +31,7 @@ export class PayrollBuilder implements IPayrollBuilder {
   private employees: IPayrollEmployee[];
   private organization: Organization;
   private organizationSettings: OrganizationSettings;
+  private organizationCountry: Country;
   /**
    * This holds query data or data from backend that needs to be input in each processes
    */
@@ -41,7 +44,9 @@ export class PayrollBuilder implements IPayrollBuilder {
     this.employees = data.employees;
     this.organization = data.organization;
     this.organizationSettings = data.organizationSettings;
+    this.organizationCountry = <Country>this.organization.country;
     this.meta = data.meta;
+    this.meta.payItem = data.payrollInit.payItem;
     this.payroll = {
       ...data.payrollInit,
       totalBase: {},
@@ -121,6 +126,7 @@ export class PayrollBuilder implements IPayrollBuilder {
           value: employee.salary || 0,
           currency,
         };
+        employee.zeroMoney = {value: 0, currency};
 
         // employee processes goes here
         this.buildPartA(employee)
@@ -455,8 +461,27 @@ export class PayrollBuilder implements IPayrollBuilder {
    * Should implement a factory design pattern check Pay v2 tax or pension setup and link
    * https://sbcode.net/typescript/factory/
    */
-  private processTax(employee: IPayrollEmployee): void {
-    // code goes here
+  processTax(employee: IPayrollEmployee): void {
+    try {
+      const {group} = employee;
+      const remittances = group
+        ? group.remittances
+        : this.organizationSettings.remittances;
+
+      if ((<NestedIRemittance>remittances).tax?.enabled) {
+        TaxService.process(
+          employee.country.toUpperCase(),
+          {
+            organization: this.organization,
+            settings: this.organizationSettings,
+            meta: this.meta,
+          },
+          employee
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   /**

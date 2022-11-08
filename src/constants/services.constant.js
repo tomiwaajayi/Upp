@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SERVICES = void 0;
+exports.COUNTRY = exports.SERVICES = void 0;
 exports.SERVICES = {
     PAYMENT_SERVICE: 'payment.service',
     ACCOUNT_SERVICE: 'account.service',
@@ -9,5 +9,11 @@ exports.SERVICES = {
     NOTIFICATION_SERVICE: 'notification.service',
     INTEGRATION_SERVICE: 'integration.service',
     PAYROLL_SERVICE: 'payroll.service',
+};
+exports.COUNTRY = {
+    NGN: 'NGN',
+    GHS: 'GHS',
+    KES: 'KES',
+    RWF: 'RWF',
 };
 //# sourceMappingURL=services.constant.js.map

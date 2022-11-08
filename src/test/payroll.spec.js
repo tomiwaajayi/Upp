@@ -10,10 +10,10 @@ describe('Process Bonus (e2e)', () => {
         const { entities } = (0, lodash_1.cloneDeep)(fixture);
         data = {
             organization: entities.defaultOrg,
+            organizationSettings: entities.orgSettings,
             employees: entities.defaultEmps,
             meta: entities.defaultMeta,
             payrollInit: entities.data,
-            organizationSettings: entities.orgSettings,
         };
     });
     it('Should test payroll bonuses', async () => {
@@ -87,9 +87,9 @@ describe('Process Bonus (e2e)', () => {
         expect((_d = pension1 === null || pension1 === void 0 ? void 0 : pension1.employerContribution) === null || _d === void 0 ? void 0 : _d.value).toBe(10000);
         expect(pension1 === null || pension1 === void 0 ? void 0 : pension1.remittanceEnabled).toBeFalsy();
         expect(pension2).toBeDefined();
-        expect(pension2 === null || pension2 === void 0 ? void 0 : pension2.amount.value).toBe(5200);
+        expect(pension2 === null || pension2 === void 0 ? void 0 : pension2.amount.value).toBe(12000);
         expect((_e = pension2 === null || pension2 === void 0 ? void 0 : pension2.employeeContribution) === null || _e === void 0 ? void 0 : _e.value).toBe(0);
-        expect((_f = pension2 === null || pension2 === void 0 ? void 0 : pension2.employerContribution) === null || _f === void 0 ? void 0 : _f.value).toBe(5200);
+        expect((_f = pension2 === null || pension2 === void 0 ? void 0 : pension2.employerContribution) === null || _f === void 0 ? void 0 : _f.value).toBe(12000);
         expect(pension2 === null || pension2 === void 0 ? void 0 : pension2.remittanceEnabled).toBeTruthy();
     });
 });

@@ -9,7 +9,7 @@ import {Country} from '../base.interface';
 import {IMoney} from '../payment/money.interface';
 
 export interface IPayrollDTO {
-  payItem: PayItem;
+  payItem: Record<PayItems, PayItemsStatus>;
   deselected: string[];
   proRateMonth: string;
   createdBy: string;
@@ -17,10 +17,11 @@ export interface IPayrollDTO {
 
 export interface IPayrollMeta {
   proRateMonth: string;
+  payItem: Record<PayItems, PayItemsStatus>;
 }
 
 export interface IPayroll {
-  payItem: PayItem;
+  payItem: Record<PayItems, PayItemsStatus>;
   deselected: string[];
   proRateMonth: string;
   createdBy: string;
@@ -41,6 +42,7 @@ export interface IPayroll {
 export interface IPayrollEmployee extends Employee {
   remitanceEnabled?: boolean;
   base: IMoney;
+  basePayable?: IMoney;
   bonuses?: EmployeeSalaryAddon[];
   netSalary?: IMoney;
   totalBonus?: IMoney;
@@ -53,6 +55,10 @@ export interface IPayrollEmployee extends Employee {
   deductions?: EmployeeSalaryAddon[];
   totalDeductions?: IMoney;
   totalProRate?: IMoney;
+  whtaxApplied?: boolean;
+  whtaxRate?: number;
+  netIncome?: IMoney;
+  zeroMoney?: IMoney;
   remittances?: (Record<string, unknown> & {
     // value is null if tax is disabled
     name: string;
@@ -93,17 +99,24 @@ export enum CountryStatutories {
   NSITF = 'nsitf',
 }
 
-export interface PayItem {
-  tax: PayItemStatus | string;
-  pension: PayItemStatus | string;
-  health: PayItemStatus | string;
-  nhf: PayItemStatus | string;
-  nhif: PayItemStatus | string;
-  itf: PayItemStatus | string;
-  nsitf: PayItemStatus | string;
-  base?: PayItemStatus | string;
-  bonus?: PayItemStatus | string;
-}
+export type PayItems =
+  | string
+  | 'tax'
+  | 'pension'
+  | 'health'
+  | 'base'
+  | 'bonus'
+  | 'nhf'
+  | 'nhif'
+  | 'nsitf'
+  | 'itf';
+
+export type PayItemsStatus =
+  | string
+  | 'unpaid'
+  | 'processing'
+  | 'paid'
+  | 'pending';
 
 export interface PayrollSalaryAddon {
   id: string;
@@ -121,6 +134,9 @@ export interface OrganizationSettings {
   excessPensionToTierThree?: boolean;
   medicalEnabled?: boolean;
   pensionDeductType?: string;
+  useGrossOnlyForMinimumWage?: boolean; // formally proratedTax
+  payFullTax: boolean;
+  useCRAGross: boolean;
 }
 
 export enum CountryISO {

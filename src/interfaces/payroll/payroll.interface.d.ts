@@ -3,22 +3,23 @@ import { Organization } from '../account/organization.interface';
 import { Country } from '../base.interface';
 import { IMoney } from '../payment/money.interface';
 export interface IPayrollDTO {
-    payItem: PayItem;
+    payItem: Record<PayItems, PayItemsStatus>;
     deselected: string[];
     proRateMonth: string;
     createdBy: string;
 }
 export interface IPayrollMeta {
     proRateMonth: string;
+    payItem: Record<PayItems, PayItemsStatus>;
 }
 export interface IPayroll {
-    payItem: PayItem;
+    payItem: Record<PayItems, PayItemsStatus>;
     deselected: string[];
     proRateMonth: string;
     createdBy: string;
     organization?: Organization | string;
     employees?: IPayrollEmployee[];
-    remittances?: IPayrollRemittance[];
+    remittances?: Record<string, Record<string, IPayrollRemittance>>;
     hasProrates?: boolean;
     totalCharge?: IMoney;
     totalBonus?: Record<string, IMoney>;
@@ -27,11 +28,14 @@ export interface IPayroll {
     totalLeaveAllowance?: Record<string, IMoney>;
     totalBase: Record<string, IMoney>;
     totalStatutories: Record<string, Record<string, IMoney>>;
+    totalPension?: Record<string, IMoney>;
 }
 export interface IPayrollEmployee extends Employee {
-    remitanceEnabled?: true;
+    remitanceEnabled?: boolean;
     base: IMoney;
+    basePayable?: IMoney;
     bonuses?: EmployeeSalaryAddon[];
+    netSalary?: IMoney;
     totalBonus?: IMoney;
     untaxedBonuses?: EmployeeSalaryAddon[];
     totalUntaxedBonus?: IMoney;
@@ -42,6 +46,10 @@ export interface IPayrollEmployee extends Employee {
     deductions?: EmployeeSalaryAddon[];
     totalDeductions?: IMoney;
     totalProRate?: IMoney;
+    whtaxApplied?: boolean;
+    whtaxRate?: number;
+    netIncome?: IMoney;
+    zeroMoney?: IMoney;
     remittances?: (Record<string, unknown> & {
         name: string;
         remittanceEnabled: boolean;
@@ -69,15 +77,8 @@ export declare enum CountryStatutories {
     NHIF = "nhif",
     NSITF = "nsitf"
 }
-export interface PayItem {
-    tax: PayItemStatus | string;
-    pension: PayItemStatus | string;
-    health: PayItemStatus | string;
-    nhf: PayItemStatus | string;
-    nhif: PayItemStatus | string;
-    itf: PayItemStatus | string;
-    nsitf: PayItemStatus | string;
-}
+export declare type PayItems = string | 'tax' | 'pension' | 'health' | 'base' | 'bonus' | 'nhf' | 'nhif' | 'nsitf' | 'itf';
+export declare type PayItemsStatus = string | 'unpaid' | 'processing' | 'paid' | 'pending';
 export interface PayrollSalaryAddon {
     id: string;
     name: string;
@@ -93,6 +94,9 @@ export interface OrganizationSettings {
     excessPensionToTierThree?: boolean;
     medicalEnabled?: boolean;
     pensionDeductType?: string;
+    useGrossOnlyForMinimumWage?: boolean;
+    payFullTax: boolean;
+    useCRAGross: boolean;
 }
 export declare enum CountryISO {
     Nigeria = "ng",
