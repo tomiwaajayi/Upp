@@ -1,8 +1,8 @@
-import {TAX} from '@sh/constants/tax.constants';
-import {IMoney, Money} from '@sh/interfaces/payment/money.interface';
-import {IPayrollEmployee} from '@sh/interfaces/payroll/payroll.interface';
-import {BaseClass} from '@upp/tax/base.tax';
-import {ProcessTaxPayload} from '@upp/tax/tax.types';
+import {TAX} from '../../../constants/tax.constants';
+import {IMoney, Money} from '../../../interfaces/payment/money.interface';
+import {IPayrollEmployee} from '../../../interfaces/payroll/payroll.interface';
+import {BaseClass} from './base.tax';
+import {ProcessTaxPayload} from './tax.types';
 
 export class RwandaTax extends BaseClass {
   static country = 'RW';

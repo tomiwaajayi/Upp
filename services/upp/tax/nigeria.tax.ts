@@ -1,9 +1,9 @@
-import {ProcessTaxPayload} from '@sh/services/upp/tax/tax.types';
-import {NestedIRemittance} from '@sh/interfaces/base.interface';
-import {BaseClass} from '@upp/tax/base.tax';
-import {TAX} from '@sh/constants/tax.constants';
-import {IMoney, Money} from '@sh/interfaces/payment/money.interface';
-import {IPayrollEmployee} from '@sh/interfaces/payroll/payroll.interface';
+import {TAX} from '../../../constants/tax.constants';
+import {NestedIRemittance} from '../../../interfaces/base.interface';
+import {IMoney, Money} from '../../../interfaces/payment/money.interface';
+import {IPayrollEmployee} from '../../../interfaces/payroll/payroll.interface';
+import {BaseClass} from './base.tax';
+import {ProcessTaxPayload} from './tax.types';
 
 export class NigeriaTax extends BaseClass {
   static country = 'NG';

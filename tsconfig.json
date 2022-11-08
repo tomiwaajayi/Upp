@@ -6,11 +6,6 @@
     "outDir": "src",
     "resolveJsonModule": true,
     "baseUrl": ".",
-    "paths": {
-      "@sh/*": ["*"],
-      "@upp/*": ["services/upp/*"],
-      "@test/*": ["test/*"],
-    }
   },
   "include": ["**/*.ts", "test/**/*.ts", "./package.json"],
   "exclude": [
