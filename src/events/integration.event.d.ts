@@ -6,4 +6,5 @@ export declare const INTEGRATION_EVENTS: {
     terminateEmployeeOnCDB: string;
     restoreEmployeeOnPeople: string;
     productProxyRelayer: string;
+    getUserCdbAuthToken: string;
 };

@@ -8,4 +8,5 @@ export const INTEGRATION_EVENTS = {
   terminateEmployeeOnCDB: `${SERVICES.INTEGRATION_SERVICE}.${CDB}.terminateEmployee`,
   restoreEmployeeOnPeople: `${SERVICES.INTEGRATION_SERVICE}.${PEOPLE}.restoreEmployee`,
   productProxyRelayer: `${SERVICES.INTEGRATION_SERVICE}.${PRODUCT}.proxyRelayer`,
+  getUserCdbAuthToken: `${SERVICES.INTEGRATION_SERVICE}.${CDB}.getUserAuthToken`,
 };
