@@ -98,11 +98,15 @@ export declare class PayrollBuilder implements IPayrollBuilder {
      * Process single employee prorate
      * note that there can only be a single prorate entry for an employee
      */
-    private processProRates;
+    processProRates(employee: IPayrollEmployee): void;
     /**
      * In a single loop processes single employee bonus, untaxed bonus, extra month, leave allowance, and deductions
      */
     private processBonuses;
+    /**
+     * In a single loop processes single employee bonus, untaxed bonus, extra month, leave allowance, and deductions
+     */
+    private processDeductions;
     /**
      * Nigeria - NHF, ITF, NSITF
      * Kenya - NHIF

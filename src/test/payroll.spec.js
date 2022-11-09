@@ -21,7 +21,7 @@ describe('Process Payroll (e2e)', () => {
         let payroll = builderInstance.get();
         expect(payroll.totalCharge).toEqual({
             NGN: {
-                value: 225500,
+                value: 220500,
                 currency: 'NGN',
             },
             KES: {
@@ -41,7 +41,7 @@ describe('Process Payroll (e2e)', () => {
         payroll = builderInstance.getTotals();
         expect(payroll.totalCharge).toEqual({
             NGN: {
-                value: 351000,
+                value: 341000,
                 currency: 'NGN',
             },
             KES: {
@@ -120,7 +120,7 @@ describe('Process Payroll (e2e)', () => {
         });
         expect(payroll.totalCharge).toEqual({
             NGN: {
-                value: 225500,
+                value: 220500,
                 currency: 'NGN',
             },
             KES: {
@@ -174,6 +174,14 @@ describe('Process Payroll (e2e)', () => {
                 },
             },
         });
+    });
+    it('Should successfully calculate prorates ', async () => {
+        var _a, _b, _c, _d;
+        const payroll = payroll_director_1.PayrollDirector.build(data);
+        expect((_a = payroll.employees[0].proRateDeduction) === null || _a === void 0 ? void 0 : _a.value).toBe(53125);
+        expect((_b = payroll.employees[1].proRateDeduction) === null || _b === void 0 ? void 0 : _b.value).toBe(53125);
+        expect((_c = payroll.employees[0].basePayable) === null || _c === void 0 ? void 0 : _c.value).toBe(46875);
+        expect((_d = payroll.employees[1].basePayable) === null || _d === void 0 ? void 0 : _d.value).toBe(46875);
     });
     it('Should test payroll bonuses', async () => {
         var _a, _b, _c;

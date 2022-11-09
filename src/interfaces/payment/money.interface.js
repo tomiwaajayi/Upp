@@ -122,7 +122,6 @@ class Money extends Currency {
     static equalTo(a, b) {
         return a.value === (b.value || b);
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     static toMoney(data) {
         return {
             value: data.value,
