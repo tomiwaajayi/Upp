@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const payroll_director_1 = require("../services/upp/payroll.director");
+const payroll_director_1 = require("../services/payroll.director");
 const fixture = require("./fixtures/bonus.json");
 const lodash_1 = require("lodash");
 const payroll_interface_1 = require("../interfaces/payroll/payroll.interface");

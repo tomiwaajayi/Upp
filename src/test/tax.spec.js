@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const fixture = require("./fixtures/tax.json");
 const lodash_1 = require("lodash");
-const payroll_director_1 = require("../services/upp/payroll.director");
+const payroll_director_1 = require("../services/payroll.director");
 describe('Process Tax (e2e)', () => {
     describe('Nigeria Tax', () => {
         let data;

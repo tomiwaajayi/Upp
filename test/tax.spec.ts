@@ -1,7 +1,7 @@
 import fixture = require('./fixtures/tax.json');
 import {cloneDeep} from 'lodash';
-import {BuilderPayload} from '../services/upp/builder.interface';
-import {PayrollDirector} from '../services/upp/payroll.director';
+import {BuilderPayload} from '../services/builder.interface';
+import {PayrollDirector} from '../services/payroll.director';
 import {NestedIRemittance} from '../interfaces/base.interface';
 import {IGroup} from '../interfaces/account/employee.interface';
 

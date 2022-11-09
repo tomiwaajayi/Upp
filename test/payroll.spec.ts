@@ -1,7 +1,7 @@
-import {PayrollDirector} from '../services/upp/payroll.director';
+import {PayrollDirector} from '../services/payroll.director';
 
 import fixture = require('./fixtures/bonus.json');
-import {BuilderPayload} from '../services/upp/builder.interface';
+import {BuilderPayload} from '../services/builder.interface';
 import {cloneDeep} from 'lodash';
 import {IEmployeeWithGroup} from '../interfaces/account/employee.interface';
 import {CountryStatutories} from '../interfaces/payroll/payroll.interface';
