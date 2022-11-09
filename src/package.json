@@ -1,12 +1,11 @@
 {
-    "name": "shared",
+    "name": "upp",
     "version": "0.0.1",
     "description": "",
     "author": "",
-    "private": true,
+    "private": false,
     "license": "UNLICENSED",
     "devDependencies": {
-        "@types/google-libphonenumber": "^7.4.23",
         "@types/jest": "^29.1.2",
         "@types/node": "^14.11.2",
         "gts": "^3.1.0",
@@ -28,7 +27,6 @@
     "dependencies": {
         "@types/lodash": "^4.14.184",
         "currency.js": "^2.0.4",
-        "google-libphonenumber": "^3.2.30",
         "lodash": "^4.17.21",
         "moment": "^2.29.4"
     }
