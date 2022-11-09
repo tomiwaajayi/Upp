@@ -4,10 +4,12 @@
     "experimentalDecorators": true,
     "rootDir": ".",
     "outDir": "src",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "baseUrl": ".",
   },
   "include": ["**/*.ts", "test/**/*.ts", "./package.json"],
   "exclude": [
-    "./src/" // This is what fixed it!
+    "./src/", // This is what fixed it!
+    "coverage",
   ]
 }

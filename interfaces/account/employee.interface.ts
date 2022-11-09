@@ -1,11 +1,8 @@
-import {IsOptional} from 'class-validator';
 import {IMoney} from '../payment/money.interface';
 import {Organization} from './organization.interface';
 
 export class CheckEmployeeDTO {
-  @IsOptional()
   emailOrPhonenumber?: string;
-  @IsOptional()
   employeeId?: string;
 }
 
@@ -23,6 +20,25 @@ export interface ICheckEmployeeResponse {
   employeeExist: boolean;
 }
 
+export interface IRemitance {
+  enabled: boolean;
+  remit: boolean;
+  useOrgsettings?: boolean;
+  type?: string;
+  enabledWithHoldingTax?: boolean;
+  WHTaxRate?: number;
+  useGrossOnlyForMinimumWage?: boolean;
+}
+
+export interface IGroup {
+  name?: string;
+  remittances?: Record<string, IRemitance>;
+  useOrgSalaryBreakdown?: boolean;
+  hasSalaryBreakdown?: boolean;
+  salaryBreakdown?: Record<string, number>;
+  id: string;
+}
+
 export interface Employee {
   id: string;
   country: string;
@@ -36,6 +52,7 @@ export interface Employee {
   bankId?: string;
   accountNumber?: string;
   salaryType?: SalaryTypeEnum | string;
+  employmentType?: EmploymentTypeEnum | string;
   ibanAccountNumber?: string;
   swiftBIC?: string;
   bankAddress?: string;
@@ -53,14 +70,16 @@ export interface Employee {
   organization: Organization | string;
   invitationSent?: boolean;
   salary?: number;
-  // TODO: add Group Schema ID
-  group?: string;
-  // TODO: add Tax State Schema ID
+  group?: IGroup;
   taxState?: string;
   taxId?: string;
-  // TODO: add Pension Fund Admin Schema ID
   pensionFundAdmin?: string;
   pensionId?: string;
+  pensionContributionEnabled?: boolean;
+  pensionContribution?: number;
+  employerPensionContribution?: number;
+  voluntaryPensionContribution?: number;
+  voluntaryPensionContributionEmployer?: number;
   nhfId?: string;
   itfId?: string;
   nsitfId?: string;
@@ -68,15 +87,20 @@ export interface Employee {
   hasHealthAccessEnabled?: boolean;
   hasHealthAccessRemit?: boolean;
   healthReliefAmount?: number;
+  healthAccessAmount?: number;
   hasHealthReliefEnabled?: boolean;
   hasSalaryBreakdown?: boolean;
-  salaryBreakdown?: Map<string, number>;
+  salaryBreakdown?: Record<string, number>;
   completionStatus?: EmployeeCompletionStatus | string;
   /** Virtuals */
   bonuses?: EmployeeSalaryAddon[];
   deductions?: EmployeeSalaryAddon[];
   biks?: string[];
   proratedSalaries?: string[];
+}
+
+export interface IEmployeeWithGroup {
+  group: IGroup;
 }
 
 export interface EmployeeSalaryAddon {
@@ -135,6 +159,12 @@ export enum GenderEnum {
 export enum SalaryTypeEnum {
   Net = 'net',
   Gross = 'gross',
+}
+
+export enum EmploymentTypeEnum {
+  Permanent = 'permanent',
+  FullTime = 'full-time',
+  Casual = 'casual',
 }
 
 export enum SupportedCurrencyEnum {

@@ -5,5 +5,6 @@ const services_constant_1 = require("../constants/services.constant");
 exports.PAYMENT_EVENTS = {
     getAllBanks: `${services_constant_1.SERVICES.PAYMENT_SERVICE}.getAllBanks`,
     createNubanAccount: `${services_constant_1.SERVICES.PAYMENT_SERVICE}.createNubanAccount`,
+    fetchPaymentProviders: `${services_constant_1.SERVICES.PAYMENT_SERVICE}.fetchPaymentProviders`,
 };
 //# sourceMappingURL=payment.events.js.map

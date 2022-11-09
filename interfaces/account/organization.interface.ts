@@ -1,4 +1,4 @@
-import {BaseSchemaInterface} from '../base.interface';
+import {Country} from '../base.interface';
 
 export interface IOrganizationResponse {
   name: string;
@@ -7,7 +7,7 @@ export interface IOrganizationResponse {
 }
 
 export interface Organization {
-  country: string;
+  country: Country;
   email: string;
   name: string;
   logo?: string;

@@ -22,7 +22,8 @@
     "fix": "gts fix",
     "prepare": "yarn run compile",
     "posttest": "yarn run lint",
-    "test": "jest --coverage --runInBand --forceExit",
+    "test": "jest --runInBand --detectOpenHandles --forceExit",
+    "test:coverage": "jest --coverage --runInBand --forceExit",
     "test-watch": "jest --watch"
   },
   "dependencies": {
@@ -43,6 +44,7 @@
     "mongoose-autopopulate": "^0.16.1",
     "mongoose-paginate-v2": "^1.7.0",
     "nest": "^0.1.6",
+    "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0"
   }
 }

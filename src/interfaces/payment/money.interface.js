@@ -3,27 +3,35 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Money = void 0;
 const Currency = require("currency.js");
 class Money extends Currency {
+    static _({ value, currency }) {
+        return Currency(value || 0, { symbol: currency, precision: 3 });
+    }
+    /** return IMoney object with params initialized */
+    static new(value, currency) {
+        return this.toMoney(Money._({ value, currency }));
+    }
     /**
+     * This is a short form of Money.add() function
      * @example
-     * import {add} from 'dinero.js'
      * const amount = { value: 400, currency: 'NGN' }
      * const anotherAmount = { value: 900, currency: 'NGN' }
      * Money.add(amount, anotherAmount)
      */
-    static _({ value, currency }) {
-        return Currency(value, { symbol: currency });
-    }
     static add(a, b) {
-        return this.toMoney(this._(a).add(this._(b)));
+        const x = typeof b === 'number' ? b : this._(b);
+        return this.toMoney(this._(a).add(x));
     }
     static sub(a, b) {
-        return this.toMoney(this._(a).subtract(this._(b)));
+        const x = typeof b === 'number' ? b : this._(b);
+        return this.toMoney(this._(a).subtract(x));
     }
     static mul(a, b) {
-        return this.toMoney(this._(a).multiply(this._(b)));
+        const x = typeof b === 'number' ? b : this._(b);
+        return this.toMoney(this._(a).multiply(x));
     }
     static div(a, b) {
-        return this.toMoney(this._(a).divide(this._(b)));
+        const x = typeof b === 'number' ? b : this._(b);
+        return this.toMoney(this._(a).divide(x));
     }
     /**
      * Adds array of objects or array of money interface
@@ -55,10 +63,64 @@ class Money extends Currency {
             array = addends.map(a => a[key]);
         }
         currency = array[0].currency;
-        return array.reduce((acc, amount) => this.add(amount, acc), {
+        return this.toMoney(array.reduce((acc, amount) => acc.add(this._(amount)), this._({
             value: 0,
             currency,
-        });
+        })));
+    }
+    /**
+     * Subtract more than one value from a value
+     * @example
+     * Money.subMany(
+        [
+          {loanAmount: {value: 1000, currency: 'NGN'}},
+          {loanAmount: {value: 300, currency: 'NGN'}},
+          {loanAmount: {value: 488, currency: 'NGN'}},
+        ],
+        'loanAmount'
+      )
+      @example
+      Money.addMany(
+        [
+          {value: 1000, currency: 'NGN'},
+          {value: 300, currency: 'NGN'},
+          {value: 488, currency: 'NGN'},
+        ]
+      )
+     */
+    static subMany(from, entries) {
+        // if (typeof subs === IMoney[])
+        return this.toMoney(entries.reduce((acc, b) => {
+            const x = typeof b === 'number' ? b : this._(b);
+            return acc.subtract(x);
+        }, this._(from)));
+    }
+    /**
+     * Returns true if first param is greater than second param
+     */
+    static greaterThan(a, b) {
+        return a.value > (b.value || b);
+    }
+    /**
+     * Returns true if first param is greater than or equal to second param
+     */
+    static greaterThanEq(a, b) {
+        return a.value >= (b.value || b);
+    }
+    /**
+     * Returns true if first param is less than second param
+     */
+    static lessThan(a, b) {
+        return a.value < (b.value || b);
+    }
+    /**
+     * Returns true if first param is less than or equal to second param
+     */
+    static lessThanEq(a, b) {
+        return a.value <= (b.value || b);
+    }
+    static equalTo(a, b) {
+        return a.value === (b.value || b);
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     static toMoney(data) {

@@ -2,7 +2,31 @@
     "entities": {
         "defaultOrg": {
             "id": "633f4f707c6aa9362ca61f2a",
-            "country": "60e7c3f3bf19830b5cf4e422",
+            "country": {
+                "_id": "60e7c3f3bf19830b5cf4e422",
+                "id": "60e7c3f3bf19830b5cf4e422",
+                "name": "Nigeria",
+                "isoCode": "NG",
+                "iso2": "ng",
+                "dialCode": "234",
+                "lat": 8.0,
+                "long": 10.0,
+                "location": {
+                    "type": "Point",
+                    "coordinates": [
+                        10.0,
+                        8.0
+                    ]
+                },
+                "code": "NGN",
+                "isDeleted": false,
+                "slug": "nigeria",
+                "createdAt": "2021-07-09T03:35:15.705Z",
+                "updatedAt": "2021-08-13T16:21:11.320Z",
+                "imageUrl": "https://www.countryflags.io/ng/flat/64.png",
+                "isActive": true,
+                "symbol": "₦"
+            },
             "email": "koredujar@gmail.com",
             "name": "Corestack NG",
             "createdBy": "633f4f70a8483a76209ac2e7",
@@ -100,21 +124,158 @@
                         "id": "6347ed2b4f8f252ac3cae1ec"
                     }
                 ],
-                "country": "60e7c3f3bf19830b5cf4e422",
+                "country": "ng",
                 "organization": "63401825fb3550d8580f8530",
                 "createdBy": "634018244ee4e237f9eb7ea1",
                 "id": "6347ec944f8f252ac3cae1e4"
+            },
+            {
+                "base": { "value": 100000, "currency": "NGN" },
+                "workEmail": "zoltofulmo2@vusra.com",
+                "firstName": "Sarah",
+                "middleName": "Rose",
+                "lastName": "Mandem",
+                "phoneNumber": "2349019261257",
+                "department": "Enginerring",
+                "currency": "NGN",
+                "completionStatus": "Payment info pending",
+                "createdAt": "2022-10-13T10:46:44.827Z",
+                "country": "ng",
+                "organization": "63401825fb3550d8580f8530",
+                "createdBy": "634018244ee4e237f9eb7ea1",
+                "id": "6347ec944f8f252ac3cae1e4",
+                "pensionId": "f8f252ac3cae1e4",
+                "pensionFundAdmin": "634018244ee4e237f9eb7ea1",
+                "bonuses": [],
+                "deductions": [],
+                "group": {
+                    "id": "63401825fb3550d8580f80000",
+                    "organization": "63401825fb3550d8580f8530",
+                    "name": "Manager",
+                    "useOrgsettings": false,
+                    "useOrgSalaryBreakdown": false,
+                    "remittances": {
+                        "pension": {
+                            "enabled": true,
+                            "type": "quote",
+                            "remit": true
+                        },
+                        "itf": {
+                            "enabled": true,
+                            "remit": true
+                        },
+                        "nhf": {
+                            "enabled": true,
+                            "remit": true
+                        },
+                        "nsitf": {
+                            "enabled": true,
+                            "remit": true
+                        },
+                        "nhif": {
+                            "enabled": false,
+                            "remit": false
+                        }
+                    },
+                    "hasSalaryBreakdown": false,
+                    "salaryBreakdown": {
+                        "basic": 20,
+                        "housing": 20,
+                        "transport": 20,
+                        "salary": 40
+                    }
+                }
+            },
+            {
+                "base": { "value": 25000, "currency": "KES" },
+                "workEmail": "zoltofulmo2@vusra.com",
+                "firstName": "Moses",
+                "middleName": "Kenan",
+                "lastName": "James",
+                "phoneNumber": "2349019261257",
+                "department": "Enginerring",
+                "currency": "KES",
+                "completionStatus": "Payment info pending",
+                "createdAt": "2022-10-13T10:46:44.827Z",
+                "country": "ke",
+                "organization": "63401825fb3550d8580f8530",
+                "createdBy": "634018244ee4e237f9eb7ea1",
+                "id": "6347ec944f8f252ac3cae1e5",
+                "pensionId": "f8f252ac3cae1e4",
+                "pensionFundAdmin": "634018244ee4e237f9eb7ea1",
+                "bonuses": [],
+                "deductions": [],
+                "group": {
+                    "id": "634018244ee4e237f9eb7ea4",
+                    "name": "Manager",
+                    "useOrgsettings": false,
+                    "useOrgSalaryBreakdown": false,
+                    "remittances": {
+                        "pension": {
+                            "enabled": false,
+                            "type": "quote",
+                            "remit": false
+                        },
+                        "itf": {
+                            "enabled": false,
+                            "remit": false
+                        },
+                        "nhf": {
+                            "enabled": false,
+                            "remit": false
+                        },
+                        "nsitf": {
+                            "enabled": false,
+                            "remit": false
+                        },
+                        "nhif": {
+                            "enabled": true,
+                            "remit": true
+                        }
+                    },
+                    "hasSalaryBreakdown": false,
+                    "salaryBreakdown": {
+                        "basic": 20,
+                        "housing": 20,
+                        "transport": 20,
+                        "salary": 40
+                    }
+                }
             }
         ],
+        "orgSettings": {
+            "useGrossOnlyForMinimumWage": true,
+            "payFullTax": true,
+            "useCRAGross": true,
+            "hasSalaryBreakdown": true,
+            "remittances": {
+                "pension": {
+                    "enabled": true,
+                    "type": "deduct",
+                    "remit": true
+                },
+                "tax": {
+                    "enabled": true,
+                    "remit": true,
+                    "WHTaxRate": 5,
+                    "enabledWithHoldingTax": false,
+                    "useGrossOnlyForMinimumWage": false
+                }
+            }
+        },
         "defaultMeta": {
             "payItem": {
+                "base": "pending",
+                "bonus": "pending",
                 "tax": "unpaid",
                 "pension": "unpaid",
                 "health": "unpaid",
                 "nhf": "unpaid",
                 "nhif": "unpaid",
                 "itf": "unpaid",
-                "nsitf": "unpaid"
+                "nsitf": "unpaid",
+                "base": "unpaid",
+                "bonus": "unpaid"
             },
             "deselected": [],
             "proRateMonth": "October",
@@ -123,13 +284,17 @@
         "data": {
             "proRateMonth": "October",
             "payItem": {
+                "base": "pending",
+                "bonus": "pending",
                 "tax": "unpaid",
                 "pension": "unpaid",
                 "health": "unpaid",
                 "nhf": "unpaid",
                 "nhif": "unpaid",
                 "itf": "unpaid",
-                "nsitf": "unpaid"
+                "nsitf": "unpaid",
+                "base": "unpaid",
+                "bonus": "unpaid"
             },
             "deselected": [],
             "createdBy": "633f4f707c6aa9362ca61f2a"

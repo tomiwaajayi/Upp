@@ -27,5 +27,7 @@ exports.ACCOUNT_EVENTS = {
     getOrganization: `${services_constant_1.SERVICES.ACCOUNT_SERVICE}.organization.get`,
     fetchActiveEmployeesData: `${services_constant_1.SERVICES.ACCOUNT_SERVICE}.employee.fetchActiveEmployeesData`,
     fetchEmployeesForWorksheet: `${services_constant_1.SERVICES.ACCOUNT_SERVICE}.employee.fetchEmployeesForWorksheet`,
+    restoreEmployee: `${services_constant_1.SERVICES.ACCOUNT_SERVICE}.employee.restoreEmployee`,
+    getPayrollEmployees: `${services_constant_1.SERVICES.ACCOUNT_SERVICE}.employee.getForPayroll`,
 };
 //# sourceMappingURL=account.events.js.map

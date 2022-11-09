@@ -10,6 +10,7 @@ import {ClientException} from '../exceptions/client_exception';
 import {ResponseService} from './response.service';
 import {PhoneNumberFormat, PhoneNumberUtil} from 'google-libphonenumber';
 import {firstValueFrom, Observable} from 'rxjs';
+import {RedisOptions, Transport} from '@nestjs/microservices';
 const phoneUtil = PhoneNumberUtil.getInstance();
 export class UtilService {
   static async quickController(
@@ -182,19 +183,74 @@ export class UtilService {
   static getKafkaConfig(configuration: any): any {
     return {
       brokers: configuration.kafka.endpoint.split(','),
-      // sasl: configuration().kafka.ssl && {
-      //   mechanism: 'scram-sha-512',
-      //   username: configuration().kafka.username,
-      //   password: configuration().kafka.password,
-      // },
-      retry: {
-        retries: 0,
+      connectionTimeout: 10000,
+      requestTimeout: 10000,
+      enforceRequestTimeout: true,
+      clientId: configuration.kafka.clientId,
+      sasl: configuration.kafka.ssl && {
+        mechanism: 'plain',
+        username: configuration.kafka.username,
+        password: configuration.kafka.password,
       },
-      ssl: configuration.kafka.ssl && {
-        ca: [configuration.kafka.ca],
-        key: configuration.kafka.key,
-        cert: configuration.kafka.cert,
-        rejectUnauthorized: false,
+      retry: {
+        retries: 100,
+      },
+      ssl: configuration.kafka.ssl,
+    };
+  }
+
+  static cleanArray<T>(arr: T[]) {
+    return arr.filter(item => Boolean(item));
+  }
+
+  static getRedisServerConfig(configuration: {
+    redis: {
+      url?: string;
+      host?: string;
+      port?: number;
+      password?: string;
+      prefix?: string;
+    };
+    isDev(): boolean;
+  }): RedisOptions {
+    return {
+      transport: Transport.REDIS,
+      options: {
+        url: configuration.redis.url,
+        host: configuration.redis.host,
+        port: configuration.redis.port,
+        password: configuration.redis.password,
+        prefix:
+          configuration.redis.prefix ||
+          (configuration.isDev() ? 'dev' : 'production'),
+      },
+    };
+  }
+
+  static getRedisClientConfig(
+    clientName: string,
+    configuration: {
+      redis: {
+        url?: string;
+        host?: string;
+        port?: number;
+        password?: string;
+        prefix?: string;
+      };
+      isDev(): boolean;
+    }
+  ) {
+    return {
+      name: clientName,
+      transport: Transport.REDIS,
+      options: {
+        url: configuration.redis.url,
+        host: configuration.redis.host,
+        port: configuration.redis.port,
+        password: configuration.redis.password,
+        prefix:
+          configuration.redis.prefix ||
+          (configuration.isDev() ? 'dev' : 'production'),
       },
     };
   }
