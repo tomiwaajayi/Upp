@@ -75,7 +75,7 @@ export interface IPayrollEmployee extends Employee {
     }
   >;
   proRateDeduction?: IMoney;
-  proRates?: IProrate[];
+  proRates?: EmployeeSalaryAddon[];
   sumOfBonus?: IMoney;
 }
 
@@ -137,15 +137,6 @@ export enum ProrateStatusEnum {
   Processing = 'processing',
   Canceled = 'cancelled',
   Completed = 'completed',
-}
-export interface IProrate {
-  attributes: string;
-  type: ProrateTypeEnum;
-  startDate: Date;
-  endDate: Date;
-  status?: ProrateStatusEnum;
-  organization: string;
-  employee: string;
 }
 
 export interface OrganizationSettings {

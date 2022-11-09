@@ -13,7 +13,6 @@ import {
   IPayroll,
   IPayrollEmployee,
   IPayrollMeta,
-  IProrate,
   OrganizationSettings,
   PayItemStatus,
   PayrollSalaryAddon,

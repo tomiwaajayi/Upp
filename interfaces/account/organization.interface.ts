@@ -19,5 +19,4 @@ export interface Organization {
   createdBy: string;
   isDeleted?: boolean;
   deletedAt?: Date;
-  removeVariableAmount?: boolean;
 }

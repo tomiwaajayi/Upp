@@ -190,6 +190,14 @@ describe('Process Payroll (e2e)', () => {
     });
   });
 
+  it('Should successfully calculate prorates ', async () => {
+    const payroll = PayrollDirector.build(data);
+    expect(payroll.employees[0].proRateDeduction?.value).toBe(53125);
+    expect(payroll.employees[1].proRateDeduction?.value).toBe(53125);
+    expect(payroll.employees[0].basePayable?.value).toBe(46875);
+    expect(payroll.employees[1].basePayable?.value).toBe(46875);
+  });
+
   it('Should test payroll bonuses', async () => {
     const {entities} = fixture;
     const payroll = PayrollDirector.build(data);
