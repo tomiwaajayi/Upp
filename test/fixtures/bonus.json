@@ -267,15 +267,14 @@
       "payItem": {
         "base": "pending",
         "bonus": "pending",
-        "tax": "unpaid",
-        "pension": "unpaid",
-        "health": "unpaid",
-        "nhf": "unpaid",
-        "nhif": "unpaid",
-        "itf": "unpaid",
-        "nsitf": "unpaid",
-        "base": "unpaid",
-        "bonus": "unpaid"
+        "tax": "pending",
+        "pension": "pending",
+        "health": "pending",
+        "nhf": "pending",
+        "nhif": "pending",
+        "itf": "pending",
+        "nsitf": "pending",
+        "untaxedBonus": "pending"
       },
       "deselected": [],
       "proRateMonth": "October",
@@ -286,15 +285,14 @@
       "payItem": {
         "base": "pending",
         "bonus": "pending",
-        "tax": "unpaid",
-        "pension": "unpaid",
-        "health": "unpaid",
-        "nhf": "unpaid",
-        "nhif": "unpaid",
-        "itf": "unpaid",
-        "nsitf": "unpaid",
-        "base": "unpaid",
-        "bonus": "unpaid"
+        "tax": "pending",
+        "pension": "pending",
+        "health": "pending",
+        "nhf": "pending",
+        "nhif": "pending",
+        "itf": "pending",
+        "nsitf": "pending",
+        "untaxedBonus": "pending"
       },
       "deselected": [],
       "createdBy": "633f4f707c6aa9362ca61f2a"
