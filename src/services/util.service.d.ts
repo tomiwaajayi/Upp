@@ -1,7 +1,7 @@
 import { ValidatorOptions } from 'class-validator';
 import { Response } from 'express';
 import { Observable } from 'rxjs';
-import { RedisOptions } from '@nestjs/microservices';
+import { RedisOptions, Transport } from '@nestjs/microservices';
 export declare class UtilService {
     static quickController(res: Response, successMessage: string, service: any, method: string, httpStatusCode?: number, ...opts: any): Promise<any>;
     static microServiceController(service: any, method: string, ...opts: any): Promise<any>;
@@ -24,4 +24,24 @@ export declare class UtilService {
         };
         isDev(): boolean;
     }): RedisOptions;
+    static getRedisClientConfig(clientName: string, configuration: {
+        redis: {
+            url?: string;
+            host?: string;
+            port?: number;
+            password?: string;
+            prefix?: string;
+        };
+        isDev(): boolean;
+    }): {
+        name: string;
+        transport: Transport;
+        options: {
+            url: string | undefined;
+            host: string | undefined;
+            port: number | undefined;
+            password: string | undefined;
+            prefix: string;
+        };
+    };
 }

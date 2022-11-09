@@ -164,6 +164,20 @@ class UtilService {
             },
         };
     }
+    static getRedisClientConfig(clientName, configuration) {
+        return {
+            name: clientName,
+            transport: microservices_1.Transport.REDIS,
+            options: {
+                url: configuration.redis.url,
+                host: configuration.redis.host,
+                port: configuration.redis.port,
+                password: configuration.redis.password,
+                prefix: configuration.redis.prefix ||
+                    (configuration.isDev() ? 'dev' : 'production'),
+            },
+        };
+    }
 }
 exports.UtilService = UtilService;
 //# sourceMappingURL=util.service.js.map

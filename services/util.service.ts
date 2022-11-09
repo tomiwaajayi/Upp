@@ -226,4 +226,32 @@ export class UtilService {
       },
     };
   }
+
+  static getRedisClientConfig(
+    clientName: string,
+    configuration: {
+      redis: {
+        url?: string;
+        host?: string;
+        port?: number;
+        password?: string;
+        prefix?: string;
+      };
+      isDev(): boolean;
+    }
+  ) {
+    return {
+      name: clientName,
+      transport: Transport.REDIS,
+      options: {
+        url: configuration.redis.url,
+        host: configuration.redis.host,
+        port: configuration.redis.port,
+        password: configuration.redis.password,
+        prefix:
+          configuration.redis.prefix ||
+          (configuration.isDev() ? 'dev' : 'production'),
+      },
+    };
+  }
 }
