@@ -27,7 +27,7 @@ describe('Process Payroll (e2e)', () => {
 
     expect(payroll.totalCharge).toEqual({
       NGN: {
-        value: 225500,
+        value: 220500,
         currency: 'NGN',
       },
       KES: {
@@ -53,7 +53,7 @@ describe('Process Payroll (e2e)', () => {
 
     expect(payroll.totalCharge).toEqual({
       NGN: {
-        value: 351000,
+        value: 341000,
         currency: 'NGN',
       },
       KES: {
@@ -134,7 +134,7 @@ describe('Process Payroll (e2e)', () => {
     });
     expect(payroll.totalCharge).toEqual({
       NGN: {
-        value: 225500,
+        value: 220500,
         currency: 'NGN',
       },
       KES: {
