@@ -4,8 +4,10 @@ exports.PayrollBuilder = void 0;
 const lodash_1 = require("lodash");
 const employee_interface_1 = require("../../interfaces/account/employee.interface");
 const money_interface_1 = require("../../interfaces/payment/money.interface");
+const moment = require("moment");
 const payroll_interface_1 = require("../../interfaces/payroll/payroll.interface");
 const util_service_1 = require("../util.service");
+// import {calculateWeekDays} from './util.service';
 const pesion_service_1 = require("./pension/pesion.service");
 const tax_service_1 = require("./tax/tax.service");
 /**
@@ -34,7 +36,7 @@ class PayrollBuilder {
      * @returns
      */
     buildPartA(employee) {
-        this.processProRates(employee);
+        // this.processProRates(employee);
         return this;
     }
     /**
@@ -44,6 +46,7 @@ class PayrollBuilder {
      */
     buildPartB(employee) {
         this.processBonuses(employee);
+        this.processDeductions(employee);
         return this;
     }
     /**
@@ -123,7 +126,40 @@ class PayrollBuilder {
      * note that there can only be a single prorate entry for an employee
      */
     processProRates(employee) {
-        employee.totalProRate = { value: 5000, currency: 'NGN' };
+        var _a;
+        const proRate = (_a = employee.bonuses) === null || _a === void 0 ? void 0 : _a.find(p => p.type === employee_interface_1.SalaryAddonTypeEnum.Protate);
+        const { proRateMonth } = this.meta;
+        if ((0, lodash_1.isEmpty)(proRate))
+            return;
+        const monthStart = moment().month(proRateMonth).startOf('month');
+        const monthEnd = moment().month(proRateMonth).endOf('month');
+        let paidDays = 0;
+        const payrollDays = monthEnd.add(1, 'hour').diff(monthStart, 'days') + 1;
+        const { startDate, endDate } = proRate;
+        let start = moment(startDate);
+        let end = moment(endDate);
+        let recurrType = false;
+        if (start.isBefore(monthStart)) {
+            recurrType = true;
+            start = monthStart;
+        }
+        if (end.isBefore(monthEnd) && end.month() === monthEnd.month()) {
+            recurrType = false;
+        }
+        if (end.isAfter(monthEnd)) {
+            recurrType = true;
+            end = monthEnd;
+        }
+        proRate.frequency = recurrType
+            ? payroll_interface_1.ProrateTypeEnum.Recurring
+            : payroll_interface_1.ProrateTypeEnum.Once;
+        proRate.status = payroll_interface_1.ProrateStatusEnum.Pending;
+        paidDays += end.add(1, 'hour').diff(start, 'days') + 1;
+        const base = employee.base;
+        const proRatedSalary = money_interface_1.Money.mul(money_interface_1.Money.div(base, payrollDays), paidDays);
+        const proRateDeduction = money_interface_1.Money.sub(base, proRatedSalary);
+        employee.proRateDeduction =
+            paidDays > 0 ? proRateDeduction : employee.zeroMoney;
     }
     /**
      * In a single loop processes single employee bonus, untaxed bonus, extra month, leave allowance, and deductions
@@ -138,24 +174,46 @@ class PayrollBuilder {
             }
             return bonus.mode;
         });
+        // START UNTAXED BONUS
+        // Do untaxed bonus first because it's a separate payItem entry
+        if (!(0, lodash_1.isEmpty)(groupedBonuses[employee_interface_1.BonusSalaryModeEnum.UnTaxed]) &&
+            this.meta.payItem.untaxedBonus !== payroll_interface_1.PayItemStatus.Unpaid) {
+            employee.untaxedBonuses = groupedBonuses[employee_interface_1.BonusSalaryModeEnum.UnTaxed];
+            employee.totalUntaxedBonus = money_interface_1.Money.addMany(employee.untaxedBonuses, 'amount');
+        }
+        // END UNTAXED BONUS
+        // START BONUS
+        if (this.meta.payItem.bonus === payroll_interface_1.PayItemStatus.Unpaid) {
+            employee.bonuses = [];
+            return; // all below are still bonuses so it's safe to exit
+        }
         if (!(0, lodash_1.isEmpty)(groupedBonuses[employee_interface_1.BonusSalaryModeEnum.Quick])) {
             employee.bonuses = groupedBonuses[employee_interface_1.BonusSalaryModeEnum.Quick];
             employee.totalBonus = money_interface_1.Money.addMany(employee.bonuses, 'amount');
         }
-        if (!(0, lodash_1.isEmpty)(groupedBonuses[employee_interface_1.BonusSalaryModeEnum.UnTaxed])) {
-            employee.untaxedBonuses = groupedBonuses[employee_interface_1.BonusSalaryModeEnum.UnTaxed];
-            employee.totalUntaxedBonus = money_interface_1.Money.addMany(employee.untaxedBonuses, 'amount');
-        }
+        // END BONUS
+        // START EXTRA MONTH BONUS (13TH MONTH SALARY)
         if (!(0, lodash_1.isEmpty)(groupedBonuses[employee_interface_1.BonusSalaryModeEnum.ExtraMonth])) {
             employee.extraMonthBonus =
                 groupedBonuses[employee_interface_1.BonusSalaryModeEnum.ExtraMonth][0];
             employee.totalExtraMonthBonus = employee.extraMonthBonus.amount;
         }
+        // START EXTRA MONTH BONUS
+        // START LEAVE ALLOWANCE
         if (!(0, lodash_1.isEmpty)(groupedBonuses[employee_interface_1.BonusSalaryModeEnum.LeaveAllowance])) {
             employee.leaveAllowance =
                 groupedBonuses[employee_interface_1.BonusSalaryModeEnum.LeaveAllowance][0];
             employee.totalLeaveAllowance = employee.leaveAllowance.amount;
         }
+        // END LEAVE ALLOWANCE
+    }
+    /**
+     * In a single loop processes single employee bonus, untaxed bonus, extra month, leave allowance, and deductions
+     */
+    processDeductions(employee) {
+        if ((0, lodash_1.isEmpty)(employee.deductions))
+            return;
+        employee.totalDeductions = money_interface_1.Money.addMany(employee.deductions, 'amount');
     }
     /**
      * Nigeria - NHF, ITF, NSITF
@@ -171,7 +229,8 @@ class PayrollBuilder {
         const itfRecord = !(0, lodash_1.isEmpty)(group)
             ? group.remittances && group.remittances[payroll_interface_1.CountryStatutories.ITF]
             : this.organizationSettings.remittances[payroll_interface_1.CountryStatutories.ITF];
-        if (itfRecord && itfRecord.enabled && itfRecord.remit) {
+        const isItf = this.meta.payItem.itf !== payroll_interface_1.PayItemStatus.Unpaid;
+        if (itfRecord && itfRecord.enabled && itfRecord.remit && isItf) {
             let grossSalary = base;
             if (this.organizationSettings.isTotalItfEnumeration) {
                 const { totalBonus, totalLeaveAllowance } = employee;
@@ -194,7 +253,8 @@ class PayrollBuilder {
         const nhfRecord = !(0, lodash_1.isEmpty)(group)
             ? group.remittances && group.remittances[payroll_interface_1.CountryStatutories.NHF]
             : this.organizationSettings.remittances[payroll_interface_1.CountryStatutories.NHF];
-        if (!(0, lodash_1.isEmpty)(nhfRecord) && nhfRecord.enabled) {
+        const isNhf = this.meta.payItem.nhf !== payroll_interface_1.PayItemStatus.Unpaid;
+        if (!(0, lodash_1.isEmpty)(nhfRecord) && nhfRecord.enabled && isNhf) {
             let salaryBreakdown = group.salaryBreakdown;
             if (group.useOrgSalaryBreakdown) {
                 salaryBreakdown = this.organizationSettings.salaryBreakdown;
@@ -218,7 +278,8 @@ class PayrollBuilder {
         const nsitfRecord = !(0, lodash_1.isEmpty)(group)
             ? group.remittances && group.remittances[payroll_interface_1.CountryStatutories.NSITF]
             : this.organizationSettings.remittances[payroll_interface_1.CountryStatutories.NSITF];
-        if (nsitfRecord && nsitfRecord.enabled) {
+        const isNsitf = this.meta.payItem.nsitf !== payroll_interface_1.PayItemStatus.Unpaid;
+        if (nsitfRecord && nsitfRecord.enabled && isNsitf) {
             let grossSalary = base;
             if (this.organizationSettings.isTotalNsitfEnumeration) {
                 const { totalBonus, totalLeaveAllowance } = employee;
@@ -243,7 +304,8 @@ class PayrollBuilder {
         const nhifRecord = !(0, lodash_1.isEmpty)(group)
             ? group.remittances && group.remittances[payroll_interface_1.CountryStatutories.NHIF]
             : this.organizationSettings.remittances[payroll_interface_1.CountryStatutories.NHIF];
-        if (nhifRecord && nhifRecord.enabled) {
+        const isNhif = this.meta.payItem.nhif !== payroll_interface_1.PayItemStatus.Unpaid;
+        if (nhifRecord && nhifRecord.enabled && isNhif) {
             const defaultAmount = {
                 value: 0,
                 currency: base.currency,
@@ -365,21 +427,17 @@ class PayrollBuilder {
      */
     processTax(employee) {
         var _a;
-        try {
-            const { group } = employee;
-            const remittances = group
-                ? group.remittances
-                : this.organizationSettings.remittances;
-            if ((_a = remittances.tax) === null || _a === void 0 ? void 0 : _a.enabled) {
-                tax_service_1.TaxService.process(employee.country.toUpperCase(), {
-                    organization: this.organization,
-                    settings: this.organizationSettings,
-                    meta: this.meta,
-                }, employee);
-            }
-        }
-        catch (error) {
-            console.log(error);
+        const { group } = employee;
+        const remittances = group
+            ? group.remittances
+            : this.organizationSettings.remittances;
+        if (((_a = remittances.tax) === null || _a === void 0 ? void 0 : _a.enabled) &&
+            this.meta.payItem.tax !== payroll_interface_1.PayItemStatus.Unpaid) {
+            tax_service_1.TaxService.process(employee.country.toUpperCase(), {
+                organization: this.organization,
+                settings: this.organizationSettings,
+                meta: this.meta,
+            }, employee);
         }
     }
     /**
@@ -388,11 +446,13 @@ class PayrollBuilder {
      * https://sbcode.net/typescript/factory/
      */
     processPension(employee) {
+        var _a;
         const { group } = employee;
         const remittances = group
             ? group.remittances
             : this.organizationSettings.remittances;
-        if (remittances && remittances.pension && remittances.pension.enabled) {
+        const isPension = this.meta.payItem.pension !== payroll_interface_1.PayItemStatus.Unpaid;
+        if (((_a = remittances.pension) === null || _a === void 0 ? void 0 : _a.enabled) && isPension) {
             pesion_service_1.PensionService.process(employee.country.toUpperCase(), {
                 group,
                 organizationSettings: this.organizationSettings,

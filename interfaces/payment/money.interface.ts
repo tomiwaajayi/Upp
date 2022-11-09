@@ -22,7 +22,6 @@ export class Money extends Currency {
    * const anotherAmount = { value: 900, currency: 'NGN' }
    * Money.add(amount, anotherAmount)
    */
-
   static add(a: IMoney, b: IMoney | number) {
     const x = typeof b === 'number' ? b : this._(b as IMoney);
     return this.toMoney(this._(a).add(x));
@@ -146,7 +145,6 @@ export class Money extends Currency {
     return a.value === ((<IMoney>b).value || <number>b);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static toMoney(data: any): IMoney {
     return {
       value: data.value,

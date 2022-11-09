@@ -47,6 +47,7 @@ export interface IPayrollEmployee extends Employee {
     deductions?: EmployeeSalaryAddon[];
     totalDeductions?: IMoney;
     totalProRate?: IMoney;
+    variableAmount?: IMoney;
     whtaxApplied?: boolean;
     whtaxRate?: number;
     netIncome?: IMoney;
@@ -61,6 +62,8 @@ export interface IPayrollEmployee extends Employee {
         remittanceEnabled: boolean;
         amount: IMoney;
     }>;
+    proRateDeduction?: IMoney;
+    proRates?: EmployeeSalaryAddon[];
     sumOfBonus?: IMoney;
 }
 export interface IPayrollRemittance {
@@ -90,6 +93,16 @@ export interface PayrollSalaryAddon {
     id: string;
     name: string;
     amount: IMoney;
+}
+export declare enum ProrateTypeEnum {
+    Once = "once",
+    Recurring = "recurring"
+}
+export declare enum ProrateStatusEnum {
+    Pending = "pending",
+    Processing = "processing",
+    Canceled = "cancelled",
+    Completed = "completed"
 }
 export interface OrganizationSettings {
     hasSalaryBreakdown: boolean;

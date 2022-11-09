@@ -55,6 +55,8 @@ export interface IPayrollEmployee extends Employee {
   deductions?: EmployeeSalaryAddon[];
   totalDeductions?: IMoney;
   totalProRate?: IMoney;
+  variableAmount?: IMoney;
+  // value is null if tax is disabled
   whtaxApplied?: boolean;
   whtaxRate?: number;
   netIncome?: IMoney;
@@ -72,6 +74,8 @@ export interface IPayrollEmployee extends Employee {
       amount: IMoney;
     }
   >;
+  proRateDeduction?: IMoney;
+  proRates?: EmployeeSalaryAddon[];
   sumOfBonus?: IMoney;
 }
 
@@ -122,6 +126,17 @@ export interface PayrollSalaryAddon {
   id: string;
   name: string;
   amount: IMoney;
+}
+export enum ProrateTypeEnum {
+  Once = 'once',
+  Recurring = 'recurring',
+}
+
+export enum ProrateStatusEnum {
+  Pending = 'pending',
+  Processing = 'processing',
+  Canceled = 'cancelled',
+  Completed = 'completed',
 }
 
 export interface OrganizationSettings {

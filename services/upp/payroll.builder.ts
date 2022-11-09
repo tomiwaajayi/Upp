@@ -2,10 +2,12 @@ import {cloneDeep, groupBy, isEmpty, keyBy} from 'lodash';
 import {
   BonusSalaryModeEnum,
   IGroup,
+  SalaryAddonTypeEnum,
 } from '../../interfaces/account/employee.interface';
 import {Organization} from '../../interfaces/account/organization.interface';
 import {Country, NestedIRemittance} from '../../interfaces/base.interface';
 import {IMoney, Money} from '../../interfaces/payment/money.interface';
+import * as moment from 'moment';
 import {
   CountryStatutories,
   IPayroll,
@@ -14,9 +16,12 @@ import {
   OrganizationSettings,
   PayItemStatus,
   PayrollSalaryAddon,
+  ProrateStatusEnum,
+  ProrateTypeEnum,
 } from '../../interfaces/payroll/payroll.interface';
 import {UtilService} from '../util.service';
 import {BuilderPayload, IPayrollBuilder} from './builder.interface';
+// import {calculateWeekDays} from './util.service';
 import {PensionService} from './pension/pesion.service';
 import {TaxService} from './tax/tax.service';
 
@@ -60,7 +65,7 @@ export class PayrollBuilder implements IPayrollBuilder {
    * @returns
    */
   private buildPartA(employee: IPayrollEmployee) {
-    this.processProRates(employee);
+    // this.processProRates(employee);
     return this;
   }
 
@@ -164,10 +169,51 @@ export class PayrollBuilder implements IPayrollBuilder {
    * Process single employee prorate
    * note that there can only be a single prorate entry for an employee
    */
-  private processProRates(employee: IPayrollEmployee): void {
-    employee.totalProRate = {value: 5000, currency: 'NGN'};
-  }
+  processProRates(employee: IPayrollEmployee): void {
+    const proRate = employee.bonuses?.find(
+      p => p.type === SalaryAddonTypeEnum.Protate
+    );
+    const {proRateMonth} = this.meta;
+    if (isEmpty(proRate)) return;
 
+    const monthStart = moment().month(proRateMonth).startOf('month');
+    const monthEnd = moment().month(proRateMonth).endOf('month');
+
+    let paidDays = 0;
+    const payrollDays = monthEnd.add(1, 'hour').diff(monthStart, 'days') + 1;
+
+    const {startDate, endDate} = proRate;
+
+    let start = moment(startDate);
+    let end = moment(endDate);
+    let recurrType = false;
+
+    if (start.isBefore(monthStart)) {
+      recurrType = true;
+      start = monthStart;
+    }
+
+    if (end.isBefore(monthEnd) && end.month() === monthEnd.month()) {
+      recurrType = false;
+    }
+    if (end.isAfter(monthEnd)) {
+      recurrType = true;
+      end = monthEnd;
+    }
+    proRate.frequency = recurrType
+      ? ProrateTypeEnum.Recurring
+      : ProrateTypeEnum.Once;
+    proRate.status = ProrateStatusEnum.Pending;
+    paidDays += end.add(1, 'hour').diff(start, 'days') + 1;
+
+    const base = employee.base;
+
+    const proRatedSalary = Money.mul(Money.div(base, payrollDays), paidDays);
+    const proRateDeduction = Money.sub(base as IMoney, proRatedSalary);
+
+    employee.proRateDeduction =
+      paidDays > 0 ? proRateDeduction : employee.zeroMoney;
+  }
   /**
    * In a single loop processes single employee bonus, untaxed bonus, extra month, leave allowance, and deductions
    */
@@ -530,7 +576,7 @@ export class PayrollBuilder implements IPayrollBuilder {
       ? group.remittances
       : this.organizationSettings.remittances;
     const isPension = this.meta.payItem.pension !== PayItemStatus.Unpaid;
-    if ((<NestedIRemittance>remittances).pension.enabled && isPension) {
+    if ((<NestedIRemittance>remittances).pension?.enabled && isPension) {
       PensionService.process(employee.country.toUpperCase(), {
         group,
         organizationSettings: this.organizationSettings,
