@@ -10,5 +10,6 @@ exports.INTEGRATION_EVENTS = {
     terminateEmployeeOnCDB: `${services_constant_1.SERVICES.INTEGRATION_SERVICE}.${exports.CDB}.terminateEmployee`,
     restoreEmployeeOnPeople: `${services_constant_1.SERVICES.INTEGRATION_SERVICE}.${exports.PEOPLE}.restoreEmployee`,
     productProxyRelayer: `${services_constant_1.SERVICES.INTEGRATION_SERVICE}.${exports.PRODUCT}.proxyRelayer`,
+    getUserCdbAuthToken: `${services_constant_1.SERVICES.INTEGRATION_SERVICE}.${exports.CDB}.getUserAuthToken`,
 };
 //# sourceMappingURL=integration.event.js.map

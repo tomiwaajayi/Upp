@@ -7,6 +7,7 @@ const client_exception_1 = require("../exceptions/client_exception");
 const response_service_1 = require("./response.service");
 const google_libphonenumber_1 = require("google-libphonenumber");
 const rxjs_1 = require("rxjs");
+const microservices_1 = require("@nestjs/microservices");
 const phoneUtil = google_libphonenumber_1.PhoneNumberUtil.getInstance();
 class UtilService {
     static async quickController(res, successMessage, service, method, httpStatusCode, ...opts) {
@@ -149,6 +150,19 @@ class UtilService {
     }
     static cleanArray(arr) {
         return arr.filter(item => Boolean(item));
+    }
+    static getRedisServerConfig(configuration) {
+        return {
+            transport: microservices_1.Transport.REDIS,
+            options: {
+                url: configuration.redis.url,
+                host: configuration.redis.host,
+                port: configuration.redis.port,
+                password: configuration.redis.password,
+                prefix: configuration.redis.prefix ||
+                    (configuration.isDev() ? 'dev' : 'production'),
+            },
+        };
     }
 }
 exports.UtilService = UtilService;

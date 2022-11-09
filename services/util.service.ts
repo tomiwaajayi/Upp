@@ -10,6 +10,7 @@ import {ClientException} from '../exceptions/client_exception';
 import {ResponseService} from './response.service';
 import {PhoneNumberFormat, PhoneNumberUtil} from 'google-libphonenumber';
 import {firstValueFrom, Observable} from 'rxjs';
+import {RedisOptions, Transport} from '@nestjs/microservices';
 const phoneUtil = PhoneNumberUtil.getInstance();
 export class UtilService {
   static async quickController(
@@ -200,5 +201,29 @@ export class UtilService {
 
   static cleanArray<T>(arr: T[]) {
     return arr.filter(item => Boolean(item));
+  }
+
+  static getRedisServerConfig(configuration: {
+    redis: {
+      url?: string;
+      host?: string;
+      port?: number;
+      password?: string;
+      prefix?: string;
+    };
+    isDev(): boolean;
+  }): RedisOptions {
+    return {
+      transport: Transport.REDIS,
+      options: {
+        url: configuration.redis.url,
+        host: configuration.redis.host,
+        port: configuration.redis.port,
+        password: configuration.redis.password,
+        prefix:
+          configuration.redis.prefix ||
+          (configuration.isDev() ? 'dev' : 'production'),
+      },
+    };
   }
 }
