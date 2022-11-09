@@ -98,6 +98,7 @@ describe('Process Tax (e2e)', () => {
       (<NestedIRemittance>(
         (<IGroup>data.employees[0].group).remittances
       )).pension.enabled = true;
+      data.payrollInit.payItem.pension = 'pending';
       const payroll = PayrollDirector.build(data);
 
       expect(payroll.employees[0].remittances).toBeDefined();
@@ -130,6 +131,7 @@ describe('Process Tax (e2e)', () => {
       data.employees[0].country = fixture.entities.ghana.iso2;
       (<IGroup>data.employees[0].group).salaryBreakdown =
         fixture.entities.salaryBreakdown;
+      data.payrollInit.payItem.pension = 'pending';
       delete data.employees[0].bonuses;
       delete data.employees[0].untaxedBonuses;
       delete data.employees[0].leaveAllowance;
@@ -170,6 +172,7 @@ describe('Process Tax (e2e)', () => {
       data.employees[0].base = {value: 100000, currency: 'KES'};
       data.employees[0].currency = 'KES';
       data.employees[0].country = fixture.entities.kenya.iso2;
+      data.payrollInit.payItem.pension = 'pending';
       delete data.employees[0].bonuses;
       delete data.employees[0].untaxedBonuses;
       delete data.employees[0].leaveAllowance;
@@ -210,6 +213,7 @@ describe('Process Tax (e2e)', () => {
       data.employees[0].base = {value: 100000, currency: 'RWF'};
       data.employees[0].currency = 'RWF';
       data.employees[0].country = fixture.entities.rwanda.iso2;
+      data.payrollInit.payItem.pension = 'pending';
       delete data.employees[0].bonuses;
       delete data.employees[0].untaxedBonuses;
       delete data.employees[0].leaveAllowance;

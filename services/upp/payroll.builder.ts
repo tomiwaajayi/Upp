@@ -12,6 +12,7 @@ import {
   IPayrollEmployee,
   IPayrollMeta,
   OrganizationSettings,
+  PayItemStatus,
   PayrollSalaryAddon,
 } from '../../interfaces/payroll/payroll.interface';
 import {UtilService} from '../util.service';
@@ -70,6 +71,7 @@ export class PayrollBuilder implements IPayrollBuilder {
    */
   private buildPartB(employee: IPayrollEmployee) {
     this.processBonuses(employee);
+    this.processDeductions(employee);
     return this;
   }
 
@@ -180,6 +182,28 @@ export class PayrollBuilder implements IPayrollBuilder {
 
       return bonus.mode;
     });
+
+    // START UNTAXED BONUS
+    // Do untaxed bonus first because it's a separate payItem entry
+    if (
+      !isEmpty(groupedBonuses[BonusSalaryModeEnum.UnTaxed]) &&
+      this.meta.payItem.untaxedBonus !== PayItemStatus.Unpaid
+    ) {
+      employee.untaxedBonuses = groupedBonuses[BonusSalaryModeEnum.UnTaxed];
+
+      employee.totalUntaxedBonus = Money.addMany(
+        employee.untaxedBonuses as PayrollSalaryAddon[],
+        'amount'
+      );
+    }
+    // END UNTAXED BONUS
+
+    // START BONUS
+    if (this.meta.payItem.bonus === PayItemStatus.Unpaid) {
+      employee.bonuses = [];
+      return; // all below are still bonuses so it's safe to exit
+    }
+
     if (!isEmpty(groupedBonuses[BonusSalaryModeEnum.Quick])) {
       employee.bonuses = groupedBonuses[BonusSalaryModeEnum.Quick];
 
@@ -188,29 +212,37 @@ export class PayrollBuilder implements IPayrollBuilder {
         'amount'
       );
     }
+    // END BONUS
 
-    if (!isEmpty(groupedBonuses[BonusSalaryModeEnum.UnTaxed])) {
-      employee.untaxedBonuses = groupedBonuses[BonusSalaryModeEnum.UnTaxed];
-
-      employee.totalUntaxedBonus = Money.addMany(
-        employee.untaxedBonuses as PayrollSalaryAddon[],
-        'amount'
-      );
-    }
-
+    // START EXTRA MONTH BONUS (13TH MONTH SALARY)
     if (!isEmpty(groupedBonuses[BonusSalaryModeEnum.ExtraMonth])) {
       employee.extraMonthBonus =
         groupedBonuses[BonusSalaryModeEnum.ExtraMonth][0];
 
       employee.totalExtraMonthBonus = employee.extraMonthBonus.amount;
     }
+    // START EXTRA MONTH BONUS
 
+    // START LEAVE ALLOWANCE
     if (!isEmpty(groupedBonuses[BonusSalaryModeEnum.LeaveAllowance])) {
       employee.leaveAllowance =
         groupedBonuses[BonusSalaryModeEnum.LeaveAllowance][0];
 
       employee.totalLeaveAllowance = employee.leaveAllowance.amount;
     }
+    // END LEAVE ALLOWANCE
+  }
+
+  /**
+   * In a single loop processes single employee bonus, untaxed bonus, extra month, leave allowance, and deductions
+   */
+  private processDeductions(employee: IPayrollEmployee): void {
+    if (isEmpty(employee.deductions)) return;
+
+    employee.totalDeductions = Money.addMany(
+      employee.deductions as PayrollSalaryAddon[],
+      'amount'
+    );
   }
 
   /**
@@ -228,8 +260,9 @@ export class PayrollBuilder implements IPayrollBuilder {
     const itfRecord = !isEmpty(group)
       ? group.remittances && group.remittances[CountryStatutories.ITF]
       : this.organizationSettings.remittances[CountryStatutories.ITF];
+    const isItf = this.meta.payItem.itf !== PayItemStatus.Unpaid;
 
-    if (itfRecord && itfRecord.enabled && itfRecord.remit) {
+    if (itfRecord && itfRecord.enabled && itfRecord.remit && isItf) {
       let grossSalary = base;
 
       if (this.organizationSettings.isTotalItfEnumeration) {
@@ -257,8 +290,9 @@ export class PayrollBuilder implements IPayrollBuilder {
     const nhfRecord = !isEmpty(group)
       ? group.remittances && group.remittances[CountryStatutories.NHF]
       : this.organizationSettings.remittances[CountryStatutories.NHF];
+    const isNhf = this.meta.payItem.nhf !== PayItemStatus.Unpaid;
 
-    if (!isEmpty(nhfRecord) && nhfRecord.enabled) {
+    if (!isEmpty(nhfRecord) && nhfRecord.enabled && isNhf) {
       let salaryBreakdown: Record<string, number> | undefined =
         group.salaryBreakdown;
 
@@ -294,8 +328,9 @@ export class PayrollBuilder implements IPayrollBuilder {
     const nsitfRecord = !isEmpty(group)
       ? group.remittances && group.remittances[CountryStatutories.NSITF]
       : this.organizationSettings.remittances[CountryStatutories.NSITF];
+    const isNsitf = this.meta.payItem.nsitf !== PayItemStatus.Unpaid;
 
-    if (nsitfRecord && nsitfRecord.enabled) {
+    if (nsitfRecord && nsitfRecord.enabled && isNsitf) {
       let grossSalary = base;
 
       if (this.organizationSettings.isTotalNsitfEnumeration) {
@@ -326,8 +361,9 @@ export class PayrollBuilder implements IPayrollBuilder {
     const nhifRecord = !isEmpty(group)
       ? group.remittances && group.remittances[CountryStatutories.NHIF]
       : this.organizationSettings.remittances[CountryStatutories.NHIF];
+    const isNhif = this.meta.payItem.nhif !== PayItemStatus.Unpaid;
 
-    if (nhifRecord && nhifRecord.enabled) {
+    if (nhifRecord && nhifRecord.enabled && isNhif) {
       const defaultAmount: IMoney = {
         value: 0,
         currency: base.currency,
@@ -462,25 +498,24 @@ export class PayrollBuilder implements IPayrollBuilder {
    * https://sbcode.net/typescript/factory/
    */
   processTax(employee: IPayrollEmployee): void {
-    try {
-      const {group} = employee;
-      const remittances = group
-        ? group.remittances
-        : this.organizationSettings.remittances;
+    const {group} = employee;
+    const remittances = group
+      ? group.remittances
+      : this.organizationSettings.remittances;
 
-      if ((<NestedIRemittance>remittances).tax?.enabled) {
-        TaxService.process(
-          employee.country.toUpperCase(),
-          {
-            organization: this.organization,
-            settings: this.organizationSettings,
-            meta: this.meta,
-          },
-          employee
-        );
-      }
-    } catch (error) {
-      console.log(error);
+    if (
+      (<NestedIRemittance>remittances).tax?.enabled &&
+      this.meta.payItem.tax !== PayItemStatus.Unpaid
+    ) {
+      TaxService.process(
+        employee.country.toUpperCase(),
+        {
+          organization: this.organization,
+          settings: this.organizationSettings,
+          meta: this.meta,
+        },
+        employee
+      );
     }
   }
 
@@ -494,7 +529,8 @@ export class PayrollBuilder implements IPayrollBuilder {
     const remittances = group
       ? group.remittances
       : this.organizationSettings.remittances;
-    if (remittances && remittances.pension && remittances.pension.enabled) {
+    const isPension = this.meta.payItem.pension !== PayItemStatus.Unpaid;
+    if ((<NestedIRemittance>remittances).pension.enabled && isPension) {
       PensionService.process(employee.country.toUpperCase(), {
         group,
         organizationSettings: this.organizationSettings,
