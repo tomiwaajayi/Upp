@@ -155,6 +155,7 @@ class UtilService {
         return {
             transport: microservices_1.Transport.REDIS,
             options: {
+                url: configuration.redis.url,
                 host: configuration.redis.host,
                 port: configuration.redis.port,
                 password: configuration.redis.password,

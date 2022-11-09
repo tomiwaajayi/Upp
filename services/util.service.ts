@@ -205,8 +205,9 @@ export class UtilService {
 
   static getRedisServerConfig(configuration: {
     redis: {
-      host: string;
-      port: number;
+      url?: string;
+      host?: string;
+      port?: number;
       password?: string;
       prefix?: string;
     };
@@ -215,6 +216,7 @@ export class UtilService {
     return {
       transport: Transport.REDIS,
       options: {
+        url: configuration.redis.url,
         host: configuration.redis.host,
         port: configuration.redis.port,
         password: configuration.redis.password,

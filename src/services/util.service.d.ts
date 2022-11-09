@@ -16,8 +16,9 @@ export declare class UtilService {
     static cleanArray<T>(arr: T[]): T[];
     static getRedisServerConfig(configuration: {
         redis: {
-            host: string;
-            port: number;
+            url?: string;
+            host?: string;
+            port?: number;
             password?: string;
             prefix?: string;
         };
