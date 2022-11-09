@@ -18,7 +18,8 @@ export declare class UtilService {
         redis: {
             host: string;
             port: number;
-            password: string;
+            password?: string;
+            prefix?: string;
         };
         isDev(): boolean;
     }): RedisOptions;

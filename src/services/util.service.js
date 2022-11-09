@@ -158,7 +158,8 @@ class UtilService {
                 host: configuration.redis.host,
                 port: configuration.redis.port,
                 password: configuration.redis.password,
-                prefix: configuration.isDev() ? 'dev' : 'production',
+                prefix: configuration.redis.prefix ||
+                    (configuration.isDev() ? 'dev' : 'production'),
             },
         };
     }

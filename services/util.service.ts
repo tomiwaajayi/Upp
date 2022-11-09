@@ -207,7 +207,8 @@ export class UtilService {
     redis: {
       host: string;
       port: number;
-      password: string;
+      password?: string;
+      prefix?: string;
     };
     isDev(): boolean;
   }): RedisOptions {
@@ -217,7 +218,9 @@ export class UtilService {
         host: configuration.redis.host,
         port: configuration.redis.port,
         password: configuration.redis.password,
-        prefix: configuration.isDev() ? 'dev' : 'production',
+        prefix:
+          configuration.redis.prefix ||
+          (configuration.isDev() ? 'dev' : 'production'),
       },
     };
   }
